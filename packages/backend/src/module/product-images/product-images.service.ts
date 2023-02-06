@@ -1,23 +1,23 @@
 import {HttpStatus, Injectable} from '@nestjs/common';
 import {NotFoundException, HttpException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {ProductImagesRepository} from './repository/product-images.repository';
 import {
 	CreateProductImagesDto,
 	UpdateProductImagesDto,
 } from './dto/product-images.dto';
 import {ProductImages} from './entity/product-images.entity';
-
+import _ from 'lodash';
+import {Repository} from 'typeorm';
 @Injectable()
 export class ProductImagesService {
 	constructor(
-		@InjectRepository(ProductImagesRepository)
-		private productImagesRepository: ProductImagesRepository
+		@InjectRepository(ProductImages)
+		private productImagesRepository: Repository<ProductImages>
 	) {}
 
 	async getAllProductImagess(): Promise<any> {
 		try {
-			return await this.productImagesRepository.getAllProductImagess();
+			return await this.productImagesRepository.find();
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -49,13 +49,13 @@ export class ProductImagesService {
 		updateProductImagesDto: UpdateProductImagesDto
 	): Promise<ProductImages> {
 		try {
-			const result = await this.productImagesRepository.updateProductImages(
-				id,
-				updateProductImagesDto
-			);
-			if (!result)
-				throw new NotFoundException('ProductImages Id ' + id + ' Not Found !');
-			return result;
+			const result = await this.productImagesRepository.findOne({id});
+			if (!result) return null;
+
+			_(updateProductImagesDto).forEach((val, key) => {
+				if (val) result[key] = val;
+			});
+			return this.productImagesRepository.save(result);
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

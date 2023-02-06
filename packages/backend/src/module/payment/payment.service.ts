@@ -3,18 +3,18 @@ import {NotFoundException, HttpException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {CreatePaymentDto, UpdatePaymentDto} from './dto/payement.dto';
 import {Payment} from './entity/payment.entity';
-import {PaymentRepository} from './repository/payment.repository';
-
+import {Repository} from 'typeorm';
+import _ from 'lodash';
 @Injectable()
 export class PaymentService {
 	constructor(
-		@InjectRepository(PaymentRepository)
-		private paymentRepository: PaymentRepository
+		@InjectRepository(Payment)
+		private paymentRepository: Repository<Payment>
 	) {}
 
 	async getAllPayments(): Promise<any> {
 		try {
-			return await this.paymentRepository.getAllPayments();
+			return await this.paymentRepository.find();
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -44,13 +44,14 @@ export class PaymentService {
 		updatePaymentDto: UpdatePaymentDto
 	): Promise<Payment> {
 		try {
-			const result = await this.paymentRepository.updatePayment(
-				id,
-				updatePaymentDto
-			);
+			const result = await this.paymentRepository.findOne({id});
 			if (!result)
 				throw new NotFoundException('Payment Id ' + id + ' Not Found !');
-			return result;
+
+			_(updatePaymentDto).forEach((val, key) => {
+				if (val) result[key] = val;
+			});
+			return this.paymentRepository.save(result);
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

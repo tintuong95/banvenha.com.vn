@@ -1,20 +1,20 @@
 import {HttpStatus, Injectable} from '@nestjs/common';
 import {NotFoundException, HttpException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {NewsImageRepository} from './repository/news-images.repository';
 import {CreateNewsImageDto, UpdateNewsImageDto} from './dto/news-images.dto';
 import {NewsImage} from './entity/news-images.entity';
-
+import {Repository} from 'typeorm';
+import _ from 'lodash';
 @Injectable()
 export class NewsImageService {
 	constructor(
-		@InjectRepository(NewsImageRepository)
-		private newsImageRepository: NewsImageRepository
+		@InjectRepository(NewsImage)
+		private newsImageRepository: Repository<NewsImage>
 	) {}
 
 	async getAllNewsImages(): Promise<any> {
 		try {
-			return await this.newsImageRepository.getAllNewsImages();
+			return await this.newsImageRepository.find();
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -46,13 +46,14 @@ export class NewsImageService {
 		updateNewsImageDto: UpdateNewsImageDto
 	): Promise<NewsImage> {
 		try {
-			const result = await this.newsImageRepository.updateNewsImage(
-				id,
-				updateNewsImageDto
-			);
+			const result = await this.newsImageRepository.findOne({id});
 			if (!result)
 				throw new NotFoundException('NewsImage Id ' + id + ' Not Found !');
-			return result;
+
+			_(updateNewsImageDto).forEach((val, key) => {
+				if (val) result[key] = val;
+			});
+			return this.newsImageRepository.save(result);
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

@@ -1,20 +1,20 @@
 import {HttpStatus, Injectable} from '@nestjs/common';
 import {NotFoundException, HttpException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {MessageRepository} from './repository/message.repository';
 import {CreateMessageDto, UpdateMessageDto} from './dto/message.dto';
 import {Message} from './entity/message.entity';
-
+import {Repository} from 'typeorm';
+import * as _ from 'lodash';
 @Injectable()
 export class MessageService {
 	constructor(
-		@InjectRepository(MessageRepository)
-		private messageRepository: MessageRepository
+		@InjectRepository(Message)
+		private messageRepository: Repository<Message>
 	) {}
 
 	async getAllMessages(): Promise<any> {
 		try {
-			return await this.messageRepository.getAllMessages();
+			return await this.messageRepository.find();
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -44,13 +44,13 @@ export class MessageService {
 		updateMessageDto: UpdateMessageDto
 	): Promise<Message> {
 		try {
-			const result = await this.messageRepository.updateMessage(
-				id,
-				updateMessageDto
-			);
+			const result = await this.messageRepository.findOne({id});
 			if (!result)
 				throw new NotFoundException('Message Id ' + id + ' Not Found !');
-			return result;
+			_(updateMessageDto).forEach((val, key) => {
+				if (val) result[key] = val;
+			});
+			return this.messageRepository.save(result);
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

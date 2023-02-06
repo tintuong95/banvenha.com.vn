@@ -1,11 +1,18 @@
 import {UserOutlined, Loading3QuartersOutlined} from '@ant-design/icons';
-import {Avatar, Badge, Breadcrumb, Layout, Menu, Spin} from 'antd';
+import {Avatar, Badge, Breadcrumb, Divider, Layout, Menu, Spin} from 'antd';
 import {useEffect, useState} from 'react';
 import {Outlet, Link} from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import BaseDropdown from '../components/BaseDropDown';
-import {SiHomeassistant} from 'react-icons/si';
-import { IconContext } from 'react-icons/lib';
+import { IoHomeOutline } from 'react-icons/io5';
+import { RiProductHuntLine } from 'react-icons/ri';
+import { BsNewspaper } from 'react-icons/bs';
+import { FaOpencart } from 'react-icons/fa';
+import { MdGroups, MdOutlinePayment } from 'react-icons/md';
+import { BiMessageSquareDots } from 'react-icons/bi';
+import BaseIcon from '../components/BaseIcon';
+
+
 const {Header, Content, Sider} = Layout;
 const condition = 1;
 const antIcon = (
@@ -53,33 +60,66 @@ const MainLayout = () => {
 					<Menu theme='light' mode='inline' className='p-2'>
 						<Menu.Item>
 							<Link to={'/'} className='flex items-center gap-2'>
-								<IconContext.Provider value={{color: 'green', size: 24}}>
-									<SiHomeassistant />
-								</IconContext.Provider>
+								<BaseIcon color='#60a5fa' size={24}>
+									<IoHomeOutline />
+								</BaseIcon>
 								Trang chủ
 							</Link>
 						</Menu.Item>
 						<Menu.Item>
-							<Link to={'/products'}>Sản phẩm</Link>
+							<Link to={'/products'} className='flex items-center gap-2'>
+								<BaseIcon color='#60a5fa' size={24}>
+									<RiProductHuntLine />
+								</BaseIcon>
+								Sản phẩm
+							</Link>
 						</Menu.Item>
 						<Menu.Item>
-							<Link to={'/news'}>Tin tức</Link>
+							<Link to={'/news'} className='flex items-center gap-2'>
+								<BaseIcon color='#60a5fa' size={24}>
+									<BsNewspaper />
+								</BaseIcon>
+								Tin tức
+							</Link>
 						</Menu.Item>
+
 						<Menu.Item>
-							<Link to={'/orders'}>Đơn hàng</Link>
+							<Link to={'/orders'} className='flex items-center gap-2'>
+								<BaseIcon color='#60a5fa' size={24}>
+									<FaOpencart />
+								</BaseIcon>
+								Đơn hàng
+							</Link>
 						</Menu.Item>
+						<Divider />
 						{role == 'PARTNER' ? (
 							''
 						) : (
 							<Menu.Item>
-								<Link to={'/partners'}>Đối tác</Link>
+								<Link to={'/partners'} className='flex items-center gap-2'>
+									<BaseIcon color='#60a5fa' size={24}>
+										<MdGroups />
+									</BaseIcon>
+									Đối tác
+								</Link>
 							</Menu.Item>
 						)}
+
 						<Menu.Item>
-							<Link to={'/messages'}>Tin Nhắn</Link>
+							<Link to={'/messages'} className='flex items-center gap-2'>
+								<BaseIcon color='#60a5fa' size={24}>
+									<BiMessageSquareDots />
+								</BaseIcon>
+								Tin Nhắn
+							</Link>
 						</Menu.Item>
 						<Menu.Item>
-							<Link to={'/payments'}>Thanh toán</Link>
+							<Link to={'/payments'} className='flex items-center gap-2'>
+								<BaseIcon color='#60a5fa' size={24}>
+									<MdOutlinePayment />
+								</BaseIcon>
+								Thanh toán
+							</Link>
 						</Menu.Item>
 					</Menu>
 				</Sider>

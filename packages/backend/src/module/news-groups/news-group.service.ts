@@ -3,18 +3,19 @@ import {NotFoundException, HttpException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {CreateNewsGroupDto, UpdateNewsGroupDto} from './dto/news-group.dto';
 import {NewsGroup} from './entity/news-group.entity';
-import {NewsGroupRepository} from './repository/news-group.repository';
+import {Repository} from 'typeorm';
+import _ from 'lodash';
 
 @Injectable()
 export class NewsGroupService {
 	constructor(
-		@InjectRepository(NewsGroupRepository)
-		private newsGroupRepository: NewsGroupRepository
+		@InjectRepository(NewsGroup)
+		private newsGroupRepository: Repository<NewsGroup>
 	) {}
 
 	async getAllNewsGroups(): Promise<any> {
 		try {
-			return await this.newsGroupRepository.getAllNewsGroups();
+			return await this.newsGroupRepository.find();
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -46,13 +47,14 @@ export class NewsGroupService {
 		updateNewsGroupDto: UpdateNewsGroupDto
 	): Promise<NewsGroup> {
 		try {
-			const result = await this.newsGroupRepository.updateNewsGroup(
-				id,
-				updateNewsGroupDto
-			);
+			const result = await this.newsGroupRepository.findOne({id});
 			if (!result)
 				throw new NotFoundException('NewsGroup Id ' + id + ' Not Found !');
-			return result;
+
+			_(updateNewsGroupDto).forEach((val, key) => {
+				if (val) result[key] = val;
+			});
+			return this.newsGroupRepository.save(result);
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

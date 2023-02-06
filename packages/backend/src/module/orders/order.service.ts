@@ -1,20 +1,20 @@
 import {HttpStatus, Injectable} from '@nestjs/common';
 import {NotFoundException, HttpException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {OrderRepository} from './repository/order.repository';
 import {CreateOrderDto, UpdateOrderDto} from './dto/order.dto';
 import {Order} from './entity/order.entity';
-
+import {Repository} from 'typeorm';
+import _ from 'lodash';
 @Injectable()
 export class OrderService {
 	constructor(
-		@InjectRepository(OrderRepository)
-		private orderRepository: OrderRepository
+		@InjectRepository(Order)
+		private orderRepository: Repository<Order>
 	) {}
 
 	async getAllOrders(): Promise<any> {
 		try {
-			return await this.orderRepository.getAllOrders();
+			return await this.orderRepository.find();
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -44,10 +44,13 @@ export class OrderService {
 		updateOrderDto: UpdateOrderDto
 	): Promise<Order> {
 		try {
-			const result = await this.orderRepository.updateOrder(id, updateOrderDto);
+			const result = await this.orderRepository.findOne({id});
 			if (!result)
 				throw new NotFoundException('Order Id ' + id + ' Not Found !');
-			return result;
+			_(updateOrderDto).forEach((val, key) => {
+				if (val) result[key] = val;
+			});
+			return this.orderRepository.save(result);
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

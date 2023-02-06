@@ -1,23 +1,24 @@
 import {HttpStatus, Injectable} from '@nestjs/common';
 import {NotFoundException, HttpException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {ProductGroupRepository} from './repository/product-group.repository';
 import {
 	CreateProductGroupDto,
 	UpdateProductGroupDto,
 } from './dto/product-group.dto';
 import {ProductGroup} from './entity/product-group.entity';
+import {Repository} from 'typeorm';
+import _ from 'lodash';
 
 @Injectable()
 export class ProductGroupService {
 	constructor(
-		@InjectRepository(ProductGroupRepository)
-		private productGroupRepository: ProductGroupRepository
+		@InjectRepository(ProductGroup)
+		private productGroupRepository: Repository<ProductGroup>
 	) {}
 
 	async getAllProductGroups(): Promise<any> {
 		try {
-			return await this.productGroupRepository.getAllProductGroups();
+			return await this.productGroupRepository.find();
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -49,13 +50,14 @@ export class ProductGroupService {
 		updateProductGroupDto: UpdateProductGroupDto
 	): Promise<ProductGroup> {
 		try {
-			const result = await this.productGroupRepository.updateProductGroup(
-				id,
-				updateProductGroupDto
-			);
+			const result = await this.productGroupRepository.findOne({id});
 			if (!result)
 				throw new NotFoundException('ProductGroup Id ' + id + ' Not Found !');
-			return result;
+
+			_(updateProductGroupDto).forEach((val, key) => {
+				if (val) result[key] = val;
+			});
+			return this.productGroupRepository.save(result);
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

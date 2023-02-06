@@ -1,14 +1,13 @@
 import {Module} from '@nestjs/common';
-
 import {TypeOrmModule} from '@nestjs/typeorm';
+import {NewsGroup} from './entity/news-group.entity';
 import {NewsGroupController} from './news-group.controller';
 import {NewsGroupService} from './news-group.service';
-import {NewsGroupRepository} from './repository/news-group.repository';
 
 @Module({
 	controllers: [NewsGroupController],
 	providers: [NewsGroupService],
-	imports: [TypeOrmModule.forFeature([NewsGroupRepository])],
+	imports: [TypeOrmModule.forFeature([NewsGroup])],
 	exports: [TypeOrmModule],
 })
 export class NewsGroupModule {}

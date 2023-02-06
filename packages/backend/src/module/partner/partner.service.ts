@@ -3,18 +3,18 @@ import {NotFoundException, HttpException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {CreatePartnerDto, UpdatePartnerDto} from './dto/partner.dto';
 import {Partner} from './entity/partner.entity';
-import {PartnerRepository} from './repository/partner.repository';
-
+import {Repository} from 'typeorm';
+import _ from 'lodash';
 @Injectable()
 export class PartnerService {
 	constructor(
-		@InjectRepository(PartnerRepository)
-		private partnerRepository: PartnerRepository
+		@InjectRepository(Partner)
+		private partnerRepository: Repository<Partner>
 	) {}
 
 	async getAllPartners(): Promise<any> {
 		try {
-			return await this.partnerRepository.getAllPartners();
+			return await this.partnerRepository.find();
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -44,13 +44,13 @@ export class PartnerService {
 		updatePartnerDto: UpdatePartnerDto
 	): Promise<Partner> {
 		try {
-			const result = await this.partnerRepository.updatePartner(
-				id,
-				updatePartnerDto
-			);
+			const result = await this.partnerRepository.findOne({id});
 			if (!result)
 				throw new NotFoundException('Partner Id ' + id + ' Not Found !');
-			return result;
+			_(updatePartnerDto).forEach((val, key) => {
+				if (val) result[key] = val;
+			});
+			return this.partnerRepository.save(result);
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

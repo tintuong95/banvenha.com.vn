@@ -9,7 +9,8 @@ import {
 	LikeOutlined,
 	ShoppingCartOutlined,
 } from '@ant-design/icons';
-
+// import BaseIcon from '../../../components/BaseIcon';
+// import {WiTime5} from 'react-icons/wi';
 const formatter = (value) => <CountUp end={value} separator=',' />;
 const formatterNumber = (value) => <CountUp end={value} />;
 const columns = [
@@ -21,9 +22,7 @@ const columns = [
 			return (
 				<div className='flex  items-center'>
 					<span className='mr-2'>{text}</span>
-					<Badge
-						count={'NEWS'}
-						style={{backgroundColor: '#87d068'}}></Badge>
+					<Badge count={'NEWS'} style={{backgroundColor: '#87d068'}}></Badge>
 				</div>
 			);
 		},
@@ -190,7 +189,12 @@ const DashBoard = () => {
 							Tin Tưởng <Tag color='#87d068'>Level 1</Tag>
 						</span>
 					</div>
-					<span className='text-slate-400'>Ngày tạo : 10/10/2012</span>
+					<div className='text-slate-400 flex item-center'>
+						{/* <BaseIcon color={'gray'} size={34}>
+							<WiTime5 />
+						</BaseIcon> */}
+						Ngày tạo : 10/10/2012
+					</div>
 				</div>
 				<Divider />
 				<div className='grid grid-cols-4 mb-5'>

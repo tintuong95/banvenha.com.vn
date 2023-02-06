@@ -1,20 +1,21 @@
 import {HttpStatus, Injectable} from '@nestjs/common';
 import {NotFoundException, HttpException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {AdminRepository} from '././repository/admin.repository';
 import {CreateAdminDto, UpdateAdminDto} from './dto/admin.dto';
 import {Admin} from './entity/admin.entity';
+import {Repository} from 'typeorm';
+import * as _ from 'lodash';
 
 @Injectable()
 export class AdminService {
 	constructor(
-		@InjectRepository(AdminRepository)
-		private adminRepository: AdminRepository
+		@InjectRepository(Admin)
+		private adminRepository: Repository<Admin>
 	) {}
 
 	async getAllAdmins(): Promise<any> {
 		try {
-			return await this.adminRepository.getAllAdmins();
+			return await this.adminRepository.find();
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -44,10 +45,14 @@ export class AdminService {
 		updateAdminDto: UpdateAdminDto
 	): Promise<Admin> {
 		try {
-			const result = await this.adminRepository.updateAdmin(id, updateAdminDto);
+			const result = await this.adminRepository.findOne({id});
 			if (!result)
 				throw new NotFoundException('Admin Id ' + id + ' Not Found !');
-			return result;
+
+			_(updateAdminDto).forEach((val, key) => {
+				if (val) result[key] = val;
+			});
+			return this.adminRepository.save(result);
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

@@ -1,20 +1,21 @@
 import {HttpStatus, Injectable} from '@nestjs/common';
 import {NotFoundException, HttpException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {AccountRepository} from './repository/account.repository';
 import {CreateAccountDto, UpdateAccountDto} from './dto/account.dto';
 import {Account} from './entity/account.entity';
+import {Repository} from 'typeorm';
+import * as _ from 'lodash';
 
 @Injectable()
 export class AccountService {
 	constructor(
-		@InjectRepository(AccountRepository)
-		private accountRepository: AccountRepository
+		@InjectRepository(Account)
+		private accountRepository: Repository<Account>
 	) {}
 
 	async getAllAccounts(): Promise<any> {
 		try {
-			return await this.accountRepository.getAllAccounts();
+			return await this.accountRepository.find();
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -44,13 +45,14 @@ export class AccountService {
 		updateAccountDto: UpdateAccountDto
 	): Promise<Account | any> {
 		try {
-			const result = await this.accountRepository.updateAccount(
-				id,
-				updateAccountDto
-			);
+			const result = await this.accountRepository.findOne({id});
 			if (!result)
 				throw new NotFoundException('Account Id ' + id + ' Not Found !');
-			return result;
+
+			_(updateAccountDto).forEach((val, key) => {
+				if (val) result[key] = val;
+			});
+			return this.accountRepository.save(result);
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

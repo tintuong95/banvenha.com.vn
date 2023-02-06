@@ -1,20 +1,20 @@
 import {HttpStatus, Injectable} from '@nestjs/common';
 import {NotFoundException, HttpException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {ProductRepository} from './repository/Product.repository';
 import {CreateProductDto, UpdateProductDto} from './dto/product.dto';
 import {Product} from './entity/product.entity';
-
+import _ from 'lodash';
+import {Repository} from 'typeorm';
 @Injectable()
 export class ProductService {
 	constructor(
-		@InjectRepository(ProductRepository)
-		private productRepository: ProductRepository
+		@InjectRepository(Product)
+		private productRepository: Repository<Product>
 	) {}
 
 	async getAllProducts(): Promise<any> {
 		try {
-			return await this.productRepository.getAllProducts();
+			return await this.productRepository.find();
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -44,13 +44,14 @@ export class ProductService {
 		updateProductDto: UpdateProductDto
 	): Promise<Product> {
 		try {
-			const result = await this.productRepository.updateProduct(
-				id,
-				updateProductDto
-			);
+			const result = await this.productRepository.findOne({id});
 			if (!result)
 				throw new NotFoundException('Product Id ' + id + ' Not Found !');
-			return result;
+
+			_(updateProductDto).forEach((val, key) => {
+				if (val) result[key] = val;
+			});
+			return this.productRepository.save(result);
 		} catch (err) {
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
