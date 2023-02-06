@@ -1,0 +1,26 @@
+{
+  "name": "banvenha.com.vn",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/admin",
+    "packages/backend",
+    "packages/client"
+  ],
+  "scripts": {
+    "client": "yarn workspace client dev",
+    "server": "yarn workspace backend start:dev",
+    "admin": "yarn workspace admin start",
+    "build:backend": "yarn workspace backend start",
+    "start:dev": "concurrently \"yarn run client\" \"yarn run server\" \"yarn run admin\"",
+    "migration:generate": "yarn workspace backend migration:generate",
+    "migration:create": "yarn workspace backend migration:create",
+    "migration:run": "yarn workspace backend migration:run",
+    "migration:revert": "yarn workspace backend migration:revert"
+  },
+  "dependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
