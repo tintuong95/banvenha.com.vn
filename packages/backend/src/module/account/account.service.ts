@@ -23,11 +23,14 @@ export class AccountService {
 
 	async getAccountDetails(id: number): Promise<Account | any> {
 		try {
-			const result = await this.accountRepository.findOne({id});
+			const result = await this.accountRepository.findOne({
+				where: {id},
+			});
 			if (!result)
 				throw new NotFoundException('Account Id ' + id + ' Not Found !');
 			return result;
 		} catch (err) {
+			console.log(err);
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

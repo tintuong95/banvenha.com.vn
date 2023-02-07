@@ -1,6 +1,6 @@
 import {PartialType} from '@nestjs/mapped-types';
 import {Expose} from 'class-transformer';
-import {IsString, IsNumber, IsEnum} from 'class-validator';
+import {IsString, IsNumber, IsEnum, IsOptional} from 'class-validator';
 import {PRODUCT_STATE, PRODUCT_STATUS} from '../type/product.type';
 
 export class CreateProductDto {
@@ -32,10 +32,12 @@ export class CreateProductDto {
 	@Expose()
 	group_id: number;
 
+	@IsOptional()
 	@IsEnum(PRODUCT_STATUS)
 	@Expose()
 	status: PRODUCT_STATUS;
 
+	@IsOptional()
 	@IsEnum(PRODUCT_STATE)
 	@Expose()
 	state: PRODUCT_STATE;

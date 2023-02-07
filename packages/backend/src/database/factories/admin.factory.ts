@@ -10,6 +10,7 @@ define(Admin, () => {
 	admin.tel = faker.phone.number();
 	admin.avatar = faker.image.avatar();
 	admin.status = faker.datatype.number({min: 0, max: 1});
+	admin.account_id = faker.datatype.number({min: 0, max: 100});
 	admin.created_at = faker.date.between(
 		'2020-01-01T00:00:00.000Z',
 		'2021-01-01T00:00:00.000Z'

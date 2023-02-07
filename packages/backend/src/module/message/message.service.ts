@@ -5,6 +5,7 @@ import {CreateMessageDto, UpdateMessageDto} from './dto/message.dto';
 import {Message} from './entity/message.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
+import { ADMIN_KEY, PARTNER_KEY } from '~contants/relation';
 @Injectable()
 export class MessageService {
 	constructor(
@@ -22,7 +23,10 @@ export class MessageService {
 
 	async getMessageDetails(id: number): Promise<Message | any> {
 		try {
-			const result = await this.messageRepository.findOne({id});
+			const result = await this.messageRepository.findOne({
+				where: {id},
+				relations: [PARTNER_KEY, ADMIN_KEY],
+			});
 			if (!result)
 				throw new NotFoundException('Message Id ' + id + ' Not Found !');
 			return result;

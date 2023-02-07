@@ -1,7 +1,10 @@
-import {Entity, Column} from 'typeorm';
+import {Entity, Column, ManyToOne, JoinColumn} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {NEWS_STATE, NEWS_STATUS} from '../type/news.type';
+import {Partner} from '~module/partner/entity/partner.entity';
+import {NEWS_GROUP_KEY, PARTNER_KEY} from '~contants/relation';
+import {NewsGroup} from '~module/news-groups/entity/news-group.entity';
 
 @Entity({name: 'news'})
 export class News extends BaseEntity {
@@ -80,4 +83,15 @@ export class News extends BaseEntity {
 	})
 	@ApiProperty()
 	group_id: number;
+
+	@ManyToOne(() => Partner, {cascade: true})
+	@JoinColumn({name: 'creator_id', referencedColumnName: 'id'})
+	[PARTNER_KEY]: Partner;
+
+	@ManyToOne(() => NewsGroup, {cascade: true})
+	@JoinColumn({name: 'group_id', referencedColumnName: 'id'})
+	[NEWS_GROUP_KEY]: NewsGroup;
+
+	// @OneToMany(() => NewsImage, (newsImage) => newsImage.id)
+	// [NEWS_IMAGE_LIST_KEY]: NewsImage[];
 }

@@ -23,7 +23,7 @@
 			"~module/*": ["module/*"],
 			"~util/*": ["util/*"],
 			"~shared/*": ["shared/*"],
-			"~contant/*": ["contant/*"]
+			"~contants/*": ["contants/*"]
 		}
 	}
 }

@@ -1,6 +1,6 @@
 import {PartialType} from '@nestjs/mapped-types';
 import {Expose} from 'class-transformer';
-import {IsString, IsNumber, IsEnum} from 'class-validator';
+import {IsString, IsNumber, IsEnum, IsOptional} from 'class-validator';
 import {PAYMENT_STATUS} from '../type/payement';
 
 export class CreatePaymentDto {
@@ -28,6 +28,7 @@ export class CreatePaymentDto {
 	@Expose()
 	partner_id: number;
 
+	@IsOptional()
 	@IsEnum(PAYMENT_STATUS)
 	@Expose()
 	status: PAYMENT_STATUS;

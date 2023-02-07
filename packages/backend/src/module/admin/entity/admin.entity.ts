@@ -1,7 +1,10 @@
-import {Entity, Column} from 'typeorm';
+import {Entity, Column, OneToOne, JoinColumn, OneToMany} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {ADMIN_STATUS} from '../type/admin.type';
+import {Account} from '~module/account/entity/account.entity';
+import {ACCOUNT_KEY, ADMIN_KEY, MESSAGE_KEY} from '~contants/relation';
+import {Message} from '~module/message/entity/message.entity';
 
 @Entity({name: 'admins'})
 export class Admin extends BaseEntity {
@@ -47,4 +50,17 @@ export class Admin extends BaseEntity {
 	})
 	@ApiProperty()
 	status: ADMIN_STATUS;
+
+	@Column({
+		nullable: false,
+	})
+	@ApiProperty()
+	account_id: number;
+
+	@OneToOne(() => Account, {cascade: true})
+	@JoinColumn({name: 'account_id'})
+	[ACCOUNT_KEY]: Account;
+
+	@OneToMany(() => Message, (message) => message[ADMIN_KEY])
+	[MESSAGE_KEY]: Message[];
 }

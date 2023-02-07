@@ -15,7 +15,7 @@ import {NewsGroupService} from './news-group.service';
 import {CreateNewsGroupDto, UpdateNewsGroupDto} from './dto/news-group.dto';
 import {NewsGroup} from './entity/news-group.entity';
 
-@Controller('group-news')
+@Controller('news-group')
 export class NewsGroupController {
 	constructor(private newsGroupService: NewsGroupService) {}
 	@Get('')

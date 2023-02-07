@@ -1,6 +1,6 @@
 import {PartialType} from '@nestjs/mapped-types';
 import {Expose} from 'class-transformer';
-import {IsString, IsEnum} from 'class-validator';
+import {IsString, IsEnum, IsNumber, IsOptional} from 'class-validator';
 import {ADMIN_STATUS} from '../type/admin.type';
 
 export class CreateAdminDto {
@@ -24,9 +24,14 @@ export class CreateAdminDto {
 	@Expose()
 	avatar: string;
 
+	@IsOptional()
 	@IsEnum(ADMIN_STATUS)
 	@Expose()
 	status: ADMIN_STATUS;
+
+	@IsNumber()
+	@Expose()
+	account_id: number;
 }
 
 export class UpdateAdminDto extends PartialType(CreateAdminDto) {}

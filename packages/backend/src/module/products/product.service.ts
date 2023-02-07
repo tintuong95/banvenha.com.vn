@@ -3,8 +3,9 @@ import {NotFoundException, HttpException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {CreateProductDto, UpdateProductDto} from './dto/product.dto';
 import {Product} from './entity/product.entity';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import {Repository} from 'typeorm';
+import {PARTNER_KEY, PRODUCT_FILE_KEY} from '~contants/relation';
 @Injectable()
 export class ProductService {
 	constructor(
@@ -22,7 +23,10 @@ export class ProductService {
 
 	async getProductDetails(id: number): Promise<Product | any> {
 		try {
-			const result = await this.productRepository.findOne({id});
+			const result = await this.productRepository.findOne({
+				where: {id},
+				relations: [PARTNER_KEY,PRODUCT_FILE_KEY],
+			});
 			if (!result)
 				throw new NotFoundException('Product Id ' + id + ' Not Found !');
 			return result;

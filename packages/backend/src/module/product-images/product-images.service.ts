@@ -6,7 +6,7 @@ import {
 	UpdateProductImagesDto,
 } from './dto/product-images.dto';
 import {ProductImages} from './entity/product-images.entity';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import {Repository} from 'typeorm';
 @Injectable()
 export class ProductImagesService {

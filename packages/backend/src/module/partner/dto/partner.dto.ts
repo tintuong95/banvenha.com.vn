@@ -1,6 +1,12 @@
 import {PartialType} from '@nestjs/mapped-types';
 import {Expose} from 'class-transformer';
-import {IsString, IsEnum, IsOptional, MaxLength} from 'class-validator';
+import {
+	IsString,
+	IsEnum,
+	IsOptional,
+	MaxLength,
+	IsNumber,
+} from 'class-validator';
 import {PARTNER_STATUS} from '../type/partner.type';
 
 export class CreatePartnerDto {
@@ -76,6 +82,11 @@ export class CreatePartnerDto {
 	// @Expose()
 	// ward: string;
 
+	@IsNumber()
+	@Expose()
+	account_id: number;
+
+	@IsOptional()
 	@IsEnum(PARTNER_STATUS)
 	@Expose()
 	status: PARTNER_STATUS;

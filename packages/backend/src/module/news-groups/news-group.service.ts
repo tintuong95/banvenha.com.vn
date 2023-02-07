@@ -4,7 +4,8 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {CreateNewsGroupDto, UpdateNewsGroupDto} from './dto/news-group.dto';
 import {NewsGroup} from './entity/news-group.entity';
 import {Repository} from 'typeorm';
-import _ from 'lodash';
+import * as _ from 'lodash';
+import {NEWS_KEY} from '~contants/relation';
 
 @Injectable()
 export class NewsGroupService {
@@ -23,7 +24,10 @@ export class NewsGroupService {
 
 	async getNewsGroupDetails(id: number): Promise<NewsGroup | any> {
 		try {
-			const result = await this.newsGroupRepository.findOne({id});
+			const result = await this.newsGroupRepository.findOne({
+				where: {id},
+				relations: [NEWS_KEY],
+			});
 			if (!result)
 				throw new NotFoundException('NewsGroup Id ' + id + ' Not Found !');
 			return result;

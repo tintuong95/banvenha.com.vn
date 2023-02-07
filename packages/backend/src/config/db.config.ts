@@ -15,7 +15,7 @@ export const dbConfig = (
 	cli: {
 		migrationsDir: 'src/database/migration',
 	},
-	synchronize: false,
+	synchronize: true,
 });
 
 export const ormConfig = {
@@ -33,5 +33,5 @@ export const ormConfig = {
 
 	seeds: ['dist/database/seeders/*.js'],
 	factories: ['dist/database/factories/*.js'],
-	synchronize: false,
+	synchronize: true,
 };

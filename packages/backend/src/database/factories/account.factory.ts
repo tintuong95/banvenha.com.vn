@@ -4,7 +4,7 @@ import {Account} from '~module/account/entity/account.entity';
 
 define(Account, () => {
 	const account = new Account();
-	account.reference_id = faker.datatype.number({min: 0, max: 100});
+	
 	account.email = faker.internet.email();
 	account.password = faker.internet.password();
 	account.role = faker.datatype.number({min: 0, max: 2});

@@ -4,7 +4,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {CreateOrderDto, UpdateOrderDto} from './dto/order.dto';
 import {Order} from './entity/order.entity';
 import {Repository} from 'typeorm';
-import _ from 'lodash';
+import * as _ from 'lodash';
 @Injectable()
 export class OrderService {
 	constructor(

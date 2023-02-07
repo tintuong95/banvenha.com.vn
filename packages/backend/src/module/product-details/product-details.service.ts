@@ -7,7 +7,7 @@ import {
 } from './dto/product-details.dto';
 import {ProductDetails} from './entity/product-details.entity';
 import {Repository} from 'typeorm';
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 @Injectable()
 export class ProductDetailsService {

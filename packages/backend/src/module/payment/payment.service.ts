@@ -4,7 +4,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {CreatePaymentDto, UpdatePaymentDto} from './dto/payement.dto';
 import {Payment} from './entity/payment.entity';
 import {Repository} from 'typeorm';
-import _ from 'lodash';
+import * as _ from 'lodash';
 @Injectable()
 export class PaymentService {
 	constructor(

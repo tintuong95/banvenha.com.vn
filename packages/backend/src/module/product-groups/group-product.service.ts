@@ -7,7 +7,7 @@ import {
 } from './dto/product-group.dto';
 import {ProductGroup} from './entity/product-group.entity';
 import {Repository} from 'typeorm';
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 @Injectable()
 export class ProductGroupService {

@@ -5,6 +5,7 @@ import {CreateAdminDto, UpdateAdminDto} from './dto/admin.dto';
 import {Admin} from './entity/admin.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
+import {ACCOUNT_KEY} from '~contants/relation';
 
 @Injectable()
 export class AdminService {
@@ -23,11 +24,15 @@ export class AdminService {
 
 	async getAdminDetails(id: number): Promise<Admin | any> {
 		try {
-			const result = await this.adminRepository.findOne({id});
+			const result = await this.adminRepository.findOne({
+				where: {id},
+				relations: [ACCOUNT_KEY],
+			});
 			if (!result)
 				throw new NotFoundException('Admin Id ' + id + ' Not Found !');
 			return result;
 		} catch (err) {
+			console.log(err);
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

@@ -1,6 +1,8 @@
-import {Entity, Column} from 'typeorm';
+import {Entity, Column, OneToMany} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
+import {GROUP_PRODUCT_KEY, PRODUCT_KEY} from '~contants/relation';
+import {Product} from '~module/products/entity/product.entity';
 
 @Entity({name: 'product_group'})
 export class ProductGroup extends BaseEntity {
@@ -24,4 +26,7 @@ export class ProductGroup extends BaseEntity {
 	})
 	@ApiProperty()
 	description: string;
+
+	@OneToMany(() => Product, (product) => product[GROUP_PRODUCT_KEY])
+	[PRODUCT_KEY]: Product[];
 }

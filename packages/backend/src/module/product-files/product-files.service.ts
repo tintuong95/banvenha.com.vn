@@ -7,7 +7,8 @@ import {
 } from './dto/product-files.dto';
 import {ProductFiles} from './entity/product-files.entity';
 import {Repository} from 'typeorm';
-import _ from 'lodash';
+import * as _ from 'lodash';
+import {PRODUCT_KEY} from '~contants/relation';
 
 @Injectable()
 export class ProductFilesService {
@@ -26,7 +27,10 @@ export class ProductFilesService {
 
 	async getProductFilesDetails(id: number): Promise<ProductFiles | any> {
 		try {
-			const result = await this.productFilesRepository.findOne({id});
+			const result = await this.productFilesRepository.findOne({
+				where: {id},
+				relations: [PRODUCT_KEY],
+			});
 			if (!result)
 				throw new NotFoundException('ProductFiles Id ' + id + ' Not Found !');
 			return result;

@@ -1,0 +1,13 @@
+export const ACCOUNT_KEY = 'account';
+export const PARTNER_KEY = 'partner';
+export const NEWS_KEY = 'news';
+export const NEWS_GROUP_KEY = 'news_group';
+export const NEWS_IMAGE_LIST_KEY = 'news_image_list';
+export const PRODUCT_KEY = 'products';
+export const PRODUCT_DETAIL_KEY = 'product_details';
+export const ADMIN_KEY = 'admin';
+export const PRODUCT_FILE_KEY = 'product_file';
+export const GROUP_PRODUCT_KEY = 'group_product';
+export const PAYMENT_KEY = 'payments';
+export const ORDER_KEY = 'orders';
+export const MESSAGE_KEY = 'messages';

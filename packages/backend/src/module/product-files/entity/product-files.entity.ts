@@ -1,6 +1,8 @@
-import {Entity, Column} from 'typeorm';
+import {Entity, Column, OneToOne, JoinColumn} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
+import {Product} from '~module/products/entity/product.entity';
+import {PRODUCT_KEY} from '~contants/relation';
 
 @Entity({name: 'product_files'})
 export class ProductFiles extends BaseEntity {
@@ -23,4 +25,8 @@ export class ProductFiles extends BaseEntity {
 	})
 	@ApiProperty()
 	type: string;
+
+	@OneToOne(() => Product, {cascade: true})
+	@JoinColumn({name: 'product_id'})
+	[PRODUCT_KEY]: Product;
 }

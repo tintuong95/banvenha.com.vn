@@ -5,6 +5,7 @@ import {CreateNewsDto, UpdateNewsDto} from './dto/News.dto';
 import {News} from './entity/news.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
+import {NEWS_GROUP_KEY, PARTNER_KEY} from '~contants/relation';
 
 @Injectable()
 export class NewsService {
@@ -23,11 +24,15 @@ export class NewsService {
 
 	async getNewsDetails(id: number): Promise<News | any> {
 		try {
-			const result = await this.newsRepository.findOne({id});
+			const result = await this.newsRepository.findOne({
+				where: {id},
+				relations: [PARTNER_KEY, NEWS_GROUP_KEY],
+			});
 			if (!result)
 				throw new NotFoundException('News Id ' + id + ' Not Found !');
 			return result;
 		} catch (err) {
+			console.log(err);
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

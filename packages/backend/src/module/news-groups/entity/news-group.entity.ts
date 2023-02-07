@@ -1,6 +1,8 @@
-import {Entity, Column} from 'typeorm';
+import {Entity, Column, OneToMany} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
+import {News} from '~module/news/entity/news.entity';
+import {NEWS_GROUP_KEY, NEWS_KEY} from '~contants/relation';
 
 @Entity({name: 'news_group'})
 export class NewsGroup extends BaseEntity {
@@ -24,4 +26,7 @@ export class NewsGroup extends BaseEntity {
 	})
 	@ApiProperty()
 	description: string;
+
+	@OneToMany(() => News, (news) => news[NEWS_GROUP_KEY])
+	[NEWS_KEY]: News[];
 }

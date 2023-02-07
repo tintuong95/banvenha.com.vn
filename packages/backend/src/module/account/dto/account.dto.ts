@@ -3,10 +3,6 @@ import {Expose} from 'class-transformer';
 import {IsString, IsNumber} from 'class-validator';
 
 export class CreateAccountDto {
-	@IsNumber()
-	@Expose()
-	reference_id: number;
-
 	@IsString()
 	@Expose()
 	email: string;

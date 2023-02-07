@@ -3,14 +3,9 @@ import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {ROLE} from '../type/account.type';
 
+
 @Entity({name: 'accounts'})
 export class Account extends BaseEntity {
-	@Column({
-		nullable: false,
-	})
-	@ApiProperty()
-	reference_id: number;
-
 	@Column({
 		length: 25,
 		nullable: false,
@@ -33,4 +28,7 @@ export class Account extends BaseEntity {
 	})
 	@ApiProperty()
 	role: ROLE;
+
+	// @OneToOne(() => Admin, (admin) => admin[ACCOUNT_KEY])
+	// [ADMIN_KEY]: Admin;
 }

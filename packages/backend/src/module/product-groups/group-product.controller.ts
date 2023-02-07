@@ -18,7 +18,7 @@ import {
 } from './dto/product-group.dto';
 import {ProductGroup} from './entity/product-group.entity';
 
-@Controller('group-product')
+@Controller('product-group')
 export class ProductGroupController {
 	constructor(private productGroupService: ProductGroupService) {}
 	@Get('')

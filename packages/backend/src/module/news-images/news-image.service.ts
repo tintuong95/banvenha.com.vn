@@ -4,7 +4,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {CreateNewsImageDto, UpdateNewsImageDto} from './dto/news-images.dto';
 import {NewsImage} from './entity/news-images.entity';
 import {Repository} from 'typeorm';
-import _ from 'lodash';
+import * as _ from 'lodash';
 @Injectable()
 export class NewsImageService {
 	constructor(
