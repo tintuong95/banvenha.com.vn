@@ -22,7 +22,7 @@ export class OrderService {
 
 	async getOrderDetails(id: number): Promise<Order | any> {
 		try {
-			const result = await this.orderRepository.findOne({id});
+			const result = await this.orderRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('Order Id ' + id + ' Not Found !');
 			return result;
@@ -44,7 +44,7 @@ export class OrderService {
 		updateOrderDto: UpdateOrderDto
 	): Promise<Order> {
 		try {
-			const result = await this.orderRepository.findOne({id});
+			const result = await this.orderRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('Order Id ' + id + ' Not Found !');
 			_(updateOrderDto).forEach((val, key) => {

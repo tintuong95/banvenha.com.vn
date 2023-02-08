@@ -11,7 +11,7 @@ import {
 	HttpStatus,
 	HttpCode,
 } from '@nestjs/common';
-import {AdminService} from './admin.service';
+import {AdminService} from './Admin.service';
 import {CreateAdminDto, UpdateAdminDto} from './dto/admin.dto';
 import {Admin} from './entity/admin.entity';
 

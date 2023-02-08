@@ -22,7 +22,7 @@ export class PaymentService {
 
 	async getPaymentDetails(id: number): Promise<Payment | any> {
 		try {
-			const result = await this.paymentRepository.findOne({id});
+			const result = await this.paymentRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('Payment Id ' + id + ' Not Found !');
 			return result;
@@ -44,7 +44,7 @@ export class PaymentService {
 		updatePaymentDto: UpdatePaymentDto
 	): Promise<Payment> {
 		try {
-			const result = await this.paymentRepository.findOne({id});
+			const result = await this.paymentRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('Payment Id ' + id + ' Not Found !');
 

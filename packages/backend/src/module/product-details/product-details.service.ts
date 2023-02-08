@@ -26,7 +26,7 @@ export class ProductDetailsService {
 
 	async getProductDetailsDetails(id: number): Promise<ProductDetails | any> {
 		try {
-			const result = await this.productDetailsRepository.findOne({id});
+			const result = await this.productDetailsRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('ProductDetails Id ' + id + ' Not Found !');
 			return result;
@@ -50,7 +50,7 @@ export class ProductDetailsService {
 		updateProductDetailsDto: UpdateProductDetailsDto
 	): Promise<ProductDetails> {
 		try {
-			const result = await this.productDetailsRepository.findOne({id});
+			const result = await this.productDetailsRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('ProductDetails Id ' + id + ' Not Found !');
 

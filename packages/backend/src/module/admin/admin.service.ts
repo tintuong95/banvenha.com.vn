@@ -23,14 +23,13 @@ export class AdminService {
 	}
 
 	async getAdminDetails(id: number): Promise<Admin | any> {
+		throw new NotFoundException('Admin Id ' + id + ' Not Found !');
 		try {
 			const result = await this.adminRepository.findOne({
 				where: {id},
 				relations: [ACCOUNT_KEY],
 			});
-			if (!result)
-				throw new NotFoundException('Admin Id ' + id + ' Not Found !');
-			return result;
+			if (!result) return result;
 		} catch (err) {
 			console.log(err);
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -41,6 +40,7 @@ export class AdminService {
 		try {
 			return await this.adminRepository.save(createAdminDto);
 		} catch (err) {
+			console.log('err', err);
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -50,15 +50,15 @@ export class AdminService {
 		updateAdminDto: UpdateAdminDto
 	): Promise<Admin> {
 		try {
-			const result = await this.adminRepository.findOne({id});
+			const result = await this.adminRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('Admin Id ' + id + ' Not Found !');
-
 			_(updateAdminDto).forEach((val, key) => {
 				if (val) result[key] = val;
 			});
 			return this.adminRepository.save(result);
 		} catch (err) {
+			console.log(err);
 			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

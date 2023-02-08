@@ -10,7 +10,7 @@ export class ProductDetailsRepository extends Repository<ProductDetails> {
 		id: number,
 		updateProductDetailsDto: UpdateProductDetailsDto
 	): Promise<ProductDetails | null> {
-		const result = await this.findOne({id});
+		const result = await this.findOne({where: {id}});
 		if (!result) return null;
 
 		_(updateProductDetailsDto).forEach((val, key) => {

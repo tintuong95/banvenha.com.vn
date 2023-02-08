@@ -1,19 +1,23 @@
 import {PartialType} from '@nestjs/mapped-types';
-import {Expose} from 'class-transformer';
-import {IsString, IsNumber} from 'class-validator';
+import {IsNumber, IsString} from 'class-validator';
 
 export class CreateAccountDto {
 	@IsString()
-	@Expose()
 	email: string;
 
 	@IsString()
-	@Expose()
 	password: string;
 
 	@IsNumber()
-	@Expose()
-	role: number;
+	admin_id: number;
 }
 
 export class UpdateAccountDto extends PartialType(CreateAccountDto) {}
+
+export class SignInAccountDto {
+	@IsString()
+	email: string;
+
+	@IsString()
+	password: string;
+}

@@ -12,10 +12,12 @@ export const dbConfig = (
 	password: configService.get<string>('database.password'),
 	database: configService.get<string>('database.name'),
 	migrations: ['src/database/migration/*{.ts,.js}'],
-	cli: {
-		migrationsDir: 'src/database/migration',
-	},
+	// cli: {
+	// 	migrationsDir: 'src/database/migration',
+	// },
 	synchronize: true,
+	migrationsRun: false,
+	dropSchema: true,
 });
 
 export const ormConfig = {

@@ -54,7 +54,7 @@ export class ProductFilesService {
 		updateProductFilesDto: UpdateProductFilesDto
 	): Promise<ProductFiles> {
 		try {
-			const result = await this.productFilesRepository.findOne({id});
+			const result = await this.productFilesRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('ProductFiles Id ' + id + ' Not Found !');
 

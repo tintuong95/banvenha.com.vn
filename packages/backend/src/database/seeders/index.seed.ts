@@ -5,7 +5,6 @@ import {Admin} from '~module/admin/entity/admin.entity';
 import {News} from '~module/news/entity/news.entity';
 import {NewsImage} from '~module/news-images/entity/news-images.entity';
 import {Order} from '~module/orders/entity/order.entity';
-import {Partner} from '~module/partner/entity/partner.entity';
 import {ProductFiles} from '~module/product-files/entity/product-files.entity';
 import {Product} from '~module/products/entity/product.entity';
 import {ProductDetails} from '~module/product-details/entity/product-details.entity';
@@ -22,7 +21,6 @@ export default class CreateSeeders implements Seeder {
 		await factory(News)().createMany(100);
 		await factory(NewsImage)().createMany(100);
 		await factory(Order)().createMany(100);
-		await factory(Partner)().createMany(100);
 		await factory(ProductFiles)().createMany(100);
 		await factory(Product)().createMany(100);
 		await factory(ProductDetails)().createMany(100);

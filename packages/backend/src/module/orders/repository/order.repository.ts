@@ -10,7 +10,7 @@ export class OrderRepository extends Repository<Order> {
 		id: number,
 		updateOrderDto: UpdateOrderDto
 	): Promise<Order | null> {
-		const result = await this.findOne({id});
+		const result = await this.findOne({where: {id}});
 		if (!result) return null;
 
 		_(updateOrderDto).forEach((val, key) => {

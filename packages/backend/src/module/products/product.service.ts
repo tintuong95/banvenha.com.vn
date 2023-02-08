@@ -25,7 +25,7 @@ export class ProductService {
 		try {
 			const result = await this.productRepository.findOne({
 				where: {id},
-				relations: [PARTNER_KEY,PRODUCT_FILE_KEY],
+				relations: [PARTNER_KEY, PRODUCT_FILE_KEY],
 			});
 			if (!result)
 				throw new NotFoundException('Product Id ' + id + ' Not Found !');
@@ -48,7 +48,7 @@ export class ProductService {
 		updateProductDto: UpdateProductDto
 	): Promise<Product> {
 		try {
-			const result = await this.productRepository.findOne({id});
+			const result = await this.productRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('Product Id ' + id + ' Not Found !');
 

@@ -26,7 +26,7 @@ export class ProductGroupService {
 
 	async getProductGroupDetails(id: number): Promise<ProductGroup | any> {
 		try {
-			const result = await this.productGroupRepository.findOne({id});
+			const result = await this.productGroupRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('ProductGroup Id ' + id + ' Not Found !');
 			return result;
@@ -50,7 +50,7 @@ export class ProductGroupService {
 		updateProductGroupDto: UpdateProductGroupDto
 	): Promise<ProductGroup> {
 		try {
-			const result = await this.productGroupRepository.findOne({id});
+			const result = await this.productGroupRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('ProductGroup Id ' + id + ' Not Found !');
 

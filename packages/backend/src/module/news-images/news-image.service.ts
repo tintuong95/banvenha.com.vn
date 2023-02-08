@@ -22,7 +22,7 @@ export class NewsImageService {
 
 	async getNewsImageDetails(id: number): Promise<NewsImage | any> {
 		try {
-			const result = await this.newsImageRepository.findOne({id});
+			const result = await this.newsImageRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('NewsImage Id ' + id + ' Not Found !');
 			return result;
@@ -46,7 +46,7 @@ export class NewsImageService {
 		updateNewsImageDto: UpdateNewsImageDto
 	): Promise<NewsImage> {
 		try {
-			const result = await this.newsImageRepository.findOne({id});
+			const result = await this.newsImageRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('NewsImage Id ' + id + ' Not Found !');
 

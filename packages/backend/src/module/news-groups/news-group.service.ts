@@ -51,7 +51,7 @@ export class NewsGroupService {
 		updateNewsGroupDto: UpdateNewsGroupDto
 	): Promise<NewsGroup> {
 		try {
-			const result = await this.newsGroupRepository.findOne({id});
+			const result = await this.newsGroupRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('NewsGroup Id ' + id + ' Not Found !');
 

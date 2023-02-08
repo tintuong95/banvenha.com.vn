@@ -12,7 +12,11 @@ import {
 	HttpCode,
 } from '@nestjs/common';
 import {AccountService} from './account.service';
-import {CreateAccountDto, UpdateAccountDto} from './dto/account.dto';
+import {
+	CreateAccountDto,
+	SignInAccountDto,
+	UpdateAccountDto,
+} from './dto/account.dto';
 import {Account} from './entity/account.entity';
 
 @Controller('account')
@@ -29,12 +33,10 @@ export class AccountController {
 		return await this.accountService.getAccountDetails(id);
 	}
 
-	@Post('')
+	@Post('signup')
 	@HttpCode(HttpStatus.CREATED)
-	async createAccount(
-		@Body() createAccountDto: CreateAccountDto
-	): Promise<Account> {
-		return await this.accountService.createAccount(createAccountDto);
+	async signUp(@Body() createAccountDto: CreateAccountDto): Promise<Account> {
+		return await this.accountService.signUp(createAccountDto);
 	}
 
 	@Put(':id')
@@ -48,5 +50,10 @@ export class AccountController {
 	@Delete(':id')
 	async removeAccount(@Param('id', ParseIntPipe) id: number): Promise<string> {
 		return await this.accountService.removeAccount(id);
+	}
+
+	@Post('signin')
+	async signIn(@Body() signInAccountDto: SignInAccountDto): Promise<any> {
+		return await this.accountService.signIn(signInAccountDto);
 	}
 }

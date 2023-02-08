@@ -1,31 +1,32 @@
 import {define} from 'typeorm-seeding';
 import {faker} from '@faker-js/faker';
-import {Partner} from '~module/partner/entity/partner.entity';
+import {Admin} from '~module/admin/entity/admin.entity';
 
-define(Partner, () => {
-	const partner = new Partner();
-	partner.avatar = faker.image.avatar();
-	partner.address = faker.address.streetAddress();
-	partner.bank_code = '01204009';
-	partner.bank_account_number = '01204009';
-	partner.bank_account_type = 'bankType';
-	partner.bank_holder = 'bankHolder';
-	partner.bank_name = 'Vietcombank';
-	partner.email = faker.internet.email();
-	partner.name = faker.name.fullName();
-	partner.nickname = faker.name.lastName();
-	// partner.province = faker.address.city();
-	partner.status = faker.datatype.number({min: 0, max: 2});
-	partner.tel = faker.phone.number();
-	// partner.ward = faker.address.city();
-	// partner.district = faker.address.city();
-	partner.created_at = faker.date.between(
+define(Admin, () => {
+	const admin = new Admin();
+	admin.avatar = faker.image.avatar();
+	admin.address = faker.address.streetAddress();
+	admin.bank_code = '01204009';
+	admin.bank_account_number = '01204009';
+	admin.bank_account_type = 'bankType';
+	admin.bank_holder = 'bankHolder';
+	admin.bank_name = 'Vietcombank';
+	admin.email = faker.internet.email();
+	admin.name = faker.name.fullName();
+	admin.nickname = faker.name.lastName();
+	// admin.province = faker.address.city();
+	admin.status = faker.datatype.number({min: 0, max: 2});
+	admin.role = faker.datatype.number({min: 0, max: 1});
+	admin.tel = faker.phone.number();
+	// admin.ward = faker.address.city();
+	// admin.district = faker.address.city();
+	admin.created_at = faker.date.between(
 		'2020-01-01T00:00:00.000Z',
 		'2021-01-01T00:00:00.000Z'
 	);
-	partner.updated_at = faker.date.between(
+	admin.updated_at = faker.date.between(
 		'2020-01-01T00:00:00.000Z',
 		'2021-01-01T00:00:00.000Z'
 	);
-	return partner;
+	return admin;
 });

@@ -7,8 +7,7 @@ import {AccountModule} from '~module/account/account.module';
 import {APP_FILTER, APP_PIPE} from '@nestjs/core';
 import {ValidationPipe} from '@nestjs/common/pipes';
 import {HttpExceptionFilter} from '~util/exception.filter';
-import {AdminModule} from '~module/admin/admin.module';
-import {PartnerModule} from '~module/partner/partner.module';
+
 import {NewsModule} from '~module/news/news.module';
 import {NewsImageModule} from '~module/news-images/news-image.module';
 
@@ -22,6 +21,8 @@ import {NewsGroupModule} from '~module/news-groups/news-group.module';
 import {ProductGroupsModule} from '~module/product-groups/group-product.module';
 import {MessageModule} from '~module/message/message.module';
 import {PaymentModule} from '~module/payment/payment.module';
+import {AdminModule} from '~module/admin/admin.module';
+import {AuthModule} from '~module/auth/auth.module';
 
 @Module({
 	imports: [
@@ -41,7 +42,6 @@ import {PaymentModule} from '~module/payment/payment.module';
 		 */
 		AccountModule,
 		AdminModule,
-		PartnerModule,
 		NewsModule,
 		NewsImageModule,
 		NewsGroupModule,
@@ -53,6 +53,7 @@ import {PaymentModule} from '~module/payment/payment.module';
 		ProductGroupsModule,
 		MessageModule,
 		PaymentModule,
+		AuthModule
 	],
 	controllers: [],
 	providers: [

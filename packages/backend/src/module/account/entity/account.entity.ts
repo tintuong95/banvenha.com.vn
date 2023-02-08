@@ -1,10 +1,12 @@
-import {Entity, Column} from 'typeorm';
+import {Entity, Column, OneToOne, BeforeInsert, JoinColumn} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
-import {ROLE} from '../type/account.type';
+import {ADMIN_KEY} from '~contants/relation';
+import {Admin} from '~module/admin/entity/admin.entity';
+import * as bcrypt from 'bcrypt';
+import {Exclude} from 'class-transformer';
 
-
-@Entity({name: 'accounts'})
+@Entity({name: 'accountsss'})
 export class Account extends BaseEntity {
 	@Column({
 		length: 25,
@@ -19,16 +21,29 @@ export class Account extends BaseEntity {
 		nullable: false,
 	})
 	@ApiProperty()
+	@Exclude()
 	password: string;
 
 	@Column({
-		type: 'enum',
-		enum: ROLE,
 		nullable: false,
 	})
 	@ApiProperty()
-	role: ROLE;
+	@Exclude()
+	admin_id: number;
 
-	// @OneToOne(() => Admin, (admin) => admin[ACCOUNT_KEY])
-	// [ADMIN_KEY]: Admin;
+	@OneToOne(() => Admin, {cascade: true})
+	@JoinColumn({name: 'admin_id', referencedColumnName: 'id'})
+	[ADMIN_KEY]: Admin;
+
+	@BeforeInsert()
+	hashPassword() {
+		this.password = bcrypt.hashSync(
+			this.password,
+			Number(process.env.SALTROUNDS) || 10
+		);
+	}
+
+	comparePassword(attempt: string): boolean {
+		return bcrypt.compareSync(attempt, this.password);
+	}
 }

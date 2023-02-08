@@ -47,7 +47,7 @@ export class NewsService {
 
 	async updateNews(id: number, updateNewsDto: UpdateNewsDto): Promise<News> {
 		try {
-			const result = await this.newsRepository.findOne({id});
+			const result = await this.newsRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('News Id ' + id + ' Not Found !');
 

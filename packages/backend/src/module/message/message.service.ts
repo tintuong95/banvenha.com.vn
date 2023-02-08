@@ -5,7 +5,7 @@ import {CreateMessageDto, UpdateMessageDto} from './dto/message.dto';
 import {Message} from './entity/message.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
-import { ADMIN_KEY, PARTNER_KEY } from '~contants/relation';
+import {ADMIN_KEY, PARTNER_KEY} from '~contants/relation';
 @Injectable()
 export class MessageService {
 	constructor(
@@ -48,7 +48,7 @@ export class MessageService {
 		updateMessageDto: UpdateMessageDto
 	): Promise<Message> {
 		try {
-			const result = await this.messageRepository.findOne({id});
+			const result = await this.messageRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('Message Id ' + id + ' Not Found !');
 			_(updateMessageDto).forEach((val, key) => {

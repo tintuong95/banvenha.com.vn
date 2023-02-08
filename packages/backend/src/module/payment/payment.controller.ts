@@ -10,16 +10,23 @@ import {
 	ValidationPipe,
 	HttpStatus,
 	HttpCode,
+	UseGuards,
+	SetMetadata,
 } from '@nestjs/common';
 import {PaymentService} from './payment.service';
 import {CreatePaymentDto, UpdatePaymentDto} from './dto/payement.dto';
 
 import {Payment} from './entity/payment.entity';
+import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
+import {Roles} from '~module/auth/roles.decorator';
+import {ROLE} from '~contants/role';
 
-@Controller('Payment')
+@Controller('payment')
+@UseGuards(JwtAuthGuard)
 export class PaymentController {
 	constructor(private paymentService: PaymentService) {}
 	@Get('')
+	@Roles(ROLE.PARTNER)
 	async getAllPayments(): Promise<any> {
 		return await this.paymentService.getAllPayments();
 	}

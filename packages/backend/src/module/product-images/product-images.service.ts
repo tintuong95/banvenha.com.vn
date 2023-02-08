@@ -25,7 +25,7 @@ export class ProductImagesService {
 
 	async getProductImagesDetails(id: number): Promise<ProductImages | any> {
 		try {
-			const result = await this.productImagesRepository.findOne({id});
+			const result = await this.productImagesRepository.findOne({where: {id}});
 			if (!result)
 				throw new NotFoundException('ProductImages Id ' + id + ' Not Found !');
 			return result;
@@ -49,7 +49,7 @@ export class ProductImagesService {
 		updateProductImagesDto: UpdateProductImagesDto
 	): Promise<ProductImages> {
 		try {
-			const result = await this.productImagesRepository.findOne({id});
+			const result = await this.productImagesRepository.findOne({where: {id}});
 			if (!result) return null;
 
 			_(updateProductImagesDto).forEach((val, key) => {

@@ -11,3 +11,7 @@ export const GROUP_PRODUCT_KEY = 'group_product';
 export const PAYMENT_KEY = 'payments';
 export const ORDER_KEY = 'orders';
 export const MESSAGE_KEY = 'messages';
+export const RECEIVER_KEY = 'receiver';
+export const SENDER_KEY = 'sender';
+export const MESSAGE_RECEIVER_KEY = 'message_receiver';
+export const MESSAGE_SENDER_KEY = 'message_sender';

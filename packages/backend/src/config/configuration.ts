@@ -10,6 +10,10 @@ export const configuration = () => ({
 		password: process.env.DB_PASSWORD || '',
 		name: process.env.DB_NAME || 'test',
 	},
+	jwt: {
+		secret_key: process.env.SECRET_KEY || 'secret_key',
+		expiration_time: parseInt(process.env.EXPIRATION_TIME, 10) || 3600,
+	},
 });
 
 export const envConfig: ConfigModuleOptions = {

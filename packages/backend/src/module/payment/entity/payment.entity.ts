@@ -2,8 +2,8 @@ import {Entity, Column, ManyToOne, JoinColumn} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {PAYMENT_STATUS} from '../type/payement';
-import {Partner} from '~module/partner/entity/partner.entity';
-import {PARTNER_KEY} from '~contants/relation';
+import {Admin} from '~module/admin/entity/admin.entity';
+import {ADMIN_KEY} from '~contants/relation';
 
 @Entity({name: 'payments'})
 export class Payment extends BaseEntity {
@@ -42,7 +42,7 @@ export class Payment extends BaseEntity {
 		nullable: false,
 	})
 	@ApiProperty()
-	partner_id: number;
+	admin_id: number;
 
 	@Column({
 		type: 'enum',
@@ -52,7 +52,7 @@ export class Payment extends BaseEntity {
 	@ApiProperty()
 	status: PAYMENT_STATUS;
 
-	@ManyToOne(() => Partner, {cascade: true})
-	@JoinColumn({name: 'partner_id'})
-	[PARTNER_KEY]: Partner;
+	@ManyToOne(() => Admin, {cascade: true})
+	@JoinColumn({name: 'admin_id'})
+	[ADMIN_KEY]: Admin;
 }
