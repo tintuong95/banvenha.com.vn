@@ -4,6 +4,7 @@ import {ApiProperty} from '@nestjs/swagger';
 import {Product} from '~module/products/entity/product.entity';
 import {ADMIN_KEY, PRODUCT_KEY} from '~contants/relation';
 import {Admin} from '~module/admin/entity/admin.entity';
+import {Exclude} from 'class-transformer';
 
 @Entity({name: 'orders'})
 export class Order extends BaseEntity {
@@ -18,6 +19,7 @@ export class Order extends BaseEntity {
 		nullable: false,
 	})
 	@ApiProperty()
+	@Exclude()
 	product_id: number;
 
 	@Column({

@@ -3,6 +3,7 @@ import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {Product} from '~module/products/entity/product.entity';
 import {PRODUCT_KEY} from '~contants/relation';
+import {Exclude} from 'class-transformer';
 
 @Entity({name: 'product_files'})
 export class ProductFiles extends BaseEntity {
@@ -10,6 +11,7 @@ export class ProductFiles extends BaseEntity {
 		nullable: false,
 	})
 	@ApiProperty()
+	@Exclude()
 	product_id: number;
 
 	@Column({

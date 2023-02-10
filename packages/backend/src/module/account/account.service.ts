@@ -57,6 +57,20 @@ export class AccountService {
 	}
 
 	async removeAccount(id: number): Promise<any> {
+		const result = await this.accountRepository.softDelete(id);
+		if (result.affected > 0)
+			return 'Removed account Id ' + id + ' successfully !';
+		throw new NotFoundException('Account Id ' + id + ' Not Found !');
+	}
+
+	async restoreAccount(id: number): Promise<any> {
+		const result = await this.accountRepository.restore(id);
+		if (result.affected > 0)
+			return 'Restored account Id ' + id + ' successfully !';
+		throw new NotFoundException('Account Id ' + id + ' Not Found !');
+	}
+
+	async deleteAccount(id: number): Promise<any> {
 		const result = await this.accountRepository.delete(id);
 		if (result.affected > 0)
 			return 'Deleted account Id ' + id + ' successfully !';

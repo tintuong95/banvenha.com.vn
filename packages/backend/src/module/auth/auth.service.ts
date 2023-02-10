@@ -14,12 +14,9 @@ export class AuthService {
 	) {}
 
 	async validateLogin(signInAccountDto: SignInAccountDto) {
-		const {id, email, admin} = await this.accountService.signIn(
-			signInAccountDto
-		);
+		const {admin} = await this.accountService.signIn(signInAccountDto);
 		const accessToken = this.jwtService.sign({
-			id,
-			email,
+			id: admin.id,
 			name: admin.name,
 			role: admin.role,
 		});
@@ -30,12 +27,9 @@ export class AuthService {
 	}
 
 	async createAccount(createAccountDto: CreateAccountDto) {
-		const {id, email, admin} = await this.accountService.signUp(
-			createAccountDto
-		);
+		const {admin} = await this.accountService.signUp(createAccountDto);
 		const accessToken = this.jwtService.sign({
-			id,
-			email,
+			id: admin.id,
 			name: admin.name,
 			role: admin.role,
 		});

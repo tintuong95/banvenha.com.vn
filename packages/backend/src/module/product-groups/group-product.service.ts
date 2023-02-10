@@ -1,5 +1,5 @@
-import {HttpStatus, Injectable} from '@nestjs/common';
-import {NotFoundException, HttpException} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
+import {NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {
 	CreateProductGroupDto,
@@ -17,60 +17,54 @@ export class ProductGroupService {
 	) {}
 
 	async getAllProductGroups(): Promise<any> {
-		try {
-			return await this.productGroupRepository.find();
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		return await this.productGroupRepository.find();
 	}
 
 	async getProductGroupDetails(id: number): Promise<ProductGroup | any> {
-		try {
-			const result = await this.productGroupRepository.findOne({where: {id}});
-			if (!result)
-				throw new NotFoundException('ProductGroup Id ' + id + ' Not Found !');
-			return result;
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		const result = await this.productGroupRepository.findOne({where: {id}});
+		if (!result)
+			throw new NotFoundException('ProductGroup Id ' + id + ' Not Found !');
+		return result;
 	}
 
 	async createProductGroup(
 		createProductGroupDto: CreateProductGroupDto
 	): Promise<ProductGroup> {
-		try {
-			return await this.productGroupRepository.save(createProductGroupDto);
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		return await this.productGroupRepository.save(createProductGroupDto);
 	}
 
 	async updateProductGroup(
 		id: number,
 		updateProductGroupDto: UpdateProductGroupDto
 	): Promise<ProductGroup> {
-		try {
-			const result = await this.productGroupRepository.findOne({where: {id}});
-			if (!result)
-				throw new NotFoundException('ProductGroup Id ' + id + ' Not Found !');
+		const result = await this.productGroupRepository.findOne({where: {id}});
+		if (!result)
+			throw new NotFoundException('ProductGroup Id ' + id + ' Not Found !');
 
-			_(updateProductGroupDto).forEach((val, key) => {
-				if (val) result[key] = val;
-			});
-			return this.productGroupRepository.save(result);
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		_(updateProductGroupDto).forEach((val, key) => {
+			if (val) result[key] = val;
+		});
+		return this.productGroupRepository.save(result);
 	}
 
-	async removeProductGroup(id: number): Promise<any> {
-		try {
-			const result = await this.productGroupRepository.delete(id);
-			if (result.affected > 0)
-				return 'Deleted ProductGroup Id ' + id + ' successfully !';
-			throw new NotFoundException('ProductGroup Id ' + id + ' Not Found !');
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	async removeProductGroup(id: number): Promise<string> {
+		const result = await this.productGroupRepository.softDelete(id);
+		if (result.affected > 0)
+			return 'Removed ProductGroup Id ' + id + ' successfully !';
+		throw new NotFoundException('ProductGroup Id ' + id + ' Not Found !');
+	}
+
+	async deleteProductGroup(id: number): Promise<string> {
+		const result = await this.productGroupRepository.delete(id);
+		if (result.affected > 0)
+			return 'Deleted ProductGroup Id ' + id + ' successfully !';
+		throw new NotFoundException('ProductGroup Id ' + id + ' Not Found !');
+	}
+
+	async restoreProductGroup(id: number): Promise<string> {
+		const result = await this.productGroupRepository.restore(id);
+		if (result.affected > 0)
+			return 'Restored ProductGroup Id ' + id + ' successfully !';
+		throw new NotFoundException('ProductGroup Id ' + id + ' Not Found !');
 	}
 }

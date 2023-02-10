@@ -1,7 +1,7 @@
 import {PartialType} from '@nestjs/mapped-types';
 import {Expose} from 'class-transformer';
 import {IsString, IsEnum, IsOptional, IsNumber} from 'class-validator';
-import {MESSAGE_STATUS} from '../type/message';
+import {MESSAGE_STATUS} from '../type/message.type';
 
 export class CreateMessageDto {
 	@IsString()

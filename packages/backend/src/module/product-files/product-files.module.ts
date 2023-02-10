@@ -8,6 +8,6 @@ import {ProductFiles} from './entity/product-files.entity';
 	controllers: [ProductFilesController],
 	providers: [ProductFilesService],
 	imports: [TypeOrmModule.forFeature([ProductFiles])],
-	exports: [TypeOrmModule],
+	exports: [TypeOrmModule, ProductFilesService],
 })
 export class ProductFilesModule {}

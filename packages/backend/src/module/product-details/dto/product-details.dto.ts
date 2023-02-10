@@ -1,8 +1,9 @@
 import {PartialType} from '@nestjs/mapped-types';
 import {Expose} from 'class-transformer';
-import {IsNumber} from 'class-validator';
+import {IsNumber, IsOptional} from 'class-validator';
 
 export class CreateProductDetailsDto {
+	@IsOptional()
 	@IsNumber()
 	@Expose()
 	product_id: number;

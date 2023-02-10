@@ -15,9 +15,9 @@ export const dbConfig = (
 	// cli: {
 	// 	migrationsDir: 'src/database/migration',
 	// },
-	synchronize: true,
+	synchronize: false,
 	migrationsRun: false,
-	dropSchema: true,
+	dropSchema: false,
 });
 
 export const ormConfig = {

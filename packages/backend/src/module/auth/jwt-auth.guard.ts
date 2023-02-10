@@ -20,9 +20,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 		if (roles && !roles?.includes(user.role)) {
 			throw err || new UnauthorizedException();
 		}
-		if (err || !user) {
+		if (err) {
 			throw err || new UnauthorizedException();
 		}
+
 		return user;
 	}
 }

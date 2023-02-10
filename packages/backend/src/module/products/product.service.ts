@@ -1,74 +1,126 @@
-import {HttpStatus, Injectable} from '@nestjs/common';
-import {NotFoundException, HttpException} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
+import {NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {CreateProductDto, UpdateProductDto} from './dto/product.dto';
+import {
+	CreateProductAllFieldDto,
+	CreateProductDto,
+	UpdateProductDto,
+} from './dto/product.dto';
 import {Product} from './entity/product.entity';
 import * as _ from 'lodash';
 import {Repository} from 'typeorm';
-import {PARTNER_KEY, PRODUCT_FILE_KEY} from '~contants/relation';
+import {
+	ADMIN_KEY,
+	PARTNER_KEY,
+	PRODUCT_DETAIL_KEY,
+	PRODUCT_FILE_KEY,
+} from '~contants/relation';
+import {ProductFilesService} from '~module/product-files/product-files.service';
+import {ProductImagesService} from '~module/product-images/product-images.service';
+import {ProductDetailsService} from '~module/product-details/product-details.service';
+import {Express} from 'express';
+import {plainToInstance} from 'class-transformer';
+import {CreateProductDetailsDto} from '~module/product-details/dto/product-details.dto';
+
 @Injectable()
 export class ProductService {
 	constructor(
 		@InjectRepository(Product)
-		private productRepository: Repository<Product>
+		private productRepository: Repository<Product>,
+		private productFileService: ProductFilesService,
+		private productImageService: ProductImagesService,
+		private productDetailService: ProductDetailsService
 	) {}
 
 	async getAllProducts(): Promise<any> {
-		try {
-			return await this.productRepository.find();
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		return await this.productRepository.find();
 	}
 
 	async getProductDetails(id: number): Promise<Product | any> {
-		try {
-			const result = await this.productRepository.findOne({
-				where: {id},
-				relations: [PARTNER_KEY, PRODUCT_FILE_KEY],
-			});
-			if (!result)
-				throw new NotFoundException('Product Id ' + id + ' Not Found !');
-			return result;
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		const result = await this.productRepository.findOne({
+			where: {id},
+			relations: [ADMIN_KEY, PRODUCT_DETAIL_KEY],
+		});
+		if (!result)
+			throw new NotFoundException('Product Id ' + id + ' Not Found !');
+		return result;
 	}
 
-	async createProduct(createProductDto: CreateProductDto): Promise<Product> {
-		try {
-			return await this.productRepository.save(createProductDto);
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	async createProduct(
+		productAllField: CreateProductAllFieldDto,
+		image: Express.Multer.File,
+		images: Express.Multer.File[],
+		creator_id: number
+	): Promise<Product | any> {
+		const product = plainToInstance(CreateProductDto, productAllField, {
+			excludeExtraneousValues: true,
+		});
+
+		product.image = image[0].filename;
+		product.creator_id = creator_id;
+		const result = this.productRepository.create(product);
+		const newProduct = await this.productRepository.save(result);
+
+		const productDetails = plainToInstance(
+			CreateProductDetailsDto,
+			productAllField,
+			{
+				excludeExtraneousValues: true,
+			}
+		);
+		await this.productDetailService.createProductDetails({
+			...productDetails,
+			product_id: newProduct.id,
+		});
+
+		// await this.productFileService.createProductFiles({
+		// 	...file,
+		// 	product_id: 1,
+		// });
+
+		const newListImages = images.map((item) => ({
+			product_id: newProduct.id,
+			name: item.filename,
+			param: item.filename,
+			path: item.filename,
+		}));
+		const listImage = await this.productImageService.createProductImages(
+			newListImages
+		);
+		// console.log(listImage);
+		return await this.getProductDetails(newProduct.id);
 	}
 
 	async updateProduct(
 		id: number,
 		updateProductDto: UpdateProductDto
 	): Promise<Product> {
-		try {
-			const result = await this.productRepository.findOne({where: {id}});
-			if (!result)
-				throw new NotFoundException('Product Id ' + id + ' Not Found !');
+		const result = await this.productRepository.findOne({where: {id}});
+		if (!result)
+			throw new NotFoundException('Product Id ' + id + ' Not Found !');
 
-			_(updateProductDto).forEach((val, key) => {
-				if (val) result[key] = val;
-			});
-			return this.productRepository.save(result);
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		_(updateProductDto).forEach((val, key) => {
+			if (val) result[key] = val;
+		});
+		return this.productRepository.save(result);
 	}
 
 	async removeProduct(id: number): Promise<any> {
-		try {
-			const result = await this.productRepository.delete(id);
-			if (result.affected > 0)
-				return 'Deleted Product Id ' + id + ' successfully !';
-			throw new NotFoundException('Product Id ' + id + ' Not Found !');
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		const result = await this.productRepository.softDelete(id);
+		if (result.affected > 0)
+			return 'Removed Product Id ' + id + ' successfully !';
+		throw new NotFoundException('Product Id ' + id + ' Not Found !');
+	}
+	async restoreProduct(id: number): Promise<any> {
+		const result = await this.productRepository.restore(id);
+		if (result.affected > 0)
+			return 'Restored Product Id ' + id + ' successfully !';
+		throw new NotFoundException('Product Id ' + id + ' Not Found !');
+	}
+	async deleteProduct(id: number): Promise<any> {
+		const result = await this.productRepository.delete(id);
+		if (result.affected > 0)
+			return 'Deleted Product Id ' + id + ' successfully !';
+		throw new NotFoundException('Product Id ' + id + ' Not Found !');
 	}
 }

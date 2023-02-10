@@ -15,6 +15,7 @@ import {ProductDetails} from '~module/product-details/entity/product-details.ent
 import {ProductFiles} from '~module/product-files/entity/product-files.entity';
 import {ProductGroup} from '~module/product-groups/entity/product-group.entity';
 import {Order} from '~module/orders/entity/order.entity';
+import {Exclude} from 'class-transformer';
 
 @Entity({name: 'products'})
 export class Product extends BaseEntity {
@@ -55,6 +56,7 @@ export class Product extends BaseEntity {
 	@Column({
 		nullable: false,
 	})
+	@Exclude()
 	@ApiProperty()
 	creator_id: number;
 
@@ -62,6 +64,7 @@ export class Product extends BaseEntity {
 		nullable: false,
 	})
 	@ApiProperty()
+	@Exclude()
 	group_id: number;
 
 	@Column({

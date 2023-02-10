@@ -39,11 +39,8 @@ export class NewsGroupService {
 	async createNewsGroup(
 		createNewsGroupDto: CreateNewsGroupDto
 	): Promise<NewsGroup> {
-		try {
-			return await this.newsGroupRepository.save(createNewsGroupDto);
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		const result = this.newsGroupRepository.create(createNewsGroupDto);
+		return await this.newsGroupRepository.save(result);
 	}
 
 	async updateNewsGroup(
@@ -64,14 +61,24 @@ export class NewsGroupService {
 		}
 	}
 
-	async removeNewsGroup(id: number): Promise<any> {
-		try {
-			const result = await this.newsGroupRepository.delete(id);
-			if (result.affected > 0)
-				return 'Deleted NewsGroup Id ' + id + ' successfully !';
-			throw new NotFoundException('NewsGroup Id ' + id + ' Not Found !');
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	async removeNewsGroup(id: number): Promise<string> {
+		const result = await this.newsGroupRepository.softDelete(id);
+		if (result.affected > 0)
+			return 'Deleted NewsGroup Id ' + id + ' successfully !';
+		throw new NotFoundException('NewsGroup Id ' + id + ' Not Found !');
+	}
+
+	async restoreNewsGroup(id: number): Promise<string> {
+		const result = await this.newsGroupRepository.restore(id);
+		if (result.affected > 0)
+			return 'Restore NewsGroup Id ' + id + ' successfully !';
+		throw new NotFoundException('NewsGroup Id ' + id + ' Not Found !');
+	}
+
+	async deleteNewsGroup(id: number): Promise<string> {
+		const result = await this.newsGroupRepository.delete(id);
+		if (result.affected > 0)
+			return 'Deleted NewsGroup Id ' + id + ' successfully !';
+		throw new NotFoundException('NewsGroup Id ' + id + ' Not Found !');
 	}
 }

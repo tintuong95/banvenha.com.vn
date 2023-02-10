@@ -1,6 +1,15 @@
-import {PartialType} from '@nestjs/mapped-types';
-import {Expose} from 'class-transformer';
-import {IsString, IsNumber, IsEnum, IsOptional} from 'class-validator';
+import {IntersectionType, PartialType} from '@nestjs/mapped-types';
+import {Expose, Type} from 'class-transformer';
+import {
+	IsString,
+	IsNumber,
+	IsEnum,
+	IsOptional,
+	ValidateNested,
+} from 'class-validator';
+import {CreateProductDetailsDto} from '~module/product-details/dto/product-details.dto';
+import {CreateProductFilesDto} from '~module/product-files/dto/product-files.dto';
+import {CreateProductImagesDto} from '~module/product-images/dto/product-images.dto';
 import {PRODUCT_STATE, PRODUCT_STATUS} from '../type/product.type';
 
 export class CreateProductDto {
@@ -11,10 +20,6 @@ export class CreateProductDto {
 	@IsString()
 	@Expose()
 	name: string;
-
-	@IsString()
-	@Expose()
-	param: string;
 
 	@IsString()
 	@Expose()
@@ -42,6 +47,7 @@ export class CreateProductDto {
 	@Expose()
 	state: PRODUCT_STATE;
 
+	@IsOptional()
 	@IsString()
 	@Expose()
 	image: string;
@@ -55,4 +61,27 @@ export class CreateProductDto {
 	price: number;
 }
 
+export class CreateProductAllFieldDto extends IntersectionType(
+	CreateProductDto,
+	CreateProductDetailsDto
+) {}
+
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
+
+// export class CreateProductAllDto {
+// 	@Type(() => CreateProductDto)
+// 	@ValidateNested()
+// 	info: CreateProductDto;
+
+// 	@Type(() => CreateProductFilesDto)
+// 	@ValidateNested()
+// 	file: CreateProductFilesDto;
+
+// 	@Type(() => CreateProductImagesDto)
+// 	@ValidateNested()
+// 	images: CreateProductImagesDto;
+
+// 	@Type(() => CreateProductDetailsDto)
+// 	@ValidateNested()
+// 	details: CreateProductDetailsDto;
+// }

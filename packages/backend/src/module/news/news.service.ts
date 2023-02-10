@@ -1,5 +1,5 @@
-import {HttpStatus, Injectable} from '@nestjs/common';
-import {NotFoundException, HttpException} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
+import {NotFoundException, ForbiddenException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {CreateNewsDto, UpdateNewsDto} from './dto/News.dto';
 import {News} from './entity/news.entity';
@@ -14,60 +14,66 @@ export class NewsService {
 		private newsRepository: Repository<News>
 	) {}
 
-	async getAllNewss(): Promise<any> {
-		try {
-			return await this.newsRepository.find();
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	async getAllNews(): Promise<any> {
+		return await this.newsRepository.find();
 	}
 
 	async getNewsDetails(id: number): Promise<News | any> {
-		try {
-			const result = await this.newsRepository.findOne({
-				where: {id},
-				relations: [PARTNER_KEY, NEWS_GROUP_KEY],
-			});
-			if (!result)
-				throw new NotFoundException('News Id ' + id + ' Not Found !');
-			return result;
-		} catch (err) {
-			console.log(err);
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		const result = await this.newsRepository.findOne({
+			where: {id},
+			relations: [PARTNER_KEY, NEWS_GROUP_KEY],
+		});
+		if (!result) throw new NotFoundException('News Id ' + id + ' Not Found !');
+		return result;
 	}
 
-	async createNews(createNewsDto: CreateNewsDto): Promise<News> {
-		try {
-			return await this.newsRepository.save(createNewsDto);
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	async createNews(
+		createNewsDto: CreateNewsDto,
+		file: Express.Multer.File,
+		creator_id: number
+	): Promise<News> {
+		createNewsDto.image = file.filename;
+		createNewsDto.creator_id = creator_id;
+
+		const result = this.newsRepository.create(createNewsDto);
+		return await this.newsRepository.save(result);
 	}
 
-	async updateNews(id: number, updateNewsDto: UpdateNewsDto): Promise<News> {
-		try {
-			const result = await this.newsRepository.findOne({where: {id}});
-			if (!result)
-				throw new NotFoundException('News Id ' + id + ' Not Found !');
+	async updateNews(
+		id: number,
+		updateNewsDto: UpdateNewsDto,
+		file: Express.Multer.File,
+		creator_id: number
+	): Promise<News> {
+		const result = await this.newsRepository.findOne({where: {id}});
 
-			_(updateNewsDto).forEach((val, key) => {
-				if (val) result[key] = val;
-			});
-			return this.newsRepository.save(result);
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		if (!result) throw new NotFoundException('News Id ' + id + ' Not Found !');
+		if (result.creator_id !== creator_id)
+			throw new ForbiddenException('Forbidden !');
+
+		_(updateNewsDto).forEach((val, key) => {
+			if (val) result[key] = val;
+		});
+
+		if (file) result.image = file.filename;
+
+		return this.newsRepository.save(result);
 	}
 
 	async removeNews(id: number): Promise<any> {
-		try {
-			const result = await this.newsRepository.delete(id);
-			if (result.affected > 0)
-				return 'Deleted News Id ' + id + ' successfully !';
-			throw new NotFoundException('News Id ' + id + ' Not Found !');
-		} catch (err) {
-			throw new HttpException(err.sqlMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		const result = await this.newsRepository.softDelete(id);
+		if (result.affected > 0) return 'Removed News Id ' + id + ' successfully !';
+		throw new NotFoundException('News Id ' + id + ' Not Found !');
+	}
+	async deleteNews(id: number): Promise<any> {
+		const result = await this.newsRepository.delete(id);
+		if (result.affected > 0) return 'Deleted News Id ' + id + ' successfully !';
+		throw new NotFoundException('News Id ' + id + ' Not Found !');
+	}
+	async restoreNews(id: number): Promise<any> {
+		const result = await this.newsRepository.restore(id);
+		if (result.affected > 0)
+			return 'Restored News Id ' + id + ' successfully !';
+		throw new NotFoundException('News Id ' + id + ' Not Found !');
 	}
 }

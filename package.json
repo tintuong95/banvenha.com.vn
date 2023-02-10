@@ -21,6 +21,7 @@
     "migration:revert": "yarn workspace backend migration:revert"
   },
   "dependencies": {
-    "concurrently": "^7.6.0"
+    "concurrently": "^7.6.0",
+    "kill-port": "^2.0.1"
   }
 }

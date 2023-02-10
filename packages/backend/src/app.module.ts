@@ -23,9 +23,15 @@ import {MessageModule} from '~module/message/message.module';
 import {PaymentModule} from '~module/payment/payment.module';
 import {AdminModule} from '~module/admin/admin.module';
 import {AuthModule} from '~module/auth/auth.module';
+import {UploadModule} from '~module/upload/upload.module';
+import {ServeStaticModule} from '@nestjs/serve-static';
+import {join} from 'path';
 
 @Module({
 	imports: [
+		ServeStaticModule.forRoot({
+			rootPath: join(__dirname, '..', 'uploads'),
+		}),
 		/**
 		 * import configuration
 		 */
@@ -53,7 +59,8 @@ import {AuthModule} from '~module/auth/auth.module';
 		ProductGroupsModule,
 		MessageModule,
 		PaymentModule,
-		AuthModule
+		AuthModule,
+		UploadModule,
 	],
 	controllers: [],
 	providers: [

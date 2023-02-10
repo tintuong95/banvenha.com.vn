@@ -1,4 +1,11 @@
-import {Entity, Column, ManyToOne, JoinColumn} from 'typeorm';
+import {
+	Entity,
+	Column,
+	ManyToOne,
+	JoinColumn,
+	BeforeInsert,
+	BeforeUpdate,
+} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {NEWS_STATE, NEWS_STATUS} from '../type/news.type';
@@ -6,6 +13,8 @@ import {NEWS_STATE, NEWS_STATUS} from '../type/news.type';
 import {NEWS_GROUP_KEY, ADMIN_KEY} from '~contants/relation';
 import {NewsGroup} from '~module/news-groups/entity/news-group.entity';
 import {Admin} from '~module/admin/entity/admin.entity';
+import {Exclude} from 'class-transformer';
+import createSlug from '~util/createSlug';
 
 @Entity({name: 'news'})
 export class News extends BaseEntity {
@@ -77,12 +86,14 @@ export class News extends BaseEntity {
 		nullable: false,
 	})
 	@ApiProperty()
+	@Exclude()
 	creator_id: number;
 
 	@Column({
 		nullable: false,
 	})
 	@ApiProperty()
+	@Exclude()
 	group_id: number;
 
 	@ManyToOne(() => Admin, {cascade: true})
@@ -95,4 +106,14 @@ export class News extends BaseEntity {
 
 	// @OneToMany(() => NewsImage, (newsImage) => newsImage.id)
 	// [NEWS_IMAGE_LIST_KEY]: NewsImage[];
+
+	@BeforeInsert()
+	createSlug() {
+		this.param = createSlug(this.name);
+	}
+
+	@BeforeUpdate()
+	updateSlug() {
+		this.param = createSlug(this.name);
+	}
 }

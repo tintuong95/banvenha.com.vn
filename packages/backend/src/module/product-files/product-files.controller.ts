@@ -1,15 +1,14 @@
 import {
 	Body,
 	Controller,
-	Delete,
 	Get,
 	Param,
 	ParseIntPipe,
 	Post,
-	Put,
 	ValidationPipe,
 	HttpStatus,
 	HttpCode,
+	UseGuards,
 } from '@nestjs/common';
 import {ProductFilesService} from './product-files.service';
 import {
@@ -17,22 +16,27 @@ import {
 	UpdateProductFilesDto,
 } from './dto/product-files.dto';
 import {ProductFiles} from './entity/product-files.entity';
+import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
+import {Roles} from '~module/auth/roles.decorator';
+import {ROLE} from '~contants/role';
 
 @Controller('product-files')
+@UseGuards(JwtAuthGuard)
 export class ProductFilesController {
 	constructor(private productFilesService: ProductFilesService) {}
-	@Get('')
+	@Get('list')
 	async getAllProductFiless(): Promise<any> {
-		return await this.productFilesService.getAllProductFiless();
+		return await this.productFilesService.getAllProductFiles();
 	}
-	@Get(':id')
+	@Get(':id/details')
 	async getProductFilesDetails(
 		@Param('id', ParseIntPipe) id: number
 	): Promise<ProductFiles> {
 		return await this.productFilesService.getProductFilesDetails(id);
 	}
 
-	@Post('')
+	@Roles(ROLE.PARTNER)
+	@Post('create')
 	@HttpCode(HttpStatus.CREATED)
 	async createProductFiles(
 		@Body() createProductFilesDto: CreateProductFilesDto
@@ -42,7 +46,8 @@ export class ProductFilesController {
 		);
 	}
 
-	@Put(':id')
+	@Roles(ROLE.PARTNER)
+	@Post(':id/update')
 	async updateProductFiles(
 		@Body(ValidationPipe) updateProductFilesDto: UpdateProductFilesDto,
 		@Param('id', ParseIntPipe) id: number
@@ -53,10 +58,27 @@ export class ProductFilesController {
 		);
 	}
 
-	@Delete(':id')
+	@Roles(ROLE.PARTNER, ROLE.ADMIN)
+	@Post(':id/remove')
 	async removeProductFiles(
 		@Param('id', ParseIntPipe) id: number
 	): Promise<string> {
 		return await this.productFilesService.removeProductFiles(id);
+	}
+
+	@Roles(ROLE.ADMIN)
+	@Post(':id/restore')
+	async restoreProductFiles(
+		@Param('id', ParseIntPipe) id: number
+	): Promise<string> {
+		return await this.productFilesService.restoreProductFiles(id);
+	}
+
+	@Roles(ROLE.ADMIN)
+	@Post(':id/delete')
+	async deleteProductFiles(
+		@Param('id', ParseIntPipe) id: number
+	): Promise<string> {
+		return await this.productFilesService.deleteProductFiles(id);
 	}
 }

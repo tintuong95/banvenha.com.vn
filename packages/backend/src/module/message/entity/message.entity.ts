@@ -1,9 +1,10 @@
 import {Entity, Column, ManyToOne, JoinColumn} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
-import {MESSAGE_STATUS} from '../type/message';
+import {MESSAGE_STATUS} from '../type/message.type';
 import {RECEIVER_KEY, SENDER_KEY} from '~contants/relation';
 import {Admin} from '~module/admin/entity/admin.entity';
+import {Exclude} from 'class-transformer';
 
 @Entity({name: 'messages'})
 export class Message extends BaseEntity {
@@ -30,18 +31,14 @@ export class Message extends BaseEntity {
 		nullable: false,
 	})
 	@ApiProperty()
-	admin_id: number;
-
-	@Column({
-		nullable: false,
-	})
-	@ApiProperty()
+	@Exclude()
 	receiver_id: number;
 
 	@Column({
 		nullable: false,
 	})
 	@ApiProperty()
+	@Exclude()
 	sender_id: number;
 
 	@Column({

@@ -10,16 +10,13 @@ export class CreateNewsDto {
 
 	@IsString()
 	@Expose()
-	param: string;
-
-	@IsString()
-	@Expose()
 	description: string;
 
 	@IsString()
 	@Expose()
 	content: string;
 
+	@IsOptional()
 	@IsString()
 	@Expose()
 	image: string;
@@ -38,9 +35,13 @@ export class CreateNewsDto {
 	@Expose()
 	group_id: number;
 
+	@IsOptional()
 	@IsNumber()
 	@Expose()
 	creator_id: number;
+
+	// @IsFile({mime: ['image/jpg', 'image/png']})
+	// file: any;
 }
 
 export class UpdateNewsDto extends PartialType(CreateNewsDto) {}

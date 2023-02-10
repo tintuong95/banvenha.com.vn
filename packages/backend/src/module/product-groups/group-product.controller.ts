@@ -1,15 +1,14 @@
 import {
 	Body,
 	Controller,
-	Delete,
 	Get,
 	Param,
 	ParseIntPipe,
 	Post,
-	Put,
 	ValidationPipe,
 	HttpStatus,
 	HttpCode,
+	UseGuards,
 } from '@nestjs/common';
 import {ProductGroupService} from './group-product.service';
 import {
@@ -17,22 +16,27 @@ import {
 	UpdateProductGroupDto,
 } from './dto/product-group.dto';
 import {ProductGroup} from './entity/product-group.entity';
+import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
+import {Roles} from '~module/auth/roles.decorator';
+import {ROLE} from '~contants/role';
 
 @Controller('product-group')
+@UseGuards(JwtAuthGuard)
 export class ProductGroupController {
 	constructor(private productGroupService: ProductGroupService) {}
-	@Get('')
+	@Get('list')
 	async getAllProductGroups(): Promise<any> {
 		return await this.productGroupService.getAllProductGroups();
 	}
-	@Get(':id')
+	@Get(':id/details')
 	async getProductGroupDetails(
 		@Param('id', ParseIntPipe) id: number
 	): Promise<ProductGroup> {
 		return await this.productGroupService.getProductGroupDetails(id);
 	}
 
-	@Post('')
+	@Roles(ROLE.ADMIN)
+	@Post('/create')
 	@HttpCode(HttpStatus.CREATED)
 	async createProductGroup(
 		@Body() createProductGroupDto: CreateProductGroupDto
@@ -42,7 +46,8 @@ export class ProductGroupController {
 		);
 	}
 
-	@Put(':id')
+	@Roles(ROLE.ADMIN)
+	@Post(':id/update')
 	async updateProductGroup(
 		@Body(ValidationPipe) updateProductGroupDto: UpdateProductGroupDto,
 		@Param('id', ParseIntPipe) id: number
@@ -53,10 +58,27 @@ export class ProductGroupController {
 		);
 	}
 
-	@Delete(':id')
+	@Roles(ROLE.ADMIN)
+	@Post(':id/delete')
+	async deleteProductGroup(
+		@Param('id', ParseIntPipe) id: number
+	): Promise<string> {
+		return await this.productGroupService.deleteProductGroup(id);
+	}
+
+	@Roles(ROLE.ADMIN)
+	@Post(':id/remove')
 	async removeProductGroup(
 		@Param('id', ParseIntPipe) id: number
 	): Promise<string> {
 		return await this.productGroupService.removeProductGroup(id);
+	}
+
+	@Roles(ROLE.ADMIN)
+	@Post(':id/restore')
+	async restoreProductGroup(
+		@Param('id', ParseIntPipe) id: number
+	): Promise<string> {
+		return await this.productGroupService.restoreProductGroup(id);
 	}
 }

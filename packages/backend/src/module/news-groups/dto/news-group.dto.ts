@@ -10,11 +10,6 @@ export class CreateNewsGroupDto {
 
 	@IsString()
 	@Expose()
-	@MaxLength(50)
-	param: string;
-
-	@IsString()
-	@Expose()
 	@MaxLength(100)
 	description: string;
 }
