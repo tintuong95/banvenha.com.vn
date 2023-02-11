@@ -16,9 +16,15 @@ import {
 	DeleteOutlined,
 	UnlockOutlined,
 	MessageOutlined,
-    EyeOutlined,
-	LikeOutlined, ClearOutlined
+	EyeOutlined,
+	LikeOutlined,
+	ClearOutlined,
 } from '@ant-design/icons';
+import {useEffect, useState} from 'react';
+import {axios} from '../../../config/axios';
+import moment from 'moment';
+import {NEWS_STATUS, NEWS_STATUS_TEXT} from '../../../contants/table';
+
 const columns = [
 	{
 		title: 'Hình',
@@ -59,9 +65,14 @@ const columns = [
 		render: (_, record) => {
 			return (
 				<div className='flex gap-3'>
-                    <div className='flex gap-1 items-center'><EyeOutlined style={{ color: "gray" }}/>{record.views}</div>
-                    <div className='flex gap-1 items-center'><LikeOutlined style={{ color: "blue" }} />{record.views}</div>
-                   
+					<div className='flex gap-1 items-center'>
+						<EyeOutlined style={{color: 'gray'}} />
+						{record.views}
+					</div>
+					<div className='flex gap-1 items-center'>
+						<LikeOutlined style={{color: 'blue'}} />
+						{record.views}
+					</div>
 				</div>
 			);
 		},
@@ -85,16 +96,34 @@ const columns = [
 		key: 'status',
 		dataIndex: 'status',
 
-		render: () => (
-			<Tag color={'green'} key={'green'}>
-				NORMAL
-			</Tag>
-		),
+		render: (text) => {
+			if (text == NEWS_STATUS.PROCESS)
+				return (
+					<Tag color={'cyan'} key={'cyan'}>
+						{NEWS_STATUS_TEXT[NEWS_STATUS.PROCESS]}
+					</Tag>
+				);
+
+			if (text == NEWS_STATUS.ACTIVED)
+				return (
+					<Tag color={'green'} key={'green'}>
+						{NEWS_STATUS_TEXT[NEWS_STATUS.ACTIVED]}
+					</Tag>
+				);
+
+			if (text == NEWS_STATUS.BLOCKED)
+				return (
+					<Tag color={'volcano'} key={'volcano'}>
+						{NEWS_STATUS_TEXT[NEWS_STATUS.BLOCKED]}
+					</Tag>
+				);
+		},
 	},
 	{
 		title: 'Thời gian',
 		key: 'updated_at',
 		dataIndex: 'updated_at',
+		render: (text) => moment(text).format('hh:mm DD-MM-YYYY '),
 	},
 	{
 		title: 'Thao tác',
@@ -116,86 +145,6 @@ const columns = [
 		),
 	},
 ];
-const data = [
-	{
-		key: '1',
-		image: 'https://picsum.photos/200/200',
-		code: 'AZ100',
-		name: 'Bản vẽ nhà cấp 4 5x10',
-		group: 'Nhà cấp 4',
-		views: 1000,
-		likes: 500,
-		updated_at: '10:10 10/10/2020',
-		partner: 'KTS. Phan Tin Tưởng',
-	},
-	{
-		key: '2',
-		image: 'https://picsum.photos/200/200',
-		code: 'AZ100',
-		name: 'Bản vẽ nhà cấp 4 5x10',
-		group: 'Nhà cấp 4',
-		views: 1000,
-		likes: 500,
-		updated_at: '10:10 10/10/2020',
-		partner: 'KTS. Phan Tin Tưởng',
-	},
-	{
-		key: '3',
-		image: 'https://picsum.photos/200/200',
-		code: 'AZ100',
-		name: 'Bản vẽ nhà cấp 4 5x10',
-		group: 'Nhà cấp 4',
-		views: 1000,
-		likes: 500,
-		updated_at: '10:10 10/10/2020',
-		partner: 'KTS. Phan Tin Tưởng',
-	},
-	{
-		key: '4',
-		image: 'https://picsum.photos/200/200',
-		code: 'AZ100',
-		name: 'Bản vẽ nhà cấp 4 5x10',
-		group: 'Nhà cấp 4',
-		views: 1000,
-		likes: 500,
-		updated_at: '10:10 10/10/2020',
-		partner: 'KTS. Phan Tin Tưởng',
-	},
-	{
-		key: '5',
-		image: 'https://picsum.photos/200/200',
-		code: 'AZ100',
-		name: 'Bản vẽ nhà cấp 4 5x10',
-		group: 'Nhà cấp 4',
-		views: 1000,
-		likes: 500,
-		updated_at: '10:10 10/10/2020',
-		partner: 'KTS. Phan Tin Tưởng',
-	},
-	{
-		key: '6',
-		image: 'https://picsum.photos/200/200',
-		code: 'AZ100',
-		name: 'Bản vẽ nhà cấp 4 5x10',
-		group: 'Nhà cấp 4',
-		views: 1000,
-		likes: 500,
-		updated_at: '10:10 10/10/2020',
-		partner: 'KTS. Phan Tin Tưởng',
-	},
-	{
-		key: '7',
-		image: 'https://picsum.photos/200/200',
-		code: 'AZ100',
-		name: 'Bản vẽ nhà cấp 4 5x10',
-		group: 'Nhà cấp 4',
-
-		views: 1000,
-		likes: 500,
-		updated_at: '10:10 10/10/2020',
-		partner: 'KTS. Phan Tin Tưởng',
-	},
-];
 
 // rowSelection object indicates the need for row selection
 const rowSelection = {
@@ -212,6 +161,21 @@ const onChange = (pageNumber) => {
 };
 
 const NewsList = () => {
+	const [newsList, setNewsList] = useState([]);
+
+	const fetchNewsList = () => {
+		axios('/news/list')
+			.then((result) => setNewsList(result.data.items))
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	useEffect(() => {
+		fetchNewsList();
+	}, []);
+
+	console.log(newsList);
 	return (
 		<>
 			<div className='flex gap-4 mb-5 items-center'>
@@ -264,13 +228,21 @@ const NewsList = () => {
 				<Button type='primary' icon={<SearchOutlined />}>
 					Tìm kiếm
 				</Button>
-				<Button type='link' icon={<ClearOutlined />}>Clear</Button>
+				<Button type='link' icon={<ClearOutlined />}>
+					Clear
+				</Button>
 			</div>
 			<div className='mb-5  hidden' id='list-action'>
 				<div className='flex gap-4'>
-                    <Button type='link' icon={<DeleteOutlined />}>Xóa nhiều</Button>
-                    <Button type='link' icon={<UnlockOutlined />}>Mở khóa</Button>
-                    <Button type='link' icon={<MessageOutlined />}>Gửi tin nhắn</Button>
+					<Button type='link' icon={<DeleteOutlined />}>
+						Xóa nhiều
+					</Button>
+					<Button type='link' icon={<UnlockOutlined />}>
+						Mở khóa
+					</Button>
+					<Button type='link' icon={<MessageOutlined />}>
+						Gửi tin nhắn
+					</Button>
 				</div>
 			</div>
 			<Table
@@ -279,7 +251,7 @@ const NewsList = () => {
 				}}
 				pagination={false}
 				columns={columns}
-				dataSource={data}
+				dataSource={newsList}
 			/>
 			<div className='my-5'>
 				<Pagination

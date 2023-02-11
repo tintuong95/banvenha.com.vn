@@ -9,6 +9,7 @@ import {
 	LikeOutlined,
 	ShoppingCartOutlined,
 } from '@ant-design/icons';
+
 // import BaseIcon from '../../../components/BaseIcon';
 // import {WiTime5} from 'react-icons/wi';
 const formatter = (value) => <CountUp end={value} separator=',' />;

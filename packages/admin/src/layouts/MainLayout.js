@@ -2,16 +2,16 @@ import {UserOutlined, Loading3QuartersOutlined} from '@ant-design/icons';
 import {Avatar, Badge, Breadcrumb, Divider, Layout, Menu, Spin} from 'antd';
 import {useEffect, useState} from 'react';
 import {Outlet, Link} from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
 import BaseDropdown from '../components/BaseDropDown';
-import { IoHomeOutline } from 'react-icons/io5';
-import { RiProductHuntLine } from 'react-icons/ri';
-import { BsNewspaper } from 'react-icons/bs';
-import { FaOpencart } from 'react-icons/fa';
-import { MdGroups, MdOutlinePayment } from 'react-icons/md';
-import { BiMessageSquareDots } from 'react-icons/bi';
+import {IoHomeOutline} from 'react-icons/io5';
+import {RiProductHuntLine} from 'react-icons/ri';
+import {BsNewspaper} from 'react-icons/bs';
+import {FaOpencart} from 'react-icons/fa';
+import {MdGroups, MdOutlinePayment} from 'react-icons/md';
+import {BiMessageSquareDots} from 'react-icons/bi';
 import BaseIcon from '../components/BaseIcon';
-
+import {useSelector} from 'react-redux';
+import {useNavigate} from 'react-router-dom';
 
 const {Header, Content, Sider} = Layout;
 const condition = 1;
@@ -20,10 +20,12 @@ const antIcon = (
 );
 const MainLayout = () => {
 	const [collapsed, setCollapsed] = useState(false);
-	const [role, getRoles] = useAuth();
+	const navigate = useNavigate();
+	const {isLogin,role} = useSelector((state) => state.auth);
+
 	useEffect(() => {
-		getRoles();
-	}, []);
+		if (!isLogin) navigate('/login');
+	}, [isLogin, role]);
 
 	return (
 		<>
@@ -92,7 +94,7 @@ const MainLayout = () => {
 							</Link>
 						</Menu.Item>
 						<Divider />
-						{role == 'PARTNER' ? (
+						{role == 1? (
 							''
 						) : (
 							<Menu.Item>

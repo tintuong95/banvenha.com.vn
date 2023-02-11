@@ -11,6 +11,8 @@ import {
 	UseGuards,
 	UploadedFile,
 	UseInterceptors,
+	Query,
+	Request,
 } from '@nestjs/common';
 import {NewsService} from './news.service';
 import {Express} from 'express';
@@ -29,8 +31,8 @@ import {UserDto} from '~shared/user.dto';
 export class NewsController {
 	constructor(private newsService: NewsService) {}
 	@Get('list')
-	async getAllNewss(): Promise<any> {
-		return await this.newsService.getAllNews();
+	async getAllNewss(@Query() query: any, @Request() req: any): Promise<any> {
+		return await this.newsService.getAllNews(req, query);
 	}
 	@Get(':id/details')
 	async getNewsDetails(@Param('id', ParseIntPipe) id: number): Promise<News> {

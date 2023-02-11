@@ -1,7 +1,32 @@
-import { Button, Input } from 'antd';
-import React from 'react';
+import {Alert, Button, Form, Input} from 'antd';
+import React, {useEffect} from 'react';
 import {LoginOutlined} from '@ant-design/icons';
+import {useDispatch, useSelector} from 'react-redux';
+import {loginAction} from '../../stores/actions/auth';
+import {Controller, useForm} from 'react-hook-form';
+import {useNavigate} from 'react-router-dom';
+import {LockOutlined, MailOutlined} from '@ant-design/icons';
+import { validateRegex, validateRequired } from '../../utils/validate';
+import { regexEmail } from '../../utils/pattern';
+import { MESSAGE_LOGIN_ERROR, MESSAGE_REQUIRE, MESSAGE_TYPE } from '../../contants/message';
+
 export default function Login() {
+	const dispatch = useDispatch();
+
+	const {isLogin,error} = useSelector((state) => state.auth);
+
+	const {control, handleSubmit} = useForm();
+
+	const navigate = useNavigate();
+
+	const onFinish = handleSubmit(({email, password}) => {
+		// dispatch(loginAction({email: 'asdfd1', password: 'password'}));
+		dispatch(loginAction({email, password}));
+	});
+
+	useEffect(() => {
+		if (isLogin) navigate('/');
+	}, [isLogin]);
 	return (
 		<section className='bg-gray-50 dark:bg-gray-900'>
 			<div className='flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0'>
@@ -20,14 +45,32 @@ export default function Login() {
 						<h1 className='text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white'>
 							Đăng nhập với tài khoản
 						</h1>
-						<form className='space-y-4 md:space-y-6' action='#'>
+						<Form
+							name='normal_login'
+							className='login-form space-y-4 md:space-y-6'
+							onFinish={onFinish}>
 							<div>
 								<label
 									htmlFor='email'
 									className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>
-									Username
+									Email
 								</label>
-								<Input size='large' />
+
+								<Controller
+									name='email'
+									control={control}
+									render={({field}) => (
+										<Form.Item
+											name='email'
+											hasFeedback
+											rules={[
+												validateRequired(MESSAGE_REQUIRE.MAIL),
+												validateRegex(MESSAGE_TYPE.MAIL, regexEmail),
+											]}>
+											<Input {...field} size='large' prefix={<MailOutlined />} />
+										</Form.Item>
+									)}
+								/>
 							</div>
 							<div>
 								<label
@@ -35,7 +78,19 @@ export default function Login() {
 									className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>
 									Password
 								</label>
-								<Input size='large' />
+
+								<Controller
+									name='password'
+									control={control}
+									render={({field}) => (
+										<Form.Item
+											name='password'
+											hasFeedback
+											rules={[validateRequired(MESSAGE_REQUIRE.PASSWORD)]}>
+											<Input prefix={<LockOutlined />} {...field} size='large' />
+										</Form.Item>
+									)}
+								/>
 							</div>
 							<div className='flex items-center justify-between'>
 								<div className='flex items-start'>
@@ -62,7 +117,9 @@ export default function Login() {
 									Bạn quên mật khẩu ?
 								</a>
 							</div>
-							<Button size='large' type='primary w-full'>
+							{error.logging ?	<Alert message={MESSAGE_LOGIN_ERROR} type='error' />:""}
+						
+							<Button size='large' type='primary w-full' htmlType='submit'>
 								<LoginOutlined />
 								ĐĂNG NHẬP
 							</Button>
@@ -74,7 +131,7 @@ export default function Login() {
 									Đăng ký
 								</a>
 							</p>
-						</form>
+						</Form>
 					</div>
 				</div>
 			</div>

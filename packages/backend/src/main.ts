@@ -5,7 +5,9 @@ import {AppModule} from './app.module';
 import helmet from 'helmet';
 
 async function bootstrap() {
-	const app: INestApplication = await NestFactory.create(AppModule);
+	const app: INestApplication = await NestFactory.create(AppModule, {
+		rawBody: true, //application/json
+	});
 	/**
 	 * open api
 	 */

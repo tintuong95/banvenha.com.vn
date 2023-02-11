@@ -1,23 +1,22 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
 import PropTypes from 'prop-types';
+import {history} from '../routes';
 
-export default function AddButton({ to }) {
-  return (
-
-    <div className='border border-dashed rounded-md p-8 bg-white text-center w-100'>
-      <Link to={to||"#"}>
-        <span role={"button"} className=''>
-          Thêm mới
-        </span>
-      </Link>
-    </div>
-
-
-  )
+export default function AddButton({to}) {
+	const onClick = () => {
+		history.push(to);
+	};
+	return (
+		<div
+			role={'button'}
+			onClick={onClick}
+			aria-hidden='true'
+			className='border hover:cursor-pointer border-sky-500 border-dashed rounded-md p-8 bg-white text-center w-100'>
+			THÊM MỚI 
+		</div>
+	);
 }
-
 
 AddButton.propTypes = {
-  to: PropTypes.string
-}
+	to: PropTypes.string,
+};

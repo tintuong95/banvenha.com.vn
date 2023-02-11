@@ -5,7 +5,9 @@ import {CreateNewsDto, UpdateNewsDto} from './dto/News.dto';
 import {News} from './entity/news.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
-import {NEWS_GROUP_KEY, PARTNER_KEY} from '~contants/relation';
+import {ADMIN_KEY, NEWS_GROUP_KEY, PARTNER_KEY} from '~contants/relation';
+import {handleQuery, pagination} from '~util/pagination';
+import {Request} from 'express';
 
 @Injectable()
 export class NewsService {
@@ -14,8 +16,15 @@ export class NewsService {
 		private newsRepository: Repository<News>
 	) {}
 
-	async getAllNews(): Promise<any> {
-		return await this.newsRepository.find();
+	async getAllNews(request: Request, query: any): Promise<any> {
+		const {skip, take, currentPage, perPage} = handleQuery(query);
+		const result = await this.newsRepository.findAndCount({
+			where: {},
+			relations: [ADMIN_KEY, NEWS_GROUP_KEY],
+			take,
+			skip,
+		});
+		return pagination(request, result, currentPage, perPage);
 	}
 
 	async getNewsDetails(id: number): Promise<News | any> {
