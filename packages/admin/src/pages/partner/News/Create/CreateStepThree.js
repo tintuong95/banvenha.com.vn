@@ -1,41 +1,127 @@
-import { Form,  } from 'antd'
-import React from 'react'
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {Button, Divider, Modal, notification, Result} from 'antd';
+import {RobotOutlined} from '@ant-design/icons';
+import PropTypes from 'prop-types';
+import {
+	ArrowLeftOutlined,
+	ArrowRightOutlined,
+	MehOutlined,
+	SmileOutlined,
+	ExclamationCircleFilled,
+} from '@ant-design/icons';
+import {createNewsApi} from '../../../../apis/news';
+import {NEWS_STATE, NOTIFICATION_TYPE} from '../../../../contants/table';
+import { history } from '../../../../routes';
+const {confirm}=Modal
+const CreateStepThree = ({
+	stepPage,
+	setStepPage,
+	onPreviousStep,
+	onNextStep,
+	dataNews,
+	setDataNews,
+}) => {
+	const openNotification = (type, message, description) => {
+		return notification[type]({
+			type,
+			message,
+			description,
+			onClick: () => {
+				console.log('Notification Clicked!');
+			},
+		});
+	};
+	const onSubmit = (state) => {
+		const data = new FormData();
+	
+		data.append('name', dataNews.name);
+		data.append('description', dataNews.description);
+		data.append('content', dataNews.content);
+		data.append('group_id', dataNews.group_id);
+		data.append('state', state);
+		data.append('file', dataNews.file);
 
-export default function CreateStepThree() {
-    return (
-        <Form
-            labelCol={{
-                span: 6,
-            }}
-            wrapperCol={{
-                span: 14,
-            }}
-            layout="horizontal"
+		createNewsApi(data)
+			.then((result) => {
+				history.push("/news")
+				openNotification[(NOTIFICATION_TYPE.success, 'Tạo mới thành công !')];
+			})
+			.catch((err) => {
+				openNotification[(NOTIFICATION_TYPE.error, 'Tạo mới thất bại !')];
+				console.log(err);
+			});
+	};
+	
+	const onRemoveConfirm = (state) => {
+		confirm({
+			title: 'Xác nhận tạo bài viết !',
+			icon: <ExclamationCircleFilled />,
+			content: 'Được duyệt trong vòng 24h !',
+			onOk() {
+				onSubmit(state);
+			},
+			onCancel() {
+				console.log('Cancel');
+			},
+		});
+	};
 
+	return (
+		<>
+			<Result
+				icon={<RobotOutlined />}
+				status='info'
+				title='Xác nhận bước cuối cùng nha !'
+				subTitle='Bài viết của bạn sẽ được xét duyệt tối đa trong vòng 24h. Chúc bạn và gia đình một ngày vui vẻ ...'
+				extra={[
+					<Button
+						onClick={() => {
+							onRemoveConfirm(NEWS_STATE.DRAFT);
+						}}
+						type='primary'
+						className='bg-slate-400'
+						key='console'>
+						<MehOutlined />
+						BẢN NHÁP
+					</Button>,
+					<Button
+						onClick={() => {
+							onRemoveConfirm(NEWS_STATE.NORMAL);
+						}}
+						type='primary'
+						key='buy'>
+						CÔNG KHAI
+						<SmileOutlined />
+					</Button>,
+				]}
+			/>
+			<Divider />
+			<div className='m-auto flex justify-end mt-5 gap-5'>
+				<Button
+					className='w-1/2'
+					icon={<ArrowLeftOutlined />}
+					disabled={stepPage === 1}
+					onClick={onPreviousStep}>
+					Previous
+				</Button>
+				<Button
+					onClick={onNextStep}
+					className='w-1/2'
+					htmlType='submit'
+					disabled={stepPage === 3}>
+					Next
+					<ArrowRightOutlined />
+				</Button>
+			</div>
+		</>
+	);
+};
+export default CreateStepThree;
 
-
-            
-        >
-            <CKEditor
-                editor={ClassicEditor}
-                data="<p>Hello from CKEditor 5!</p>"
-                onReady={editor => {
-                    // You can store the "editor" and use when it is needed.
-                    console.log('Editor is ready to use!', editor);
-                }}
-                onChange={(event, editor) => {
-                    const data = editor.getData();
-                    console.log({ event, editor, data });
-                }}
-                onBlur={(event, editor) => {
-                    console.log('Blur.', editor);
-                }}
-                onFocus={(event, editor) => {
-                    console.log('Focus.', editor);
-                }}
-            /> 
-        </Form>
-    )
-}
+CreateStepThree.propTypes = {
+	stepPage: PropTypes.number,
+	setStepPage: PropTypes.func,
+	onNextStep: PropTypes.func,
+	onPreviousStep: PropTypes.func,
+	dataNews: PropTypes.object,
+	setDataNews: PropTypes.func,
+};

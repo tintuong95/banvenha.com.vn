@@ -1,47 +1,53 @@
-
-import { Divider, Dropdown, theme} from 'antd';
+import {Button, Divider, Dropdown, theme} from 'antd';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useDispatch} from 'react-redux';
+import {evtLogout} from '../stores/reducers/auth';
 const {useToken} = theme;
-const items = [
-	{
-		key: '1',
-		label: (
-			<a  target='_blank' rel='noopener noreferrer' href='https://www.antgroup.com'>
-				Thông tin
-			</a>
-		),
-	},
 
-	{
-		key: '3',
-		label: (
-			<a
-				target='_blank'
-				rel='noopener noreferrer'
-				href='https://www.luohanacademy.com'>
-				Tin nhắn
-			</a>
-		),
-	},
-	{
-		key: '2',
-		label: (
-			<a
-				target='_blank'
-				rel='noopener noreferrer'
-				href='https://www.luohanacademy.com'>
-				Thanh toán
-			</a>
-		),
-	},
-	{
-		key: '4',
-		danger: true,
-		label: 'Đăng xuất',
-	},
-];
 const BaseDropdown = ({children}) => {
+	const dispatch = useDispatch();
+
+		const onLogout = () => {
+			dispatch(evtLogout());
+		};
+	const items = [
+		{
+			key: '1',
+			label: (
+				<span style={{width:400}} aria-hidden role='button' onClick={onLogout}>
+					Thông tin
+				</span>
+			),
+		},
+
+		{
+			key: '3',
+			label: (
+				<span aria-hidden role='button' onClick={onLogout}>
+					Tin Nhắn
+				</span>
+			),
+		},
+		{
+			key: '2',
+			label: (
+				<span aria-hidden role='button' onClick={onLogout}>
+					Thanh toán
+				</span>
+			),
+		},
+		{
+			key: '4',
+			danger: true,
+			label: (
+				<span aria-hidden role='button' onClick={onLogout}>
+					Đăng xuất
+				</span>
+			),
+		},
+	];
+
 	const {token} = useToken();
 	const contentStyle = {
 		backgroundColor: token.colorBgElevated,
@@ -53,6 +59,7 @@ const BaseDropdown = ({children}) => {
 	};
 	return (
 		<Dropdown
+
 			menu={{
 				items,
 			}}
@@ -64,10 +71,9 @@ const BaseDropdown = ({children}) => {
 					<Divider
 						style={{
 							margin: 0,
+							width:250
 						}}
 					/>
-
-					
 				</div>
 			)}>
 			<a href='#d' onClick={(e) => e.preventDefault()}>

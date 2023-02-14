@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import {ConfigModule, ConfigService} from '@nestjs/config';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {envConfig} from '~config/configuration';
@@ -46,8 +46,9 @@ import {join} from 'path';
 		/**
 		 * import modules
 		 */
-		AccountModule,
 		AdminModule,
+		AccountModule,
+		AuthModule,
 		NewsModule,
 		NewsImageModule,
 		NewsGroupModule,

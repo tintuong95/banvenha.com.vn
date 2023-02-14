@@ -9,6 +9,8 @@ import {
 	HttpStatus,
 	HttpCode,
 	UseGuards,
+	Query,
+	Request,
 } from '@nestjs/common';
 import {MessageService} from './message.service';
 import {CreateMessageDto, UpdateMessageDto} from './dto/message.dto';
@@ -16,15 +18,21 @@ import {Message} from './entity/message.entity';
 import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
 import {Roles} from '~module/auth/roles.decorator';
 import {ROLE} from '~contants/role';
+import {User} from '~shared/user.decorator';
+import {UserDto} from '~shared/user.dto';
 
-@Controller('Message')
+@Controller('message')
 @UseGuards(JwtAuthGuard)
 export class MessageController {
 	constructor(private messageService: MessageService) {}
 
 	@Get('list')
-	async getAllMessages(): Promise<any> {
-		return await this.messageService.getAllMessages();
+	async getAllMessages(
+		@Query() query: any,
+		@Request() req: any,
+		@User() user: UserDto
+	): Promise<any> {
+		return await this.messageService.getAllMessages(req, query, user);
 	}
 
 	@Get(':id/details')
@@ -34,7 +42,7 @@ export class MessageController {
 		return await this.messageService.getMessageDetails(id);
 	}
 
-	@Roles(ROLE.ADMIN)
+	// @Roles(ROLE.ADMIN)
 	@Post('create')
 	@HttpCode(HttpStatus.CREATED)
 	async createMessage(

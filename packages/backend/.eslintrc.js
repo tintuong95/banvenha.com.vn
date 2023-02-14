@@ -28,4 +28,8 @@ module.exports = {
 			},
 		],
 	},
+	globals: {
+		arguments: true,
+		_: true,
+	},
 };

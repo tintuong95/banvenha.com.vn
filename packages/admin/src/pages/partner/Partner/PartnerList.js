@@ -143,7 +143,7 @@ const PartnerList = () => {
                 />
                 <Button icon={<SearchOutlined />}>Tìm kiếm</Button>
             </div>
-            <div className='mb-5  hidden' id='list-action'>
+            <div className='hidden-cover mb-4' id='list-action'>
                 <div className='flex gap-4'>
                     <Button>Default Button</Button>
                     <Button>Default Button</Button>

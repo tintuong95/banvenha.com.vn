@@ -16,3 +16,11 @@
     color: black !important;
 }
 
+/* .ant-upload-select{
+    width: 100% !important;
+} */
+
+.ant-upload-list-item-name{
+    color: dimgrey !important;
+}
+

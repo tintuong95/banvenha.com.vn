@@ -26,7 +26,7 @@ export class CreatePaymentDto {
 
 	@IsNumber()
 	@Expose()
-	partner_id: number;
+	admin_id: number;
 
 	@IsOptional()
 	@IsEnum(PAYMENT_STATUS)

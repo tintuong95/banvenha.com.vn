@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import { useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate, useRoutes} from 'react-router-dom';
-import { ROLE } from './contants/auth';
+import {ROLE} from './contants/auth';
 import Loading from './pages/auth/Loading';
 import Login from './pages/auth/Login';
 import NotFound from './pages/notfound';
 import {adminRoutes} from './routes/admin';
 import {partnerRoutes} from './routes/partner';
+import { getProfileAction } from './stores/actions/auth';
 
 export default function AppRouter() {
 	const [routers, setRouters] = useState({});
+	const dispatch =useDispatch()
 	const navigate = useNavigate();
 	const {isLogin, role} = useSelector((state) => state.auth);
 	let routes = useRoutes([
@@ -33,7 +35,9 @@ export default function AppRouter() {
 	]);
 
 	useEffect(() => {
-		if (!isLogin) navigate('/login');
+		if (!isLogin) {
+			dispatch(getProfileAction())
+		}
 	}, [isLogin]);
 
 	useEffect(() => {

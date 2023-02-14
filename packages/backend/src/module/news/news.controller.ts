@@ -13,10 +13,11 @@ import {
 	UseInterceptors,
 	Query,
 	Request,
+	UsePipes,
 } from '@nestjs/common';
 import {NewsService} from './news.service';
 import {Express} from 'express';
-import {CreateNewsDto, UpdateNewsDto} from './dto/news.dto';
+import {CreateNewsDto, NewsQueryDto, UpdateNewsDto} from './dto/news.dto';
 import {News} from './entity/news.entity';
 import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
 import {Roles} from '~module/auth/roles.decorator';
@@ -31,8 +32,12 @@ import {UserDto} from '~shared/user.dto';
 export class NewsController {
 	constructor(private newsService: NewsService) {}
 	@Get('list')
-	async getAllNewss(@Query() query: any, @Request() req: any): Promise<any> {
-		return await this.newsService.getAllNews(req, query);
+	async getAllNewss(
+		@Query() query: any,
+		@Request() req: any,
+		@User() user: UserDto
+	): Promise<any> {
+		return await this.newsService.getAllNews(req, query, user);
 	}
 	@Get(':id/details')
 	async getNewsDetails(@Param('id', ParseIntPipe) id: number): Promise<News> {
@@ -48,11 +53,13 @@ export class NewsController {
 		)
 	)
 	@HttpCode(HttpStatus.CREATED)
+	@UsePipes(new ValidationPipe({transform: true}))
 	async createNews(
-		@Body() createNewsDto: CreateNewsDto,
+		@Body() createNewsDto: any,
 		@UploadedFile() file: Express.Multer.File,
 		@User() user: UserDto
 	): Promise<News> {
+		console.log('createNewsDto', createNewsDto);
 		const {id} = user;
 		return await this.newsService.createNews(createNewsDto, file, id);
 	}
@@ -82,13 +89,25 @@ export class NewsController {
 
 	@Roles(ROLE.PARTNER)
 	@Post(':id/remove')
-	async removeNews(@Param('id', ParseIntPipe) id: number): Promise<string> {
-		return await this.newsService.removeNews(id);
+	async removeNews(
+		@Param('id', ParseIntPipe) id: number,
+		@User() user: UserDto
+	): Promise<string> {
+		return await this.newsService.removeNews(id, user.id);
 	}
 
 	@Roles(ROLE.ADMIN)
 	@Post(':id/restore')
 	async restoreNews(@Param('id', ParseIntPipe) id: number): Promise<string> {
 		return await this.newsService.restoreNews(id);
+	}
+
+	@Roles(ROLE.ADMIN)
+	@Post(':id/status')
+	async changeStatusNews(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() statusDto: UpdateNewsDto
+	): Promise<string> {
+		return await this.newsService.changeStatusNewsByAdmin(id, statusDto);
 	}
 }

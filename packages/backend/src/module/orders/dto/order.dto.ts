@@ -3,21 +3,21 @@ import {Expose} from 'class-transformer';
 import {IsString, IsNumber} from 'class-validator';
 
 export class CreateOrderDto {
-	@IsString()
-	@Expose()
-	code: string;
-
 	@IsNumber()
 	@Expose()
 	product_id: number;
 
 	@IsNumber()
 	@Expose()
-	partner_id: number;
+	admin_id: number;
 
 	@IsString()
 	@Expose()
 	email: string;
+
+	@IsString()
+	@Expose()
+	name: string;
 
 	@IsNumber()
 	@Expose()

@@ -10209,6 +10209,11 @@ minizlib@^2.1.1:
     minipass "^3.0.0"
     yallist "^4.0.0"
 
+mitt@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/mitt/-/mitt-1.2.0.tgz#cb24e6569c806e31bd4e3995787fe38a04fdf90d"
+  integrity sha512-r6lj77KlwqLhIUku9UWYes7KJtsczvolZkzp8hbaDPPaE24OmWl5s539Mytlj22siEQKosZ26qCBgda2PKwoJw==
+
 mkdirp@^0.5.4, mkdirp@~0.5.1:
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.6.tgz#7def03d2432dcae4ba1d611445c48396062255f6"
@@ -12266,6 +12271,13 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
+react-mitt@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-mitt/-/react-mitt-1.0.1.tgz#af03f2f8cf20da893d044d004b5f5c108c163a96"
+  integrity sha512-qZfeBXxcCUPZrt/vivYSOsEpjtCzsNGMcioca5wSyPAHJXb0Bk1RhLrZJJSZScuuFqEErfTF1z/VXeTV/tY8Zg==
+  dependencies:
+    mitt "^1.2.0"
 
 react-redux@^8.0.5:
   version "8.0.5"

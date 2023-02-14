@@ -4,14 +4,21 @@ import {
 	UseInterceptors,
 	Post,
 	UploadedFiles,
+	Get,
 } from '@nestjs/common';
 import {FileInterceptor, FilesInterceptor} from '@nestjs/platform-express';
 import {Express} from 'express';
 
 import {uploadFileConfig} from '~config/multer.config';
+import {generateCode} from '~util/generate';
 
 @Controller('upload')
 export class UploadController {
+	@Get()
+	get() {
+		return generateCode('PR');
+	}
+
 	@Post('')
 	@UseInterceptors(
 		FilesInterceptor(

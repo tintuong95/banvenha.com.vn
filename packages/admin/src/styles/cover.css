@@ -12,3 +12,7 @@ border: 1px dashed rgb(220, 220, 220) !important;
 .ck-toolbar{
  border: none !important;
 }
+
+#list-action {
+    display: none ;
+}

@@ -1,10 +1,18 @@
-import {Entity, Column, OneToOne, JoinColumn, ManyToOne} from 'typeorm';
+import {
+	Entity,
+	Column,
+	OneToOne,
+	JoinColumn,
+	ManyToOne,
+	BeforeInsert,
+} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {Product} from '~module/products/entity/product.entity';
 import {ADMIN_KEY, PRODUCT_KEY} from '~contants/relation';
 import {Admin} from '~module/admin/entity/admin.entity';
 import {Exclude} from 'class-transformer';
+import {generateCode} from '~util/generate';
 
 @Entity({name: 'orders'})
 export class Order extends BaseEntity {
@@ -36,6 +44,13 @@ export class Order extends BaseEntity {
 	email: string;
 
 	@Column({
+		length: 25,
+		nullable: false,
+	})
+	@ApiProperty()
+	name: string;
+
+	@Column({
 		nullable: false,
 	})
 	@ApiProperty()
@@ -48,4 +63,9 @@ export class Order extends BaseEntity {
 	@ManyToOne(() => Admin, {cascade: true})
 	@JoinColumn({name: 'admin_id'})
 	[ADMIN_KEY]: Admin;
+
+	@BeforeInsert()
+	generateCode() {
+		this.code = generateCode('OD');
+	}
 }

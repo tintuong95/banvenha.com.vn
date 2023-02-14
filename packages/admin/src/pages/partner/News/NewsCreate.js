@@ -1,25 +1,74 @@
-import { Button } from 'antd'
-import React from 'react'
-import BaseStep from '../../../components/BaseStep'
-// import CreateStepFour from '../Product/CreateStep/CreateStepFour'
 
-// import CreateStepThree from './CreateStep/CreateStepThree'
-import CreateStepFirst from './Create/CreateStepFirst'
-// import CreateStepTwo from './CreateStep/CreateStepTwo'
-
+import React, {useState} from 'react';
+import BaseStep from '../../../components/BaseStep';
+import CreateStepFirst from './Create/CreateStepFirst';
+import CreateStepThree from './Create/CreateStepThree';
+import CreateStepTwo from './Create/CreateStepTwo';
 export default function NewsCreate() {
-  return (
-    <div >
-          <div className='w-2/4 m-auto mb-5'>
-              <BaseStep />
-         </div>
-          <div className='bg-white w-2/4 m-auto p-10 rounded-md shadow-sm'>
-        <CreateStepFirst />
-         </div>
-      <div className='w-2/4 m-auto mb-5 flex justify-between mt-5'>
-        <Button>Previous</Button>
-        <Button>Next</Button>
-         </div>
-    </div>
-  )
+	const [stepPage, setStepPage] = useState(1);
+	const [dataNews, setDataNews] = useState({
+		name: null,
+		description: null,
+		content: null,
+		group_id: null,
+		file: null,
+		state: null,
+	});
+
+	const onNextStep = () => {
+		const step = stepPage < 3 ? stepPage + 1 : stepPage;
+		setStepPage(step);
+	};
+	const onPreviousStep = () => {
+		const step = stepPage > 1 ? stepPage - 1 : stepPage;
+		setStepPage(step);
+	};
+
+	const renderStepPage = (page) => {
+		if (page === 1)
+			return (
+				<CreateStepFirst
+					onNextStep={onNextStep}
+					onPreviousStep={onPreviousStep}
+					stepPage={stepPage}
+					setStepPage={setStepPage}
+					dataNews={dataNews}
+					setDataNews={setDataNews}
+				/>
+			);
+		else if (page === 2)
+			return (
+				<CreateStepTwo
+					onNextStep={onNextStep}
+					onPreviousStep={onPreviousStep}
+					stepPage={stepPage}
+					setStepPage={setStepPage}
+					dataNews={dataNews}
+					setDataNews={setDataNews}
+				/>
+			);
+		else if (page === 3)
+			return (
+				<CreateStepThree
+					onNextStep={onNextStep}
+					onPreviousStep={onPreviousStep}
+					stepPage={stepPage}
+					setStepPage={setStepPage}
+					dataNews={dataNews}
+					setDataNews={setDataNews}
+				/>
+			);
+		// else if (page === 4) return <CreateStepFour />;
+	};
+
+	return (
+		<div>
+			<div className='w-2/4 m-auto mb-5'>
+				<BaseStep current={stepPage} />
+			</div>
+			<div className='bg-white w-2/4 m-auto p-10 rounded-md shadow-sm'>
+				{renderStepPage(stepPage)}
+			</div>
+		</div>
+	);
 }

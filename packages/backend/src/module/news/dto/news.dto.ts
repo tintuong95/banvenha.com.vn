@@ -1,6 +1,8 @@
 import {PartialType} from '@nestjs/mapped-types';
 import {Expose} from 'class-transformer';
 import {IsString, IsNumber, IsEnum, IsOptional} from 'class-validator';
+import {IsFile} from '~shared/file.dto';
+import {News} from '../entity/news.entity';
 import {NEWS_STATE, NEWS_STATUS} from '../type/news.type';
 
 export class CreateNewsDto {
@@ -40,8 +42,10 @@ export class CreateNewsDto {
 	@Expose()
 	creator_id: number;
 
-	// @IsFile({mime: ['image/jpg', 'image/png']})
-	// file: any;
+	@IsFile({mime: ['image/jpg', 'image/png']})
+	file: any;
 }
 
 export class UpdateNewsDto extends PartialType(CreateNewsDto) {}
+
+export class NewsQueryDto extends PartialType(News) {}

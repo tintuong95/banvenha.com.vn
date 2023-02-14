@@ -7,7 +7,8 @@ instance.defaults.timeout = 2500;
 // Add a request interceptor
 instance.interceptors.request.use(
 	function (config) {
-		// Do something before request is sent
+		const token ='Bearer '+ localStorage.getItem('accessToken');
+		config.headers.Authorization = token;
 		return config;
 	},
 	function (error) {
@@ -30,4 +31,4 @@ instance.interceptors.response.use(
 	}
 );
 
-export  {instance as axios} ;
+export {instance as axios};

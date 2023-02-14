@@ -9,6 +9,8 @@ import {
 	HttpStatus,
 	HttpCode,
 	UseGuards,
+	Query,
+	Request,
 } from '@nestjs/common';
 import {OrderService} from './order.service';
 
@@ -17,14 +19,20 @@ import {Order} from './entity/order.entity';
 import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
 import {Roles} from '~module/auth/roles.decorator';
 import {ROLE} from '~contants/role';
+import {User} from '~shared/user.decorator';
+import {UserDto} from '~shared/user.dto';
 
 @Controller('order')
 @UseGuards(JwtAuthGuard)
 export class OrderController {
 	constructor(private orderService: OrderService) {}
 	@Get('list')
-	async getAllOrders(): Promise<any> {
-		return await this.orderService.getAllOrders();
+	async getAllOrders(
+		@Query() query: any,
+		@Request() req: any,
+		@User() user: UserDto
+	): Promise<any> {
+		return await this.orderService.getAllOrders(req, query, user);
 	}
 	@Get(':id/details')
 	async getOrderDetails(@Param('id', ParseIntPipe) id: number): Promise<Order> {

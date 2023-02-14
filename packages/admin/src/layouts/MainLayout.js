@@ -11,25 +11,33 @@ import {MdGroups, MdOutlinePayment} from 'react-icons/md';
 import {BiMessageSquareDots} from 'react-icons/bi';
 import BaseIcon from '../components/BaseIcon';
 import {useSelector} from 'react-redux';
-import {useNavigate} from 'react-router-dom';
+import Loading from '../pages/auth/Loading';
+
+import {useMitt} from 'react-mitt';
+import {ROLE} from '../contants/auth';
+import BaseHeader from '../components/BaseHeader';
 
 const {Header, Content, Sider} = Layout;
-const condition = 1;
+
 const antIcon = (
 	<Loading3QuartersOutlined type='reload' style={{fontSize: 24}} spin />
 );
 const MainLayout = () => {
 	const [collapsed, setCollapsed] = useState(false);
-	const navigate = useNavigate();
-	const {isLogin,role} = useSelector((state) => state.auth);
+	const {role, loading} = useSelector((state) => state.auth);
+	const {emitter} = useMitt();
+	const [pending, setPending] = useState(false);
+	// listen to an event
 
 	useEffect(() => {
-		if (!isLogin) navigate('/login');
-	}, [isLogin, role]);
-
+		// listen and respond to 'foo' events
+		emitter.on('pendingOn', (e) => setPending(true));
+		emitter.on('pendingOff', (e) => setPending(false));
+	}, []);
 	return (
 		<>
-			{condition == 2 ? (
+			{loading ? <Loading /> : ''}
+			{pending ? (
 				<div className='bg-blue-500 bg-opacity-10 fixed w-screen h-screen flex items-center justify-center  z-50'>
 					<Spin
 						indicator={antIcon}
@@ -68,6 +76,7 @@ const MainLayout = () => {
 								Trang chủ
 							</Link>
 						</Menu.Item>
+					<Divider/>
 						<Menu.Item>
 							<Link to={'/products'} className='flex items-center gap-2'>
 								<BaseIcon color='#60a5fa' size={24}>
@@ -85,34 +94,13 @@ const MainLayout = () => {
 							</Link>
 						</Menu.Item>
 
+						<Divider />
 						<Menu.Item>
 							<Link to={'/orders'} className='flex items-center gap-2'>
 								<BaseIcon color='#60a5fa' size={24}>
 									<FaOpencart />
 								</BaseIcon>
 								Đơn hàng
-							</Link>
-						</Menu.Item>
-						<Divider />
-						{role == 1? (
-							''
-						) : (
-							<Menu.Item>
-								<Link to={'/partners'} className='flex items-center gap-2'>
-									<BaseIcon color='#60a5fa' size={24}>
-										<MdGroups />
-									</BaseIcon>
-									Đối tác
-								</Link>
-							</Menu.Item>
-						)}
-
-						<Menu.Item>
-							<Link to={'/messages'} className='flex items-center gap-2'>
-								<BaseIcon color='#60a5fa' size={24}>
-									<BiMessageSquareDots />
-								</BaseIcon>
-								Tin Nhắn
 							</Link>
 						</Menu.Item>
 						<Menu.Item>
@@ -123,25 +111,30 @@ const MainLayout = () => {
 								Thanh toán
 							</Link>
 						</Menu.Item>
+						<Divider />
+
+						{role == ROLE.ADMIN ? (
+							<Menu.Item>
+								<Link to={'/partners'} className='flex items-center gap-2'>
+									<BaseIcon color='#60a5fa' size={24}>
+										<MdGroups />
+									</BaseIcon>
+									Đối tác
+								</Link>
+							</Menu.Item>
+						) : null}
+						<Menu.Item>
+							<Link to={'/messages'} className='flex items-center gap-2'>
+								<BaseIcon color='#60a5fa' size={24}>
+									<BiMessageSquareDots />
+								</BaseIcon>
+								Tin Nhắn
+							</Link>
+						</Menu.Item>
 					</Menu>
 				</Sider>
 				<Layout className='site-layout'>
-					<Header className='border-b flex justify-between items-center '>
-						<Breadcrumb>
-							<Breadcrumb.Item>User</Breadcrumb.Item>
-							<Breadcrumb.Item>Bill</Breadcrumb.Item>
-						</Breadcrumb>
-						<div className='flex gap-5'>
-							<span>Hi ! Tin Tưởng</span>
-							<span className='avatar-item'>
-								<BaseDropdown>
-									<Badge count={1}>
-										<Avatar shape='square' icon={<UserOutlined />} />
-									</Badge>
-								</BaseDropdown>
-							</span>
-						</div>
-					</Header>
+					<BaseHeader/>
 					<Content className='p-7 z-10'>
 						{/* content */}
 						<Outlet />

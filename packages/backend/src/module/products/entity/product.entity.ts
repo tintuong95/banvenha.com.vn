@@ -1,4 +1,11 @@
-import {Entity, Column, ManyToOne, JoinColumn, OneToOne} from 'typeorm';
+import {
+	Entity,
+	Column,
+	ManyToOne,
+	JoinColumn,
+	OneToOne,
+	BeforeInsert,
+} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {PRODUCT_STATE, PRODUCT_STATUS} from '../type/product.type';
@@ -16,6 +23,7 @@ import {ProductFiles} from '~module/product-files/entity/product-files.entity';
 import {ProductGroup} from '~module/product-groups/entity/product-group.entity';
 import {Order} from '~module/orders/entity/order.entity';
 import {Exclude} from 'class-transformer';
+import {generateCode} from '~util/generate';
 
 @Entity({name: 'products'})
 export class Product extends BaseEntity {
@@ -70,7 +78,7 @@ export class Product extends BaseEntity {
 	@Column({
 		type: 'enum',
 		enum: PRODUCT_STATUS,
-		default: PRODUCT_STATUS.NORMAL,
+		default: PRODUCT_STATUS.PROCESS,
 	})
 	@ApiProperty()
 	status: PRODUCT_STATUS;
@@ -137,4 +145,9 @@ export class Product extends BaseEntity {
 
 	@OneToOne(() => Order, (order) => order[PRODUCT_KEY])
 	[ORDER_KEY]: Order;
+
+	@BeforeInsert()
+	generateCode() {
+		this.code = generateCode('BP');
+	}
 }

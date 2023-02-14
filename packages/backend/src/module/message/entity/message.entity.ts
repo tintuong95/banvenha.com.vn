@@ -1,10 +1,11 @@
-import {Entity, Column, ManyToOne, JoinColumn} from 'typeorm';
+import {Entity, Column, ManyToOne, JoinColumn, BeforeInsert} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {MESSAGE_STATUS} from '../type/message.type';
 import {RECEIVER_KEY, SENDER_KEY} from '~contants/relation';
 import {Admin} from '~module/admin/entity/admin.entity';
 import {Exclude} from 'class-transformer';
+import {generateCode} from '~util/generate';
 
 @Entity({name: 'messages'})
 export class Message extends BaseEntity {
@@ -57,4 +58,9 @@ export class Message extends BaseEntity {
 	@ManyToOne(() => Admin, {cascade: true})
 	@JoinColumn({name: 'sender_id'})
 	[SENDER_KEY]: Admin;
+
+	@BeforeInsert()
+	generateCode() {
+		this.code = generateCode('ME');
+	}
 }

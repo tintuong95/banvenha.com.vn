@@ -1,6 +1,7 @@
 export enum PRODUCT_STATUS {
-	NORMAL = 0,
-	BAN = 1,
+	PROCESS = 0,
+	ACTIVED = 1,
+	BLOCKED = 2,
 }
 
 export enum PRODUCT_STATE {

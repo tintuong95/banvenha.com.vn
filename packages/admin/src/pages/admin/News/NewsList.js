@@ -1,5 +1,4 @@
 import {
-	Avatar,
 	Button,
 	Input,
 	Pagination,
@@ -9,6 +8,8 @@ import {
 	Table,
 	Tag,
 	Tooltip,
+	Modal,
+	notification,
 } from 'antd';
 import AddButton from '../../../components/AddButton';
 import {
@@ -19,163 +20,285 @@ import {
 	EyeOutlined,
 	LikeOutlined,
 	ClearOutlined,
+	ExclamationCircleFilled,
 } from '@ant-design/icons';
 import {useEffect, useState} from 'react';
-import {axios} from '../../../config/axios';
-import moment from 'moment';
-import {NEWS_STATUS, NEWS_STATUS_TEXT} from '../../../contants/table';
+import {
+	NEWS_STATE,
+	NEWS_STATE_TEXT,
+	NEWS_STATUS,
+	NEWS_STATUS_TEXT,
+	NOTIFICATION_TYPE,
+	NEWS_STATUS_UPDATE_TEXT,
+} from '../../../contants/table';
 
-const columns = [
-	{
-		title: 'Hình',
-		dataIndex: 'image',
-		key: 'image',
-		render: (text) => (
-			<Avatar className='shadow-md' shape='square' size={64} src={text} />
-		),
-	},
+import BaseAvatar from '../../../components/BaseAvatar';
+import {
+	getNewsGroupApi,
+	getNewsListApi,
+	removeNewsById,
+	updateNewsStatusByAdmin,
+} from '../../../apis/news';
+import {useMitt} from 'react-mitt';
 
-	{
-		title: 'Tên',
-		dataIndex: 'name',
-		key: 'name',
-		render: (_, record) => {
-			return (
-				<div className='flex flex-col'>
-					<span className='font-semibold'>{record.name}</span>
-					<div className='text-sm'>
-						<span className='text-slate-500'>{record.code}</span> -
-						<a href='#d' className='text-slate-500'>
-							{record.partner}
-						</a>
-					</div>
-				</div>
-			);
-		},
-	},
-	{
-		title: 'Nhóm',
-		dataIndex: 'group',
-		key: 'group',
-	},
-	{
-		title: 'Tổng quan',
-		dataIndex: 'views',
-		key: 'views',
-		render: (_, record) => {
-			return (
-				<div className='flex gap-3'>
-					<div className='flex gap-1 items-center'>
-						<EyeOutlined style={{color: 'gray'}} />
-						{record.views}
-					</div>
-					<div className='flex gap-1 items-center'>
-						<LikeOutlined style={{color: 'blue'}} />
-						{record.views}
-					</div>
-				</div>
-			);
-		},
-	},
-
-	{
-		title: 'Tình trạng',
-		key: 'state',
-		dataIndex: 'state',
-		render: () => (
-			<Switch
-				checkedChildren='NORMAL'
-				unCheckedChildren='DRAFT'
-				defaultChecked
-				disabled={true}
-			/>
-		),
-	},
-	{
-		title: 'Trạng thái',
-		key: 'status',
-		dataIndex: 'status',
-
-		render: (text) => {
-			if (text == NEWS_STATUS.PROCESS)
-				return (
-					<Tag color={'cyan'} key={'cyan'}>
-						{NEWS_STATUS_TEXT[NEWS_STATUS.PROCESS]}
-					</Tag>
-				);
-
-			if (text == NEWS_STATUS.ACTIVED)
-				return (
-					<Tag color={'green'} key={'green'}>
-						{NEWS_STATUS_TEXT[NEWS_STATUS.ACTIVED]}
-					</Tag>
-				);
-
-			if (text == NEWS_STATUS.BLOCKED)
-				return (
-					<Tag color={'volcano'} key={'volcano'}>
-						{NEWS_STATUS_TEXT[NEWS_STATUS.BLOCKED]}
-					</Tag>
-				);
-		},
-	},
-	{
-		title: 'Thời gian',
-		key: 'updated_at',
-		dataIndex: 'updated_at',
-		render: (text) => moment(text).format('hh:mm DD-MM-YYYY '),
-	},
-	{
-		title: 'Thao tác',
-		key: 'action',
-		render: () => (
-			<Space size='middle'>
-				<Tooltip placement='top' title={'Gửi tin nhắn'}>
-					<Button type='link' icon={<MessageOutlined />}></Button>
-				</Tooltip>
-				<Tooltip placement='top' title={'Khóa sản phẩm'}>
-					<Button type='text' icon={<UnlockOutlined />}></Button>
-				</Tooltip>
-				<Tooltip placement='top' title={'Xóa sản phẩm'}>
-					<Button type='link' danger icon={<DeleteOutlined />}></Button>
-				</Tooltip>
-
-				{/* <Button type='link' danger icon={<DeleteOutlined />}></Button> */}
-			</Space>
-		),
-	},
-];
-
-// rowSelection object indicates the need for row selection
-const rowSelection = {
-	onChange: (selectedRowKeys, selectedRows) => {
-		if (selectedRows.length > 0) {
-			jQuery('#list-action').fadeIn(500);
-		} else {
-			jQuery('#list-action').hide();
-		}
-	},
-};
-const onChange = (pageNumber) => {
-	console.log('Page: ', pageNumber);
-};
+const {confirm} = Modal;
 
 const NewsList = () => {
 	const [newsList, setNewsList] = useState([]);
+	const [newsGroupList, setNewsGroupList] = useState([]);
+	const {emitter} = useMitt();
+	const [params, setParams] = useState({
+		currentPage: 1,
+		perPage: 2,
+		name: null,
+		status: null,
+		state: null,
+		group_id: null,
+	});
 
-	const fetchNewsList = () => {
-		axios('/news/list')
-			.then((result) => setNewsList(result.data.items))
+	const fetchNewsList = (params) => {
+		emitter.emit('pendingOn');
+		getNewsListApi(params)
+			.then((result) => {
+				setNewsList(result.data);
+				emitter.emit('pendingOff');
+			})
+			.catch((err) => {
+				console.log(err);
+				emitter.emit('pendingOff');
+			});
+	};
+
+	const fetchNewsGroupList = () => {
+		getNewsGroupApi()
+			.then((result) => setNewsGroupList(result.data))
 			.catch((err) => {
 				console.log(err);
 			});
 	};
 
+	const fetchNewsRemove = (id) => {
+		removeNewsById(id)
+			.then((result) => {
+				console.log(result);
+				openNotification(NOTIFICATION_TYPE.success, 'Đã xóa thành công !');
+			})
+			.catch((err) => {
+				console.log(err);
+				openNotification(NOTIFICATION_TYPE.error, 'Xóa thất bại !');
+			});
+	};
+
+	const fetchNewsUpdateStatus = (id, status) => {
+		updateNewsStatusByAdmin(id, status)
+			.then((result) => {
+				console.log(result);
+				fetchNewsList(params);
+				openNotification(NOTIFICATION_TYPE.success, 'Cập nhật thành công !');
+			})
+			.catch((err) => {
+				console.log(err);
+				openNotification(NOTIFICATION_TYPE.error, 'Cập nhật thất bại !');
+			});
+	};
+
+	const onChange = (pageNumber) => {
+		setParams({...params, currentPage: pageNumber});
+	};
+
+	const onRemoveConfirm = (id) => {
+		confirm({
+			title: 'Vui lòng xác nhận xóa !',
+			icon: <ExclamationCircleFilled />,
+			content: 'Không thể khôi phục lại sau khi xóa.',
+			onOk() {
+				fetchNewsRemove(id);
+			},
+			onCancel() {
+				console.log('Cancel');
+			},
+		});
+	};
+
+	const onUpdateStatusConfirm = (id, status) => {
+		confirm({
+			title: 'Vui lòng xác nhận thay đổi !',
+			icon: <ExclamationCircleFilled />,
+			content: '',
+			onOk() {
+				fetchNewsUpdateStatus(id, status);
+			},
+			onCancel() {
+				console.log('Cancel');
+			},
+		});
+	};
+
+	const openNotification = (type, message, description) => {
+		notification[type]({
+			type,
+			message,
+			description,
+			onClick: () => {
+				console.log('Notification Clicked!');
+			},
+		});
+	};
+
+	const newsGroupOptions = () =>
+		newsGroupList.map((item) => ({
+			label: item.name,
+			value: item.id,
+		}));
+
 	useEffect(() => {
-		fetchNewsList();
+		fetchNewsList(params);
+	}, [params.currentPage]);
+
+	useEffect(() => {
+		fetchNewsGroupList();
 	}, []);
 
-	console.log(newsList);
+	const columns = [
+		{
+			title: 'Hình',
+			dataIndex: 'image',
+			key: 'image',
+			render: (text) => <BaseAvatar src={text} />,
+		},
+
+		{
+			title: 'Tên',
+			dataIndex: 'name',
+			key: 'name',
+			render: (_, record) => {
+				return (
+					<div className='flex flex-col'>
+						<span className='font-semibold'>{record.name}</span>
+						<div className='text-sm'>
+							<span className='text-slate-500'>{record.id}</span> -
+							<a href='#d' className='text-slate-500'>
+								{record.admin.name}
+							</a>
+						</div>
+					</div>
+				);
+			},
+		},
+		{
+			title: 'Nhóm',
+			dataIndex: 'news_group.name',
+			key: 'news_group.name',
+			render: (_, record) => record.news_group.name,
+		},
+		{
+			title: 'Tổng quan',
+			dataIndex: 'views',
+			key: 'views',
+			render: (_, record) => {
+				return (
+					<div className='flex gap-3'>
+						<div className='flex gap-1 items-center'>
+							<EyeOutlined style={{color: 'gray'}} />
+							{record.views}
+						</div>
+						<div className='flex gap-1 items-center'>
+							<LikeOutlined style={{color: 'blue'}} />
+							{record.views}
+						</div>
+					</div>
+				);
+			},
+		},
+
+		{
+			title: 'Tình trạng',
+			key: 'state',
+			dataIndex: 'state',
+			render: (text) => (
+				<Switch
+					checkedChildren='NORMAL'
+					unCheckedChildren='DRAFT'
+					defaultChecked={text === NEWS_STATE.NORMAL}
+					disabled={true}
+				/>
+			),
+		},
+		{
+			title: 'Trạng thái',
+			key: 'status',
+			dataIndex: 'status',
+
+			render: (text) => {
+				if (text == NEWS_STATUS.PROCESS)
+					return (
+						<Tag color={'cyan'} key={'cyan'}>
+							{NEWS_STATUS_TEXT[NEWS_STATUS.PROCESS]}
+						</Tag>
+					);
+
+				if (text == NEWS_STATUS.ACTIVED)
+					return (
+						<Tag color={'green'} key={'green'}>
+							{NEWS_STATUS_TEXT[NEWS_STATUS.ACTIVED]}
+						</Tag>
+					);
+
+				if (text == NEWS_STATUS.BLOCKED)
+					return (
+						<Tag color={'volcano'} key={'volcano'}>
+							{NEWS_STATUS_TEXT[NEWS_STATUS.BLOCKED]}
+						</Tag>
+					);
+			},
+		},
+		{
+			title: 'Thời gian',
+			key: 'updated_at',
+			dataIndex: 'updated_at',
+			render: (text) => moment(text).format('hh:mm DD/MM/YYYY '),
+		},
+		{
+			title: 'Thao tác',
+			key: 'action',
+			render: (_, record) => (
+				<Space size='middle'>
+					{/* <Tooltip placement='top' title={'Gửi tin nhắn'}>
+						<Button type='link' icon={<MessageOutlined />}></Button>
+					</Tooltip> */}
+					<Tooltip placement='top' title={NEWS_STATUS_UPDATE_TEXT[record.status]}>
+						<Button
+							onClick={() => {
+								onUpdateStatusConfirm(record.id, 2);
+							}}
+							type='text'
+							icon={<UnlockOutlined />}></Button>
+					</Tooltip>
+					<Tooltip placement='top' title={'Xóa sản phẩm'}>
+						<Button
+							onClick={() => {
+								onRemoveConfirm(record.id);
+							}}
+							type='link'
+							danger
+							icon={<DeleteOutlined />}></Button>
+					</Tooltip>
+					{/* <Button type='link' danger icon={<DeleteOutlined />}></Button> */}
+				</Space>
+			),
+		},
+	];
+
+	const rowSelection = {
+		onChange: (selectedRowKeys, selectedRows) => {
+			if (selectedRows.length > 0) {
+				jQuery('#list-action').fadeIn(500);
+			} else {
+				jQuery('#list-action').hide();
+			}
+		},
+	};
+
 	return (
 		<>
 			<div className='flex gap-4 mb-5 items-center'>
@@ -184,55 +307,95 @@ const NewsList = () => {
 					style={{
 						width: 200,
 					}}
-					placeholder='Basic usage'
+					placeholder='Nhập tên '
+					value={params.name}
+					onChange={(e) => {
+						setParams({...params, name: e.target.value});
+					}}
 				/>
 				Nhóm :
 				<Select
-					defaultValue='lucy'
+					placeholder='Vui lòng chọn'
 					style={{
 						width: 200,
 					}}
-					options={[
-						{
-							value: 'lucy',
-							label: 'Lucy',
-						},
-					]}
+					onChange={(value) => {
+						setParams({...params, group_id: value});
+					}}
+					value={params.group_id}
+					options={newsGroupOptions()}
 				/>
 				Tình trạng :
 				<Select
-					defaultValue='lucy'
+					placeholder='Vui lòng chọn'
 					style={{
 						width: 200,
 					}}
+					onChange={(value) => {
+						setParams({...params, state: value});
+					}}
+					value={params.state}
 					options={[
 						{
-							value: 'lucy',
-							label: 'Lucy',
+							value: NEWS_STATE.DRAFT,
+							label: NEWS_STATE_TEXT[NEWS_STATE.DRAFT],
+						},
+						{
+							value: NEWS_STATE.NORMAL,
+							label: NEWS_STATE_TEXT[NEWS_STATE.NORMAL],
 						},
 					]}
 				/>
 				Trạng thái :
 				<Select
-					defaultValue='lucy'
+					placeholder='Vui lòng chọn'
 					style={{
 						width: 200,
 					}}
+					onChange={(value) => {
+						setParams({...params, status: value});
+						console.log(params);
+					}}
+					value={params.status}
 					options={[
 						{
-							value: 'lucy',
-							label: 'Lucy',
+							value: NEWS_STATUS.BLOCKED,
+							label: NEWS_STATUS_TEXT[NEWS_STATUS.BLOCKED],
+						},
+						{
+							value: NEWS_STATUS.ACTIVED,
+							label: NEWS_STATUS_TEXT[NEWS_STATUS.ACTIVED],
+						},
+						{
+							value: NEWS_STATUS.PROCESS,
+							label: NEWS_STATUS_TEXT[NEWS_STATUS.PROCESS],
 						},
 					]}
 				/>
-				<Button type='primary' icon={<SearchOutlined />}>
+				<Button
+					onClick={() => {
+						fetchNewsList(params);
+					}}
+					type='primary'
+					icon={<SearchOutlined />}>
 					Tìm kiếm
 				</Button>
-				<Button type='link' icon={<ClearOutlined />}>
+				<Button
+					onClick={() => {
+						setParams({
+							...params,
+							group_id: null,
+							name: null,
+							state: null,
+							status: null,
+						});
+					}}
+					type='link'
+					icon={<ClearOutlined />}>
 					Clear
 				</Button>
 			</div>
-			<div className='mb-5  hidden' id='list-action'>
+			<div className='hidden-cover mb-4' id='list-action'>
 				<div className='flex gap-4'>
 					<Button type='link' icon={<DeleteOutlined />}>
 						Xóa nhiều
@@ -251,17 +414,18 @@ const NewsList = () => {
 				}}
 				pagination={false}
 				columns={columns}
-				dataSource={newsList}
+				dataSource={newsList?.data}
 			/>
 			<div className='my-5'>
 				<Pagination
 					showQuickJumper
-					defaultCurrent={2}
-					total={500}
+					defaultCurrent={1}
+					pageSize={params?.perPage}
+					total={newsList?.meta?.total}
 					onChange={onChange}
 				/>
 			</div>
-			<AddButton to={'/news/create'} />
+			{/* <AddButton to={'/news/create'} /> */}
 		</>
 	);
 };

@@ -15,6 +15,7 @@ import {NewsGroup} from '~module/news-groups/entity/news-group.entity';
 import {Admin} from '~module/admin/entity/admin.entity';
 import {Exclude} from 'class-transformer';
 import createSlug from '~util/createSlug';
+import {generateCode} from '~util/generate';
 
 @Entity({name: 'news'})
 export class News extends BaseEntity {
@@ -24,6 +25,13 @@ export class News extends BaseEntity {
 	})
 	@ApiProperty()
 	name: string;
+
+	@Column({
+		length: 50,
+		nullable: false,
+	})
+	@ApiProperty()
+	code: string;
 
 	@Column({
 		length: 50,
@@ -55,7 +63,7 @@ export class News extends BaseEntity {
 	@Column({
 		type: 'enum',
 		enum: NEWS_STATUS,
-		default: NEWS_STATUS.NORMAL,
+		default: NEWS_STATUS.PROCESS,
 	})
 	@ApiProperty()
 	status: NEWS_STATUS;
@@ -115,5 +123,10 @@ export class News extends BaseEntity {
 	@BeforeUpdate()
 	updateSlug() {
 		this.param = createSlug(this.name);
+	}
+
+	@BeforeInsert()
+	generateCode() {
+		this.code = generateCode('NE');
 	}
 }

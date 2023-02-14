@@ -4,6 +4,8 @@ export const MESSAGE_REQUIRE = {
 };
 
 
+export const MESSAGE_REQUIRE_INPUT = 'Vui lòng nhập!';
+
 export const MESSAGE_TYPE = {
     MAIL:"Không phải định dạng mail!",
 }

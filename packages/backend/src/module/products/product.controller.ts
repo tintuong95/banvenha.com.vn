@@ -11,7 +11,8 @@ import {
 	UseGuards,
 	UseInterceptors,
 	UploadedFiles,
-	UploadedFile,
+	Query,
+	Request,
 } from '@nestjs/common';
 import {ProductService} from './product.service';
 import {CreateProductAllFieldDto, UpdateProductDto} from './dto/product.dto';
@@ -19,11 +20,7 @@ import {Product} from './entity/product.entity';
 import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
 import {Roles} from '~module/auth/roles.decorator';
 import {ROLE} from '~contants/role';
-import {
-	FileFieldsInterceptor,
-	FileInterceptor,
-	FilesInterceptor,
-} from '@nestjs/platform-express';
+import {FileFieldsInterceptor} from '@nestjs/platform-express';
 import {uploadFileConfig} from '~config/multer.config';
 import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
@@ -33,8 +30,12 @@ import {UserDto} from '~shared/user.dto';
 export class ProductController {
 	constructor(private productService: ProductService) {}
 	@Get('list')
-	async getAllProducts(): Promise<any> {
-		return await this.productService.getAllProducts();
+	async getAllProducts(
+		@Query() query: any,
+		@Request() req: any,
+		@User() user: UserDto
+	): Promise<any> {
+		return await this.productService.getAllProducts(req, query, user);
 	}
 	@Get(':id/details')
 	async getProductDetails(
@@ -102,5 +103,14 @@ export class ProductController {
 	@Roles(ROLE.ADMIN)
 	async deleteProduct(@Param('id', ParseIntPipe) id: number): Promise<string> {
 		return await this.productService.deleteProduct(id);
+	}
+
+	@Post(':id/status')
+	@Roles(ROLE.ADMIN)
+	async updateStatusProductByAdmin(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() statusDto: UpdateProductDto
+	): Promise<string> {
+		return await this.productService.updateStatusByAdmin(id, statusDto);
 	}
 }

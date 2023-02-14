@@ -16,7 +16,7 @@ import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
 import {Roles} from '~module/auth/roles.decorator';
 import {ROLE} from '~contants/role';
 
-@Controller('news-group')
+@Controller('newsGroup')
 @UseGuards(JwtAuthGuard)
 export class NewsGroupController {
 	constructor(private newsGroupService: NewsGroupService) {}

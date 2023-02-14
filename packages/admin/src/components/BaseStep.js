@@ -20,21 +20,18 @@ const BaseStep = ({current}) => (
         progressDot={customDot}
         items={[
             {
-                title: 'Finished',
+                title: 'Nhập thông tin',
                 description,
             },
             {
-                title: 'In Progress',
+                title: 'Nhập nội dung',
                 description,
             },
             {
-                title: 'Waiting',
+                title: 'Xác nhận',
                 description,
             },
-            {
-                title: 'Waiting',
-                description,
-            },
+        
         ]}
     />
 );

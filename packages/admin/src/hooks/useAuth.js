@@ -5,7 +5,7 @@ export default function useAuth() {
 	const [role, setRole] = useState(null);
     const navigate = useNavigate()
 	const getRoles = () => {
-		const role = sessionStorage.getItem('ROLE');
+		const role = localStorage.getItem('ROLE');
 		if (role == 'ADMIN') {
 			setRole('ADMIN');
 		} else if (role == 'PARTNER') {

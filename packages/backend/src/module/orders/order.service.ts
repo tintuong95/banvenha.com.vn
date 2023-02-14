@@ -5,6 +5,12 @@ import {CreateOrderDto, UpdateOrderDto} from './dto/order.dto';
 import {Order} from './entity/order.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
+import {handleQuery, pagination} from '~util/pagination';
+import {findOptionWhere} from '~util/query';
+import {ADMIN_KEY, PRODUCT_KEY} from '~contants/relation';
+import {Request} from 'express';
+import {UserDto} from '~shared/user.dto';
+import {ROLE} from '~contants/role';
 
 @Injectable()
 export class OrderService {
@@ -13,8 +19,27 @@ export class OrderService {
 		private orderRepository: Repository<Order>
 	) {}
 
-	async getAllOrders(): Promise<any> {
-		return await this.orderRepository.find();
+	async getAllOrders(
+		request: Request,
+		query: any,
+		user: UserDto
+	): Promise<any> {
+		const {skip, take, currentPage, perPage} = handleQuery(query);
+
+		const newQuery = findOptionWhere(query, ['code', 'name']);
+
+		const isPartner = user.role === ROLE.PARTNER;
+
+		if (isPartner) newQuery['admin_id'] = user.id;
+
+		const result = await this.orderRepository.findAndCount({
+			where: newQuery,
+			relations: [ADMIN_KEY, PRODUCT_KEY],
+			take,
+			skip,
+			withDeleted: user.role === ROLE.ADMIN,
+		});
+		return pagination(request, result, currentPage, perPage);
 	}
 
 	async getOrderDetails(id: number): Promise<Order | any> {

@@ -20,7 +20,7 @@ import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
 import {Roles} from '~module/auth/roles.decorator';
 import {ROLE} from '~contants/role';
 
-@Controller('product-group')
+@Controller('productGroup')
 @UseGuards(JwtAuthGuard)
 export class ProductGroupController {
 	constructor(private productGroupService: ProductGroupService) {}

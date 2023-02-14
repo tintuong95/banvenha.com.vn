@@ -83,7 +83,7 @@ function mapQuery(query, currentPage) {
 }
 
 export function handleQuery(query: any) {
-	const {currentPage, perPage} = query;
+	const {currentPage = 1, perPage = 10} = query;
 	const skip = +perPage * +currentPage - +perPage;
 	return {
 		skip,

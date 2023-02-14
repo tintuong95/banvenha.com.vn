@@ -3,7 +3,9 @@ import {ConfigService} from '@nestjs/config';
 import {JwtModule} from '@nestjs/jwt/dist';
 import {PassportModule} from '@nestjs/passport';
 import {AccountModule} from '~module/account/account.module';
-import {AppController} from './app.controller';
+import {AdminChildModule} from '~module/admin/auth/admin.auth.module';
+import {AppController} from './auth.controller';
+
 import {AuthService} from './auth.service';
 import {JwtStrategy} from './jwt.strategy';
 
@@ -11,6 +13,7 @@ import {JwtStrategy} from './jwt.strategy';
 	imports: [
 		AccountModule,
 		PassportModule,
+		AdminChildModule,
 		JwtModule.registerAsync({
 			useFactory: (configService: ConfigService) => {
 				console.log(configService.get<string>('jwt.secret_key'));

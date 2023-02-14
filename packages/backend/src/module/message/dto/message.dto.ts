@@ -18,11 +18,11 @@ export class CreateMessageDto {
 
 	@IsNumber()
 	@Expose()
-	admin_id: number;
+	sender_id: number;
 
 	@IsNumber()
 	@Expose()
-	partner_id: number;
+	receiver_id: number;
 
 	@IsOptional()
 	@IsEnum(MESSAGE_STATUS)
