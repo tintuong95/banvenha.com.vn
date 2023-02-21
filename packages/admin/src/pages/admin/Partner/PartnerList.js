@@ -1,6 +1,7 @@
 import {
 	Avatar,
 	Button,
+	DatePicker,
 	Input,
 	Modal,
 	notification,
@@ -19,18 +20,34 @@ import {
 	ClearOutlined,
 	ExclamationCircleFilled,
 	MessageOutlined,
+	ProjectOutlined,
+	LockOutlined,
+	ClockCircleOutlined,
+	RollbackOutlined,
+	DownCircleOutlined,
 } from '@ant-design/icons';
 import {useEffect, useState} from 'react';
 import {useMitt} from 'react-mitt';
 import {getAccountListApi, removeAccountById} from '../../../apis/admin';
-import {NOTIFICATION_TYPE} from '../../../contants/table';
+import {
+	NOTIFICATION_TYPE,
+	PARTNER_STATUS,
+	PARTNER_STATUS_TEXT,
+} from '../../../contants/table';
 import {restorePaymentById} from '../../../apis/payment';
+import ModalMessage from '../Message/components/ModalMessage';
 
 const {confirm} = Modal;
 
 const PartnerList = () => {
-	const [partnerList, setPartnerList] = useState([]);
 	const {emitter} = useMitt();
+	const [visible, setVisible] = useState(true);
+	const [visibleModal, setVisibleModal] = useState(false);
+	const [message,setMessage] = useState({
+		title: '',
+		content: '',
+	});
+	const [partnerList, setPartnerList] = useState([]);
 	const [params, setParams] = useState({
 		currentPage: 1,
 		perPage: 2,
@@ -79,11 +96,44 @@ const PartnerList = () => {
 			title: 'Trạng thái',
 			key: 'status',
 			dataIndex: 'status',
-			render: () => (
-				<Tag color={'green'} key={'green'}>
-					NORMAL
-				</Tag>
-			),
+			render: (text, record) => {
+				if (record.deleted_at)
+					return (
+						<Button
+							size='small'
+							className='border-gray-500 bg-gray-400 text-white'
+							icon={<DeleteOutlined style={{color: 'white'}} />}>
+							Deleted
+						</Button>
+					);
+				else if (text == PARTNER_STATUS.process)
+					return (
+						<Button
+							size='small'
+							className='border-sky-500 bg-sky-400 text-white'
+							icon={<ClockCircleOutlined spin={180} style={{color: 'white'}} />}>
+							{PARTNER_STATUS_TEXT[PARTNER_STATUS.process]}
+						</Button>
+					);
+				else if (text == PARTNER_STATUS.actived)
+					return (
+						<Button
+							size='small'
+							className='border-green-500 bg-green-400 text-white'
+							icon={<DownCircleOutlined style={{color: 'white'}} />}>
+							{PARTNER_STATUS_TEXT[PARTNER_STATUS.actived]}
+						</Button>
+					);
+				else if (text == PARTNER_STATUS.blocked)
+					return (
+						<Button
+							size='small'
+							className='border-red-500 bg-red-400 text-white'
+							icon={<LockOutlined style={{color: 'white'}} />}>
+							{PARTNER_STATUS_TEXT[PARTNER_STATUS.blocked]}
+						</Button>
+					);
+			},
 		},
 		{
 			title: 'Ngày tạo',
@@ -92,20 +142,37 @@ const PartnerList = () => {
 			render: (text) => moment(text).format('hh:mm DD/MM/YYYY '),
 		},
 		{
-			title: 'Action',
+			title: 'Thao tác',
 			key: 'action',
 			render: (_, record) => (
 				<Space size='middle'>
-
 					<Tooltip placement='top' title={'Gửi tin nhắn'}>
-						<Button type='link' icon={<MessageOutlined />}></Button>
+						<Button onClick={()=>{setVisibleModal(true)}} type='link' icon={<MessageOutlined />}></Button>
 					</Tooltip>
 					<Tooltip placement='top' title={'Khóa sản phẩm'}>
 						<Button type='text' icon={<UnlockOutlined />}></Button>
 					</Tooltip>
-					<Tooltip placement='top' title={'Xóa sản phẩm'}>
-						<Button type='link' danger icon={<DeleteOutlined />}></Button>
-					</Tooltip>
+					{record?.deleted_at ? (
+						<Tooltip placement='top' title={'Xóa sản phẩm'}>
+							<Button
+								onClick={() => {
+									onRemoveConfirm(record.id);
+								}}
+								type='link'
+								icon={<RollbackOutlined />}></Button>
+						</Tooltip>
+					) : (
+						<Tooltip placement='top' title={'Khôi phục'}>
+							<Button
+								onClick={() => {
+									onRestoreConfirm(record.id);
+								}}
+								type='link'
+								danger
+								icon={<DeleteOutlined />}></Button>
+						</Tooltip>
+					)}
+
 					{/* <Button type='link' danger icon={<DeleteOutlined />}></Button> */}
 				</Space>
 			),
@@ -195,37 +262,93 @@ const PartnerList = () => {
 	useEffect(() => {
 		fetchPartnerList(params);
 	}, [params.currentPage]);
-    
+
 	return (
 		<>
-			<div className='flex gap-4 mb-5 items-center'>
+			<ModalMessage
+				visibleModal={visibleModal}
+				setVisibleModal={setVisibleModal}
+				dataModal={message}
+				setDataModal={setMessage}
+			/>
+			<div className='flex flex-wrap gap-4 mb-5 items-center'>
 				Tên :
 				<Input
 					style={{
 						width: 200,
 					}}
-					placeholder='Basic usage'
+					placeholder='Vui lòng nhập'
 				/>
 				Phone :
 				<Input
 					style={{
 						width: 200,
 					}}
-					placeholder='Basic usage'
+					placeholder='Vui lòng nhập'
 				/>
 				Tỉnh :
-				<Select
-					defaultValue='lucy'
+				<Input
 					style={{
 						width: 200,
 					}}
+					placeholder='Vui lòng nhập'
+				/>
+				Trạng thái :
+				<Select
+					placeholder='Vui lòng chọn'
+					style={{
+						width: 200,
+					}}
+					onChange={(value) => {
+						setParams({...params, status: value});
+					}}
+					value={params.status}
 					options={[
 						{
-							value: 'lucy',
-							label: 'Lucy',
+							value: PARTNER_STATUS.process,
+							label: PARTNER_STATUS_TEXT[PARTNER_STATUS.process],
+						},
+						{
+							value: PARTNER_STATUS.actived,
+							label: PARTNER_STATUS_TEXT[PARTNER_STATUS.actived],
+						},
+						{
+							value: PARTNER_STATUS.blocked,
+							label: PARTNER_STATUS_TEXT[PARTNER_STATUS.blocked],
 						},
 					]}
 				/>
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Bắt đầu :
+						<DatePicker
+							style={{
+								width: 200,
+							}}
+							onChange={(_, dateString) => {
+								setParams({...params, start: dateString});
+							}}
+						/>
+					</div>
+				)}
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Kết thúc :
+						<DatePicker
+							style={{
+								width: 200,
+							}}
+							onChange={(_, dateString) => {
+								setParams({...params, end: dateString});
+							}}
+						/>
+					</div>
+				)}
+				<Button
+					onClick={() => setVisible(!visible)}
+					type='link'
+					ghost
+					icon={<ProjectOutlined />}></Button>
 				<Button type='primary' icon={<SearchOutlined />}>
 					Tìm kiếm
 				</Button>

@@ -70,4 +70,16 @@ export class OrderController {
 	async deleteOrder(@Param('id', ParseIntPipe) id: number): Promise<string> {
 		return await this.orderService.deleteOrder(id);
 	}
+
+	@Get('/revenue/month')
+	@Roles(ROLE.PARTNER, ROLE.ADMIN)
+	async revenueMonth(@User() user: UserDto): Promise<any> {
+		return await this.orderService.revenueMounth(user);
+	}
+
+	@Get('/revenue/total')
+	@Roles(ROLE.PARTNER, ROLE.ADMIN)
+	async revenueTotal(@User() user: UserDto): Promise<any> {
+		return await this.orderService.revenueTotal(user);
+	}
 }

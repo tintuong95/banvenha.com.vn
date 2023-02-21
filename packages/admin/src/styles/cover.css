@@ -1,18 +1,23 @@
-.ck-content{
-    min-height: 500px !important;
-    margin-top: 15px !important;
-    border: 1px dashed rgb(220, 220, 220) !important;
-    border-radius: 5px !important;
+body {
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
 }
-.ck-editor__top{
-border: 1px dashed rgb(220, 220, 220) !important;
-    border-radius: 5px !important;
-    
+
+.ck-content {
+	min-height: 500px !important;
+	margin-top: 15px !important;
+	border: 1px dashed rgb(220, 220, 220) !important;
+	border-radius: 5px !important;
 }
-.ck-toolbar{
- border: none !important;
+.ck-editor__top {
+	border: 1px dashed rgb(220, 220, 220) !important;
+	border-radius: 5px !important;
+}
+.ck-toolbar {
+	border: none !important;
 }
 
 #list-action {
-    display: none ;
+	display: none;
 }

@@ -15,10 +15,6 @@ import {PRODUCT_STATE, PRODUCT_STATUS} from '../type/product.type';
 export class CreateProductDto {
 	@IsString()
 	@Expose()
-	code: string;
-
-	@IsString()
-	@Expose()
 	name: string;
 
 	@IsString()
@@ -29,6 +25,7 @@ export class CreateProductDto {
 	@Expose()
 	content: string;
 
+	@IsOptional()
 	@IsNumber()
 	@Expose()
 	creator_id: number;
@@ -52,9 +49,9 @@ export class CreateProductDto {
 	@Expose()
 	image: string;
 
-	// @IsString()
-	// @Expose()
-	// download: string;
+	@IsNumber()
+	@Expose()
+	sale: number;
 
 	@IsNumber()
 	@Expose()

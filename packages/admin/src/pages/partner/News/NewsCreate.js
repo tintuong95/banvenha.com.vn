@@ -63,7 +63,7 @@ export default function NewsCreate() {
 
 	return (
 		<div>
-			<div className='w-2/4 m-auto mb-5'>
+			<div className='w-2/4 m-auto mb-5' style={{minWidth: 825}}>
 				<BaseStep current={stepPage} />
 			</div>
 			<div className='bg-white w-2/4 m-auto p-10 rounded-md shadow-sm'>

@@ -116,7 +116,12 @@ export default function CreateStepFirst({
 					title: 'Tooltip with customize icon',
 					icon: <InfoCircleOutlined />,
 				}}>
-				<BaseUpload count={1} data={dataProduct} setData={setDataProduct} />
+				<BaseUpload
+					field={'image'}
+					count={1}
+					data={dataProduct}
+					setData={setDataProduct}
+				/>
 			</Form.Item>
 			<Divider />
 			<Form.Item
@@ -126,7 +131,12 @@ export default function CreateStepFirst({
 					title: 'Tooltip with customize icon',
 					icon: <InfoCircleOutlined />,
 				}}>
-				<BaseUpload count={5} data={dataProduct} setData={setDataProduct} />
+				<BaseUpload
+					field={'images'}
+					count={5}
+					data={dataProduct}
+					setData={setDataProduct}
+				/>
 			</Form.Item>
 			<Divider />
 			<div className='m-auto flex justify-end mt-5 gap-5'>

@@ -7,7 +7,8 @@ import {
 	Space,
 	Table,
 	Tag,
-	Modal
+	Modal,
+	DatePicker
 } from 'antd';
 import {
 	SearchOutlined,
@@ -18,6 +19,8 @@ import {
 	ExclamationCircleFilled,
 	RollbackOutlined,
 	DeleteOutlined,
+	ProjectOutlined,
+	LoadingOutlined,
 } from '@ant-design/icons';
 import {useEffect, useState} from 'react';
 import {useMitt} from 'react-mitt';
@@ -26,8 +29,7 @@ import {
 	removePaymentById,
 	restorePaymentById,
 } from '../../../apis/payment';
-import {removeOrderById, restoreRestoreById} from '../../../apis/order';
-import {NOTIFICATION_TYPE} from '../../../contants/table';
+import {NOTIFICATION_TYPE, PAYMENT_STATUS} from '../../../contants/table';
 
 
 
@@ -36,9 +38,10 @@ const {confirm}=Modal
 const PaymentList = () => {
 	const [paymentList, setPaymentList] = useState([]);
 	const {emitter} = useMitt();
+	const [visible, setVisible] = useState(true);
 	const [params, setParams] = useState({
 		currentPage: 1,
-		perPage: 2,
+		perPage: 10,
 		code: null,
 		name: null,
 	});
@@ -49,11 +52,7 @@ const PaymentList = () => {
 			key: 'qrcode',
 			render: () => <QRCode size={60} value='https://ant.design/' />,
 		},
-		{
-			title: 'Mã',
-			dataIndex: 'code',
-			key: 'code',
-		},
+
 		{
 			title: 'Người nhận',
 			dataIndex: 'amdin',
@@ -94,12 +93,26 @@ const PaymentList = () => {
 		},
 		{
 			title: 'Thanh toán',
-			dataIndex: 'payment',
-			key: 'payment',
-			render: () => {
+			dataIndex: 'status',
+			key: 'status',
+			render: (text) => {
 				return (
-					<div className='w-full text-center'>
-						<DownCircleOutlined style={{color: 'green'}} />
+					<div className='w-full flex items-center gap-2'>
+						{text == PAYMENT_STATUS.success ? (
+							<Button
+								size='small'
+								className='border-green-500 bg-green-400 text-white'
+								icon={<DownCircleOutlined style={{color: 'white'}} />}>
+								Success
+							</Button>
+						) : (
+							<Button
+								size='small'
+								className='border-yellow-500 bg-yellow-400 text-white'
+								icon={<LoadingOutlined style={{color: 'white'}} />}>
+								Pending
+							</Button>
+						)}
 					</div>
 				);
 			},
@@ -118,19 +131,14 @@ const PaymentList = () => {
 					{record.deleted_at ? (
 						<Button
 							onClick={() => onRestoreConfirm(record.id)}
-							type='primary'
-							className='bg-slate-300 text-slate-800'
-							icon={<RollbackOutlined />}>
-							Restore
-						</Button>
+							type='link'
+							icon={<RollbackOutlined />}></Button>
 					) : (
 						<Button
 							onClick={() => onRemoveConfirm(record.id)}
-							type='primary'
+							type='link'
 							danger
-							icon={<DeleteOutlined />}>
-							Delete
-						</Button>
+							icon={<DeleteOutlined />}></Button>
 					)}
 				</Space>
 			),
@@ -231,28 +239,59 @@ const PaymentList = () => {
 	}, [params.currentPage]);
 	return (
 		<>
-			<div className='flex gap-4 mb-5 items-center'>
+			<div className='flex flex-wrap gap-4 mb-5 items-center'>
 				Mã :
 				<Input
 					style={{
 						width: 200,
 					}}
-					placeholder='Basic usage'
+					placeholder='Nhập mã'
 				/>
-				Người mua :
+				Người nhận :
 				<Input
 					style={{
 						width: 200,
 					}}
-					placeholder='Basic usage'
+					placeholder='Tên người nhận'
 				/>
-				Đối tác :
+				Số tài khoản :
 				<Input
 					style={{
 						width: 200,
 					}}
-					placeholder='Basic usage'
+					placeholder='Vui lòng nhập'
 				/>
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Bắt đầu :
+						<DatePicker
+							style={{
+								width: 200,
+							}}
+							onChange={(_, dateString) => {
+								setParams({...params, start: dateString});
+							}}
+						/>
+					</div>
+				)}
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Kết thúc :
+						<DatePicker
+							style={{
+								width: 200,
+							}}
+							onChange={(_, dateString) => {
+								setParams({...params, end: dateString});
+							}}
+						/>
+					</div>
+				)}
+				<Button
+					onClick={() => setVisible(!visible)}
+					type='link'
+					ghost
+					icon={<ProjectOutlined />}></Button>
 				<Button type='primary' icon={<SearchOutlined />}>
 					Tìm kiếm
 				</Button>

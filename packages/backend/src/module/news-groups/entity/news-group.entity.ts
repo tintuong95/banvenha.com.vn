@@ -34,11 +34,11 @@ export class NewsGroup extends BaseEntity {
 
 	@BeforeInsert()
 	createSlug() {
-		this.param = createSlug(this.name);
+		this.param = createSlug(this.name, true);
 	}
 
 	@BeforeUpdate()
 	updateSlug() {
-		this.param = createSlug(this.name);
+		this.param = createSlug(this.name, true);
 	}
 }

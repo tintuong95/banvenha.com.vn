@@ -8,6 +8,7 @@ import NewsCreate from "../pages/admin/News/NewsCreate";
 import NewsDetails from "../pages/admin/News/NewsDetails";
 import NewsList from "../pages/admin/News/NewsList";
 import NewsUpdate from "../pages/admin/News/NewsUpdate";
+import OrderDetails from "../pages/admin/Orders/OrderDetails";
 import OrderList from "../pages/admin/Orders/OrderList";
 import PartnerList from "../pages/admin/Partner/PartnerList";
 import PaymentList from "../pages/admin/Payments/PaymentList";
@@ -25,10 +26,12 @@ export const adminRoutes = {
 	children: [
 		{
 			path: '/',
+
 			element: <DashBoard />,
 		},
 		{
 			path: '/products',
+			name: 'sản phẩm',
 			element: <ProductList />,
 		},
 		{
@@ -62,6 +65,10 @@ export const adminRoutes = {
 		{
 			path: '/orders',
 			element: <OrderList />,
+		},
+		{
+			path: '/order/:id/details',
+			element: <OrderDetails />,
 		},
 		{
 			path: '/partners',

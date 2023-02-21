@@ -1,7 +1,7 @@
 import {PlusOutlined} from '@ant-design/icons';
 import {Modal, Upload} from 'antd';
 import {useState} from 'react';
-import PropTypes from "prop-types"
+import PropTypes from 'prop-types';
 
 const getBase64 = (file) =>
 	new Promise((resolve, reject) => {
@@ -11,7 +11,7 @@ const getBase64 = (file) =>
 		reader.onerror = (error) => reject(error);
 	});
 
-const BaseUpload = ({data,setData,count}) => {
+const BaseUpload = ({data, setData, count, field}) => {
 	const [previewOpen, setPreviewOpen] = useState(false);
 	const [previewImage, setPreviewImage] = useState('');
 	const [previewTitle, setPreviewTitle] = useState('');
@@ -28,7 +28,8 @@ const BaseUpload = ({data,setData,count}) => {
 		);
 	};
 	const handleChange = ({fileList: newFileList}) => {
-		setData({...data, file: newFileList[0]?.originFileObj});
+		setData({...data, [field]: newFileList});
+		console.log(newFileList);
 		return setFileList(newFileList);
 	};
 
@@ -46,6 +47,7 @@ const BaseUpload = ({data,setData,count}) => {
 	return (
 		<>
 			<Upload
+				beforeUpload={() => false}
 				listType='picture-card'
 				fileList={fileList}
 				onPreview={handlePreview}
@@ -74,4 +76,5 @@ BaseUpload.propTypes = {
 	data: PropTypes.object,
 	setData: PropTypes.func,
 	count: PropTypes.number,
+	field: PropTypes.string,
 };

@@ -56,7 +56,7 @@ const MainLayout = () => {
 					minHeight: '100vh',
 				}}>
 				<Sider
-					className='border-r shadow-md'
+					className='border-r shadow-md  '
 					collapsible
 					collapsed={collapsed}
 					onCollapse={(value) => setCollapsed(value)}>
@@ -67,7 +67,7 @@ const MainLayout = () => {
 							background: 'rgba(0, 0, 0, 0.2)',
 						}}
 					/>
-					<Menu theme='light' mode='inline' className='p-2'>
+					<Menu theme='light' mode='inline' className='p-2 '>
 						<Menu.Item>
 							<Link to={'/'} className='flex items-center gap-2'>
 								<BaseIcon color='#60a5fa' size={24}>

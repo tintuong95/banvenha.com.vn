@@ -6,6 +6,8 @@ export const getNewsGroupApi = () => axios.get('/newsGroup/list');
 
 export const removeNewsById = (id) => axios.post(`/news/${id}/remove`);
 
+export const restoreNewsById = (id) => axios.post(`/news/${id}/restore`);
+
 export const updateNewsStatusByAdmin = (id, status) => {
 	return axios.post(`/news/${id}/status`, {status});
 };
@@ -22,3 +24,6 @@ export const getNewsDetailsApi = (id) => axios.get(`/news/${id}/details`);
 
 
 export const updateNews = (id, data) => axios.post(`/news/${id}/update`, data);
+
+
+export const countNewsApi = () => axios.get(`/news/count`);

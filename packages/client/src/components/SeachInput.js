@@ -4,7 +4,7 @@ export default function SeachInput() {
   return (
 			<>
 				<div className='flex mt-8 transform transition duration-500   hover:scale-105'>
-					<form className='w-11/12 m-auto'>
+					<form className='w-6/12 m-auto'>
 						<label
 							className='mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white'
 							htmlFor='default-search'>
@@ -41,13 +41,13 @@ export default function SeachInput() {
 						</div>
 					</form>
 				</div>
-				<div className='flex gap-3 my-2 text-slate-400 text-sm w-11/12 m-auto'>
+				{/* <div className='flex gap-3 my-2 text-slate-400 text-sm w-11/12 m-auto'>
 					Ví dụ : <span className='underline'>Nhà cấp 4 5x10</span>,
 					<span className='underline'>Nhà cấp 4 5x10</span>,
 					<span className='underline'>Nhà cấp 4 5x10</span>,
 					<span className='underline'>Nhà cấp 4 5x10</span>
 					...
-				</div>
+				</div> */}
 			</>
 		);
 }

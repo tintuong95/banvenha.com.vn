@@ -22,6 +22,10 @@ export class CreateOrderDto {
 	@IsNumber()
 	@Expose()
 	price: number;
+
+	@IsNumber()
+	@Expose()
+	status: number;
 }
 
 export class UpdateOrderDto extends PartialType(CreateOrderDto) {}

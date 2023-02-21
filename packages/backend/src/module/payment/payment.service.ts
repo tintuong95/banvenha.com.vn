@@ -37,7 +37,7 @@ export class PaymentService {
 			relations: [ADMIN_KEY],
 			take,
 			skip,
-			withDeleted: user.role === ROLE.ADMIN,
+			// withDeleted: user.role === ROLE.ADMIN,
 		});
 		return pagination(requset, result, currentPage, perPage);
 	}

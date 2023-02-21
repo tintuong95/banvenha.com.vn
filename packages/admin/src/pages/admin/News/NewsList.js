@@ -10,6 +10,8 @@ import {
 	Tooltip,
 	Modal,
 	notification,
+	DatePicker,
+	QRCode,
 } from 'antd';
 import AddButton from '../../../components/AddButton';
 import {
@@ -21,6 +23,11 @@ import {
 	LikeOutlined,
 	ClearOutlined,
 	ExclamationCircleFilled,
+	ClockCircleOutlined,
+	DownCircleOutlined,
+	LockOutlined,
+	ProjectOutlined,
+	RollbackOutlined,
 } from '@ant-design/icons';
 import {useEffect, useState} from 'react';
 import {
@@ -37,6 +44,7 @@ import {
 	getNewsGroupApi,
 	getNewsListApi,
 	removeNewsById,
+	restoreNewsById,
 	updateNewsStatusByAdmin,
 } from '../../../apis/news';
 import {useMitt} from 'react-mitt';
@@ -47,9 +55,10 @@ const NewsList = () => {
 	const [newsList, setNewsList] = useState([]);
 	const [newsGroupList, setNewsGroupList] = useState([]);
 	const {emitter} = useMitt();
+	const [visible, setVisible] = useState(true);
 	const [params, setParams] = useState({
 		currentPage: 1,
-		perPage: 2,
+		perPage: 10,
 		name: null,
 		status: null,
 		state: null,
@@ -82,6 +91,21 @@ const NewsList = () => {
 			.then((result) => {
 				console.log(result);
 				openNotification(NOTIFICATION_TYPE.success, 'Đã xóa thành công !');
+				fetchNewsList(params);
+			})
+			.catch((err) => {
+				console.log(err);
+				openNotification(NOTIFICATION_TYPE.error, 'Xóa thất bại !');
+			});
+	};
+
+	const fetchNewsRestore = (id) => {
+		restoreNewsById(id)
+			.then((result) => {
+				console.log(result);
+
+				openNotification(NOTIFICATION_TYPE.success, 'Đã xóa thành công !');
+				fetchNewsList(params);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -113,6 +137,20 @@ const NewsList = () => {
 			content: 'Không thể khôi phục lại sau khi xóa.',
 			onOk() {
 				fetchNewsRemove(id);
+			},
+			onCancel() {
+				console.log('Cancel');
+			},
+		});
+	};
+
+	const onRestoreConfirm = (id) => {
+		confirm({
+			title: 'Vui lòng xác nhận khôi phục !',
+			icon: <ExclamationCircleFilled />,
+			content: 'Bạn đồng ý khôi phục lại bài viết này.',
+			onOk() {
+				fetchNewsRestore(id);
 			},
 			onCancel() {
 				console.log('Cancel');
@@ -161,10 +199,10 @@ const NewsList = () => {
 
 	const columns = [
 		{
-			title: 'Hình',
-			dataIndex: 'image',
-			key: 'image',
-			render: (text) => <BaseAvatar src={text} />,
+			title: 'Mã',
+			dataIndex: 'qrcode',
+			key: 'qrcode',
+			render: () => <QRCode size={60} value='https://ant.design/' />,
 		},
 
 		{
@@ -176,7 +214,7 @@ const NewsList = () => {
 					<div className='flex flex-col'>
 						<span className='font-semibold'>{record.name}</span>
 						<div className='text-sm'>
-							<span className='text-slate-500'>{record.id}</span> -
+							{/* <span className='text-slate-500'>{record.id}</span> - */}
 							<a href='#d' className='text-slate-500'>
 								{record.admin.name}
 							</a>
@@ -184,6 +222,12 @@ const NewsList = () => {
 					</div>
 				);
 			},
+		},
+		{
+			title: 'Hình',
+			dataIndex: 'image',
+			key: 'image',
+			render: (text) => <BaseAvatar src={text} />,
 		},
 		{
 			title: 'Nhóm',
@@ -229,26 +273,42 @@ const NewsList = () => {
 			key: 'status',
 			dataIndex: 'status',
 
-			render: (text) => {
-				if (text == NEWS_STATUS.PROCESS)
+			render: (text, record) => {
+				if (record.deleted_at)
 					return (
-						<Tag color={'cyan'} key={'cyan'}>
+						<Button
+							size='small'
+							className='border-gray-500 bg-gray-400 text-white'
+							icon={<DeleteOutlined style={{color: 'white'}} />}>
+							Deleted
+						</Button>
+					);
+				else if (text == NEWS_STATUS.PROCESS)
+					return (
+						<Button
+							size='small'
+							className='border-sky-500 bg-sky-400 text-white'
+							icon={<ClockCircleOutlined spin={180} style={{color: 'white'}} />}>
 							{NEWS_STATUS_TEXT[NEWS_STATUS.PROCESS]}
-						</Tag>
+						</Button>
 					);
-
-				if (text == NEWS_STATUS.ACTIVED)
+				else if (text == NEWS_STATUS.ACTIVED)
 					return (
-						<Tag color={'green'} key={'green'}>
+						<Button
+							size='small'
+							className='border-green-500 bg-green-400 text-white'
+							icon={<DownCircleOutlined style={{color: 'white'}} />}>
 							{NEWS_STATUS_TEXT[NEWS_STATUS.ACTIVED]}
-						</Tag>
+						</Button>
 					);
-
-				if (text == NEWS_STATUS.BLOCKED)
+				else if (text == NEWS_STATUS.BLOCKED)
 					return (
-						<Tag color={'volcano'} key={'volcano'}>
+						<Button
+							size='small'
+							className='border-red-500 bg-red-400 text-white'
+							icon={<LockOutlined style={{color: 'white'}} />}>
 							{NEWS_STATUS_TEXT[NEWS_STATUS.BLOCKED]}
-						</Tag>
+						</Button>
 					);
 			},
 		},
@@ -274,15 +334,27 @@ const NewsList = () => {
 							type='text'
 							icon={<UnlockOutlined />}></Button>
 					</Tooltip>
-					<Tooltip placement='top' title={'Xóa sản phẩm'}>
-						<Button
-							onClick={() => {
-								onRemoveConfirm(record.id);
-							}}
-							type='link'
-							danger
-							icon={<DeleteOutlined />}></Button>
-					</Tooltip>
+					{record?.deleted_at ? (
+						<Tooltip placement='top' title={'Khôi phục '}>
+							<Button
+								onClick={() => {
+									onRestoreConfirm(record.id);
+								}}
+								type='link'
+								
+								icon={<RollbackOutlined />}></Button>
+						</Tooltip>
+					) : (
+						<Tooltip placement='top' title={'Xóa sản phẩm'}>
+							<Button
+								onClick={() => {
+									onRemoveConfirm(record.id);
+								}}
+								type='link'
+								danger
+								icon={<DeleteOutlined />}></Button>
+						</Tooltip>
+					)}
 					{/* <Button type='link' danger icon={<DeleteOutlined />}></Button> */}
 				</Space>
 			),
@@ -301,7 +373,7 @@ const NewsList = () => {
 
 	return (
 		<>
-			<div className='flex gap-4 mb-5 items-center'>
+			<div className='flex flex-wrap gap-4 mb-5 items-center'>
 				Tên :
 				<Input
 					style={{
@@ -372,6 +444,33 @@ const NewsList = () => {
 						},
 					]}
 				/>
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Bắt đầu :
+						<DatePicker
+							style={{
+								width: 200,
+							}}
+							onChange={onChange}
+						/>
+					</div>
+				)}
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Kết thúc :
+						<DatePicker
+							style={{
+								width: 200,
+							}}
+							onChange={onChange}
+						/>
+					</div>
+				)}
+				<Button
+					onClick={() => setVisible(!visible)}
+					type='link'
+					ghost
+					icon={<ProjectOutlined />}></Button>
 				<Button
 					onClick={() => {
 						fetchNewsList(params);

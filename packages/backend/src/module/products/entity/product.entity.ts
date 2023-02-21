@@ -5,6 +5,7 @@ import {
 	JoinColumn,
 	OneToOne,
 	BeforeInsert,
+	OneToMany,
 } from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
@@ -17,6 +18,7 @@ import {
 	PRODUCT_DETAIL_KEY,
 	PRODUCT_FILE_KEY,
 	PRODUCT_KEY,
+	PRODUCT_IMAGES_KEY,
 } from '~contants/relation';
 import {ProductDetails} from '~module/product-details/entity/product-details.entity';
 import {ProductFiles} from '~module/product-files/entity/product-files.entity';
@@ -24,6 +26,7 @@ import {ProductGroup} from '~module/product-groups/entity/product-group.entity';
 import {Order} from '~module/orders/entity/order.entity';
 import {Exclude} from 'class-transformer';
 import {generateCode} from '~util/generate';
+import {ProductImages} from '~module/product-images/entity/product-images.entity';
 
 @Entity({name: 'products'})
 export class Product extends BaseEntity {
@@ -126,6 +129,13 @@ export class Product extends BaseEntity {
 	@ApiProperty()
 	price: number;
 
+	@Column({
+		nullable: false,
+		default: 0,
+	})
+	@ApiProperty()
+	sale: number;
+
 	@ManyToOne(() => Admin, {cascade: true})
 	@JoinColumn({name: 'creator_id', referencedColumnName: 'id'})
 	[ADMIN_KEY]: Admin;
@@ -145,6 +155,9 @@ export class Product extends BaseEntity {
 
 	@OneToOne(() => Order, (order) => order[PRODUCT_KEY])
 	[ORDER_KEY]: Order;
+
+	@OneToMany(() => ProductImages, (images) => images[PRODUCT_KEY])
+	[PRODUCT_IMAGES_KEY]: ProductImages;
 
 	@BeforeInsert()
 	generateCode() {

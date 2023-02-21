@@ -30,7 +30,8 @@ export class ProductGroupService {
 	async createProductGroup(
 		createProductGroupDto: CreateProductGroupDto
 	): Promise<ProductGroup> {
-		return await this.productGroupRepository.save(createProductGroupDto);
+		const result = this.productGroupRepository.create(createProductGroupDto);
+		return await this.productGroupRepository.save(result);
 	}
 
 	async updateProductGroup(

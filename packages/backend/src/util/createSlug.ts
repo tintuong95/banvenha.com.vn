@@ -1,4 +1,4 @@
-export default function createSlug(str: string) {
+export default function createSlug(str: string, ext = false) {
 	str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
 	str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
 	str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
@@ -27,8 +27,10 @@ export default function createSlug(str: string) {
 		/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
 		' '
 	);
-	str =
-		str.toLowerCase().split(' ').join('-') +
-		`-${Math.floor(Math.random() * (5000 - 0) + 0)}`;
-	return str;
+	if (!ext)
+		return (
+			str.toLowerCase().split(' ').join('-') +
+			`-${Math.floor(Math.random() * (5000 - 0) + 0)}`
+		);
+	return str.toLowerCase().split(' ').join('-');
 }

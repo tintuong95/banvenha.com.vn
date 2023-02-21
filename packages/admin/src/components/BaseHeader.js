@@ -5,6 +5,7 @@ import BaseDropdown from './BaseDropDown';
 import {UserOutlined} from '@ant-design/icons';
 import {useSelector} from 'react-redux';
 
+
 const {Header} = Layout;
 
 function BaseHeader() {
@@ -16,6 +17,7 @@ function BaseHeader() {
 				<Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
 				<Breadcrumb.Item>Bill</Breadcrumb.Item>
 			</Breadcrumb>
+
 			<div className='flex gap-5'>
 				<span>Hi ! {self.name}</span>
 				<span className='avatar-item'>

@@ -1,6 +1,7 @@
 export enum ADMIN_STATUS {
-	NORMAL = 0,
-	BAN = 1,
+	PROCESS = 0,
+	ACTIVED = 1,
+	BLOCKED = 2,
 }
 
 export enum ROLE_TYPE {

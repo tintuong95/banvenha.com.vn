@@ -78,6 +78,7 @@ export default function NewsUpdate() {
 
 	useEffect(() => {
 		fetchNewsDetails(id);
+		console.log("dataNews: ", dataNews)
 	}, [id]);
 	return (
 		<div>

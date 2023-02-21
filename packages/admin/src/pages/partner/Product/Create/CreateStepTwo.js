@@ -8,10 +8,8 @@ import {
 	InfoCircleOutlined,
 } from '@ant-design/icons';
 import PropTypes from 'prop-types';
-import { validateRequired } from '../../../../utils/validate';
-import { MESSAGE_REQUIRE_INPUT } from '../../../../contants/message';
-
-
+import {validateRequired} from '../../../../utils/validate';
+import {MESSAGE_REQUIRE_INPUT} from '../../../../contants/message';
 
 export default function CreateStepTwo({
 	stepPage,
@@ -25,7 +23,9 @@ export default function CreateStepTwo({
 		const {value, name} = evt.target;
 		setDataProduct({...dataProduct, [name]: value});
 	};
-
+	const onChange = ({file}) => {
+		setDataProduct({...dataProduct, file});
+	};
 	return (
 		<Form
 			labelCol={{
@@ -96,7 +96,7 @@ export default function CreateStepTwo({
 				<Input
 					onChange={onEventTarget}
 					value={dataProduct.floor}
-					name='area'
+					name='floor'
 					placeholder='Số tầng'
 				/>
 			</Form.Item>
@@ -112,13 +112,17 @@ export default function CreateStepTwo({
 				<Input
 					onChange={onEventTarget}
 					value={dataProduct.bedroom}
-					name='area'
+					name='bedroom'
 					placeholder='Số phòng ngủ'
 				/>
 			</Form.Item>
 			<Divider />
 			<Form.Item label='File '>
-				<Dragger name='file'>
+				<Dragger
+					beforeUpload={() => false}
+					multiple={true}
+					name='file'
+					onChange={onChange}>
 					<p className='ant-upload-drag-icon'>
 						<InboxOutlined />
 					</p>

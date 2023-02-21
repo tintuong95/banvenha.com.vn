@@ -70,6 +70,12 @@ export class CreateAdminDto {
 	@MaxLength(50)
 	bank_holder: string;
 
+	@IsOptional()
+	@IsString()
+	@Expose()
+	@MaxLength(50)
+	birthday: string;
+
 	// @IsString()
 	// @Expose()
 	// province: string;

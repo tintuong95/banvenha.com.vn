@@ -9,6 +9,7 @@ import {
 	Table,
 	Tag,
 	Modal,
+	DatePicker,
 } from 'antd';
 import {
 	SearchOutlined,
@@ -18,19 +19,27 @@ import {
 	MailOutlined,
 	ExclamationCircleFilled,
 	RollbackOutlined,
+	ProjectOutlined,
+	ClockCircleOutlined,
+	DownCircleOutlined,
 } from '@ant-design/icons';
 import {useEffect, useState} from 'react';
 import {useMitt} from 'react-mitt';
-import {getMessageListApi, removeMessageById, restoreMessageById} from '../../../apis/message';
+import {
+	getMessageListApi,
+	removeMessageById,
+	restoreMessageById,
+} from '../../../apis/message';
 import {restoreRestoreById} from '../../../apis/order';
 import {MESSAGE_STATUS, NOTIFICATION_TYPE} from '../../../contants/table';
 const {confirm} = Modal;
 const MessageList = () => {
 	const [messageList, setMessageList] = useState([]);
 	const {emitter} = useMitt();
+	const [visible, setVisible] = useState(true);
 	const [params, setParams] = useState({
 		currentPage: 1,
-		perPage: 2,
+		perPage: 10,
 		code: null,
 		name: null,
 	});
@@ -49,11 +58,6 @@ const MessageList = () => {
 			dataIndex: 'code',
 			key: 'code',
 			render: () => <Avatar shape='square' icon={<MailOutlined />} />,
-		},
-		{
-			title: 'Mã',
-			dataIndex: 'code',
-			key: 'code',
 		},
 		{
 			title: 'Tiêu đề',
@@ -93,15 +97,21 @@ const MessageList = () => {
 			render: (text) => {
 				if (text == MESSAGE_STATUS.WATCHED) {
 					return (
-						<Tag color={'green'} key={'green'}>
-							CHƯA XEM
-						</Tag>
+						<Button
+							size='small'
+							className='border-sky-500 bg-sky-400 text-white'
+							icon={<ClockCircleOutlined style={{color: 'white'}} />}>
+							Chưa xem
+						</Button>
 					);
 				} else {
 					return (
-						<Tag color={'green'} key={'green'}>
-							ĐÃ XEM
-						</Tag>
+						<Button
+							size='small'
+							className='border-green-500 bg-green-400 text-white'
+							icon={<DownCircleOutlined style={{color: 'white'}} />}>
+							Đã xem
+						</Button>
 					);
 				}
 			},
@@ -114,19 +124,14 @@ const MessageList = () => {
 					{record.deleted_at ? (
 						<Button
 							onClick={() => onRestoreConfirm(record.id)}
-							type='primary'
-							className='bg-slate-300 text-slate-800'
-							icon={<RollbackOutlined />}>
-							Restore
-						</Button>
+							type='link'
+							icon={<RollbackOutlined />}></Button>
 					) : (
 						<Button
 							onClick={() => onRemoveConfirm(record.id)}
-							type='primary'
+							type='link'
 							danger
-							icon={<DeleteOutlined />}>
-							Delete
-						</Button>
+							icon={<DeleteOutlined />}></Button>
 					)}
 				</Space>
 			),
@@ -217,7 +222,7 @@ const MessageList = () => {
 	}, [params.currentPage]);
 	return (
 		<>
-			<div className='flex gap-4 mb-5 items-center'>
+			<div className='flex flex-wrap gap-4 mb-5 items-center'>
 				Mã :
 				<Input
 					style={{
@@ -240,6 +245,33 @@ const MessageList = () => {
 						setParams({...params, name: e.target.value});
 					}}
 				/>
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Bắt đầu :
+						<DatePicker
+							style={{
+								width: 200,
+							}}
+							onChange={onChange}
+						/>
+					</div>
+				)}
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Kết thúc :
+						<DatePicker
+							style={{
+								width: 200,
+							}}
+							onChange={onChange}
+						/>
+					</div>
+				)}
+				<Button
+					onClick={() => setVisible(!visible)}
+					type='link'
+					ghost
+					icon={<ProjectOutlined />}></Button>
 				<Button
 					onClick={() => {
 						fetchMessageList(params);
@@ -253,7 +285,7 @@ const MessageList = () => {
 						setParams({
 							...params,
 							name: null,
-							code:null
+							code: null,
 						});
 					}}
 					type='link'

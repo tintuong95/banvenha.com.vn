@@ -6,7 +6,8 @@ import {
 	QRCode,
 	Space,
 	Table,
-	Modal
+	Modal,
+	DatePicker,
 } from 'antd';
 import {
 	SearchOutlined,
@@ -17,6 +18,8 @@ import {
 	ExclamationCircleFilled,
 	DeleteOutlined,
 	RollbackOutlined,
+	ProjectOutlined,
+	LoadingOutlined,
 } from '@ant-design/icons';
 import {useMitt} from 'react-mitt';
 import {useEffect, useState} from 'react';
@@ -25,16 +28,19 @@ import {
 	removeOrderById,
 	restoreRestoreById,
 } from '../../../apis/order';
-import {NOTIFICATION_TYPE} from '../../../contants/table';
+import {NOTIFICATION_TYPE, ORDER_STATUS} from '../../../contants/table';
+import { useNavigate } from 'react-router-dom';
 
-const {confirm}=Modal
+const {confirm} = Modal;
 
 const OrderList = () => {
 	const [orderList, setOrderList] = useState([]);
 	const {emitter} = useMitt();
+	const [visible, setVisible] = useState(true);
+	const navigate=useNavigate()
 	const [params, setParams] = useState({
 		currentPage: 1,
-		perPage: 2,
+		perPage: 10,
 		code: null,
 		name: null,
 	});
@@ -54,11 +60,6 @@ const OrderList = () => {
 			dataIndex: 'qrcode',
 			key: 'qrcode',
 			render: () => <QRCode size={60} value='https://ant.design/' />,
-		},
-		{
-			title: 'Mã',
-			dataIndex: 'code',
-			key: 'code',
 		},
 		{
 			title: 'Người mua',
@@ -100,12 +101,26 @@ const OrderList = () => {
 		},
 		{
 			title: 'Thanh toán',
-			dataIndex: 'payment',
-			key: 'payment',
-			render: () => {
+			dataIndex: 'status',
+			key: 'status',
+			render: (text) => {
 				return (
-					<div className='w-full text-center'>
-						<DownCircleOutlined style={{color: 'green'}} />
+					<div className='w-full flex items-center gap-2'>
+						{text == ORDER_STATUS.success ? (
+							<Button
+								size='small'
+								className='border-green-500 bg-green-400 text-white'
+								icon={<DownCircleOutlined style={{color: 'white'}} />}>
+								Success
+							</Button>
+						) : (
+							<Button
+								size='small'
+								className='border-yellow-500 bg-yellow-400 text-white'
+								icon={<LoadingOutlined style={{color: 'white'}} />}>
+								Pending
+							</Button>
+						)}
 					</div>
 				);
 			},
@@ -124,18 +139,18 @@ const OrderList = () => {
 					{record.deleted_at ? (
 						<Button
 							onClick={() => onRestoreConfirm(record.id)}
-							type='primary'
-							className='bg-slate-300 text-slate-800'
+							type='link'
+						
 							icon={<RollbackOutlined />}>
-							Restore
+							
 						</Button>
 					) : (
 						<Button
 							onClick={() => onRemoveConfirm(record.id)}
-							type='primary'
+							type='link'
 							danger
 							icon={<DeleteOutlined />}>
-							Delete
+							
 						</Button>
 					)}
 				</Space>
@@ -229,7 +244,7 @@ const OrderList = () => {
 
 	return (
 		<>
-			<div className='flex gap-4 mb-5 items-center'>
+			<div className='flex flex-wrap gap-4 mb-5 items-center'>
 				Mã :
 				<Input
 					style={{
@@ -259,6 +274,21 @@ const OrderList = () => {
 					}}
 					placeholder='Basic usage'
 				/> */}
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Bắt đầu :<DatePicker onChange={onChange} />
+					</div>
+				)}
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Kết thúc :<DatePicker onChange={onChange} />
+					</div>
+				)}
+				<Button
+					onClick={() => setVisible(!visible)}
+					type='link'
+					ghost
+					icon={<ProjectOutlined />}></Button>
 				<Button
 					onClick={() => {
 						fetchOrderList(params);
@@ -297,6 +327,11 @@ const OrderList = () => {
 				pagination={false}
 				columns={columns}
 				dataSource={orderList?.data}
+				onRow={(record, rowIndex) => ({
+					onClick: (event) => {
+						navigate(`/order/${record.id}/details`);
+					}, // click row
+				})}
 			/>
 			<div className='my-5'>
 				<Pagination

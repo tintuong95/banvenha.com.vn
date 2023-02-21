@@ -23,4 +23,7 @@
 .ant-upload-list-item-name{
     color: dimgrey !important;
 }
+.ant-empty-normal{
+    min-height: 500px !important;
+}
 

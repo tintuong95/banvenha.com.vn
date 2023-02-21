@@ -5,6 +5,7 @@ export const openNotification = (type, message, description) => {
 		type,
 		message,
 		description,
+		placement:"bottomRight",
 		onClick: () => {
 			console.log('Notification Clicked!');
 		},

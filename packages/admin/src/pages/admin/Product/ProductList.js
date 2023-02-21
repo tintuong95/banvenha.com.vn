@@ -11,6 +11,8 @@ import {
 	Tooltip,
 	notification,
 	Modal,
+	DatePicker,
+	QRCode,
 } from 'antd';
 import AddButton from '../../../components/AddButton';
 import {
@@ -23,6 +25,11 @@ import {
 	ShoppingCartOutlined,
 	ClearOutlined,
 	ExclamationCircleFilled,
+	ClockCircleOutlined,
+	DownCircleOutlined,
+	LockOutlined,
+	ProjectOutlined,
+	RollbackOutlined,
 } from '@ant-design/icons';
 import {useMitt} from 'react-mitt';
 import {useEffect, useState} from 'react';
@@ -30,31 +37,42 @@ import {
 	getProductGroupApi,
 	getProductListApi,
 	removeProductById,
+	restoreProductById,
 	updateProductStatusByAdmin,
 } from '../../../apis/product';
-import {NOTIFICATION_TYPE, PRODUCT_STATE, PRODUCT_STATE_TEXT, PRODUCT_STATUS, PRODUCT_STATUS_TEXT, PRODUCT_STATUS_UPDATE_TEXT} from '../../../contants/table';
+import {
+	NOTIFICATION_TYPE,
+	PRODUCT_STATE,
+	PRODUCT_STATE_TEXT,
+	PRODUCT_STATUS,
+	PRODUCT_STATUS_TEXT,
+	PRODUCT_STATUS_UPDATE_TEXT,
+} from '../../../contants/table';
 import BaseAvatar from '../../../components/BaseAvatar';
 
 const {confirm} = Modal;
 const ProductList = () => {
+	const [visible, setVisible] = useState(true);
 	const [productList, setProductList] = useState([]);
 	const [productGroupList, setProductGroupList] = useState([]);
 	const {emitter} = useMitt();
 	const [params, setParams] = useState({
 		currentPage: 1,
-		perPage: 2,
+		perPage: 10,
 		name: null,
 		status: null,
 		state: null,
 		group_id: null,
+		start: null,
+		end: null,
 	});
 
 	const columns = [
 		{
-			title: 'Hình',
-			dataIndex: 'image',
-			key: 'image',
-			render: (text) => <BaseAvatar src={text} />,
+			title: 'Mã',
+			dataIndex: 'qrcode',
+			key: 'qrcode',
+			render: () => <QRCode size={60} value='https://ant.design/' />,
 		},
 
 		{
@@ -66,7 +84,7 @@ const ProductList = () => {
 					<div className='flex flex-col'>
 						<span className='font-semibold'>{record.name}</span>
 						<div className='text-sm'>
-							<span className='text-slate-500'>{record.code}</span> -
+							{/* <span className='text-slate-500'>{record.code}</span> - */}
 							<a href='#d' className='text-slate-500'>
 								{record.admin.name}
 							</a>
@@ -74,6 +92,12 @@ const ProductList = () => {
 					</div>
 				);
 			},
+		},
+		{
+			title: 'Hình',
+			dataIndex: 'image',
+			key: 'image',
+			render: (text) => <BaseAvatar src={text} />,
 		},
 		{
 			title: 'Nhóm',
@@ -123,29 +147,46 @@ const ProductList = () => {
 			key: 'status',
 			dataIndex: 'status',
 
-			render: (text) => {
-				if (text == PRODUCT_STATUS.PROCESS)
+			render: (text, record) => {
+				if (record.deleted_at)
 					return (
-						<Tag color={'cyan'} key={'cyan'}>
+						<Button
+							size='small'
+							className='border-gray-500 bg-gray-400 text-white'
+							icon={<DeleteOutlined style={{color: 'white'}} />}>
+							Deleted
+						</Button>
+					);
+				else if (text == PRODUCT_STATUS.PROCESS)
+					return (
+						<Button
+							size='small'
+							className='border-sky-500 bg-sky-400 text-white'
+							icon={<ClockCircleOutlined style={{color: 'white'}} />}>
 							{PRODUCT_STATUS_TEXT[PRODUCT_STATUS.PROCESS]}
-						</Tag>
+						</Button>
 					);
-
-				if (text == PRODUCT_STATUS.ACTIVED)
+				else if (text == PRODUCT_STATUS.ACTIVED)
 					return (
-						<Tag color={'green'} key={'green'}>
+						<Button
+							size='small'
+							className='border-green-500 bg-green-400 text-white'
+							icon={<DownCircleOutlined style={{color: 'white'}} />}>
 							{PRODUCT_STATUS_TEXT[PRODUCT_STATUS.ACTIVED]}
-						</Tag>
+						</Button>
 					);
-
-				if (text == PRODUCT_STATUS.BLOCKED)
-					return (
-						<Tag color={'volcano'} key={'volcano'}>
-							{PRODUCT_STATUS_TEXT[PRODUCT_STATUS.BLOCKED]}
-						</Tag>
-					);
+				else if (text == PRODUCT_STATUS.BLOCKED);
+				return (
+					<Button
+						size='small'
+						className='border-red-500 bg-red-400 text-white'
+						icon={<LockOutlined style={{color: 'white'}} />}>
+						{PRODUCT_STATUS_TEXT[PRODUCT_STATUS.BLOCKED]}
+					</Button>
+				);
 			},
 		},
+
 		{
 			title: 'Thời gian',
 			key: 'updated_at',
@@ -168,15 +209,27 @@ const ProductList = () => {
 							type='text'
 							icon={<UnlockOutlined />}></Button>
 					</Tooltip>
-					<Tooltip placement='top' title={'Xóa sản phẩm'}>
-						<Button
-							onClick={() => {
-								onRemoveConfirm(record.id);
-							}}
-							type='link'
-							danger
-							icon={<DeleteOutlined />}></Button>
-					</Tooltip>
+					{record.deleted_at ? (
+						<Tooltip placement='top' title={'Khôi phục'}>
+							<Button
+								onClick={() => {
+									onRestoreConfirm(record.id);
+								}}
+								type='link'
+								icon={<RollbackOutlined />}></Button>
+						</Tooltip>
+					) : (
+						<Tooltip placement='top' title={'Xóa sản phẩm'}>
+							<Button
+								onClick={() => {
+									onRemoveConfirm(record.id);
+								}}
+								type='link'
+								danger
+								icon={<DeleteOutlined />}></Button>
+						</Tooltip>
+					)}
+
 					{/* <Button type='link' danger icon={<DeleteOutlined />}></Button> */}
 				</Space>
 			),
@@ -219,10 +272,24 @@ const ProductList = () => {
 			.then((result) => {
 				console.log(result);
 				openNotification(NOTIFICATION_TYPE.success, 'Đã xóa thành công !');
+				fetchProductList(params);
 			})
 			.catch((err) => {
 				console.log(err);
 				openNotification(NOTIFICATION_TYPE.error, 'Xóa thất bại !');
+			});
+	};
+
+	const fetchProductRestore = (id) => {
+		restoreProductById(id)
+			.then((result) => {
+				console.log(result);
+				openNotification(NOTIFICATION_TYPE.success, 'Đã khôi phục thành công !');
+				fetchProductList(params);
+			})
+			.catch((err) => {
+				console.log(err);
+				openNotification(NOTIFICATION_TYPE.error, 'Khôi phục thất bại !');
 			});
 	};
 
@@ -258,9 +325,23 @@ const ProductList = () => {
 		confirm({
 			title: 'Vui lòng xác nhận xóa !',
 			icon: <ExclamationCircleFilled />,
-			content: 'Không thể khôi phục lại sau khi xóa.',
+			content: 'Bạn chắc chắn muốn xóa bài viết này !',
 			onOk() {
 				fetchProductRemove(id);
+			},
+			onCancel() {
+				console.log('Cancel');
+			},
+		});
+	};
+
+	const onRestoreConfirm = (id) => {
+		confirm({
+			title: 'Vui lòng xác nhận khôi phục !',
+			icon: <ExclamationCircleFilled />,
+			content: 'Bạn chắc chắn muốn khôi phục bài viết này !',
+			onOk() {
+				fetchProductRestore(id);
 			},
 			onCancel() {
 				console.log('Cancel');
@@ -298,7 +379,7 @@ const ProductList = () => {
 
 	return (
 		<>
-			<div className='flex gap-4 mb-5 items-center'>
+			<div className='flex flex-wrap gap-4 mb-5 items-center'>
 				Tên :
 				<Input
 					style={{
@@ -368,6 +449,37 @@ const ProductList = () => {
 						},
 					]}
 				/>
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Bắt đầu :
+						<DatePicker
+							style={{
+								width: 200,
+							}}
+							onChange={(_, dateString) => {
+								setParams({...params, start: dateString});
+							}}
+						/>
+					</div>
+				)}
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Kết thúc :
+						<DatePicker
+							style={{
+								width: 200,
+							}}
+							onChange={(_, dateString) => {
+								setParams({...params, end: dateString});
+							}}
+						/>
+					</div>
+				)}
+				<Button
+					onClick={() => setVisible(!visible)}
+					type='link'
+					ghost
+					icon={<ProjectOutlined />}></Button>
 				<Button
 					onClick={() => {
 						fetchProductList(params);
@@ -384,6 +496,8 @@ const ProductList = () => {
 							name: null,
 							state: null,
 							status: null,
+							start: null,
+							end: null,
 						});
 					}}
 					type='link'

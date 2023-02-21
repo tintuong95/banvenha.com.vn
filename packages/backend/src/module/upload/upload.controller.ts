@@ -24,7 +24,7 @@ export class UploadController {
 		FilesInterceptor(
 			'images',
 			20,
-			uploadFileConfig(1048576, /\/(jpg|jpeg|png|gif)$/, 'images/news')
+			uploadFileConfig(1048576, /\/(jpg|jpeg|png|gif)$/)
 		)
 	)
 	uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {

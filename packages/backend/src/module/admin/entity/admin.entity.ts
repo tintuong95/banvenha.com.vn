@@ -68,6 +68,10 @@ export class Admin extends BaseEntity {
 	@ApiProperty()
 	bank_holder: string;
 
+	@Column({length: 50, nullable: true})
+	@ApiProperty()
+	birthday: string;
+
 	// @Column({length: 20, nullable: true})
 	// @ApiProperty()
 	// province: string;
@@ -83,7 +87,7 @@ export class Admin extends BaseEntity {
 	@Column({
 		type: 'enum',
 		enum: ADMIN_STATUS,
-		default: ADMIN_STATUS.NORMAL,
+		default: ADMIN_STATUS.PROCESS,
 	})
 	@ApiProperty()
 	status: ADMIN_STATUS;

@@ -30,12 +30,12 @@ export class ProductGroup extends BaseEntity {
 
 	@BeforeInsert()
 	create() {
-		this.param = createSlug(this.name);
+		this.param = createSlug(this.name, true);
 	}
 
 	@BeforeUpdate()
 	update() {
-		this.param = createSlug(this.name);
+		this.param = createSlug(this.name, true);
 	}
 
 	@OneToMany(() => Product, (product) => product[GROUP_PRODUCT_KEY])

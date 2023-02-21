@@ -9,6 +9,7 @@ import {
 	Table,
 	Tag,
 	Modal,
+	DatePicker,
 } from 'antd';
 import {
 	SearchOutlined,
@@ -18,6 +19,9 @@ import {
 	MailOutlined,
 	ExclamationCircleFilled,
 	RollbackOutlined,
+	ProjectOutlined,
+	ClockCircleOutlined,
+	DownCircleOutlined,
 } from '@ant-design/icons';
 import {useEffect, useState} from 'react';
 import {useMitt} from 'react-mitt';
@@ -28,16 +32,22 @@ import {
 } from '../../../apis/message';
 import {restoreRestoreById} from '../../../apis/order';
 import {MESSAGE_STATUS, NOTIFICATION_TYPE} from '../../../contants/table';
+
+import ModalMessage from './components/ModalMessage';
 const {confirm} = Modal;
 const MessageList = () => {
-	const [messageList, setMessageList] = useState([]);
 	const {emitter} = useMitt();
+	const [visible, setVisible] = useState(true);
+	const [visibleModal, setVisibleModal] = useState(false);
+	const [dataModal, setDataModal] = useState({});
+	const [messageList, setMessageList] = useState([]);
 	const [params, setParams] = useState({
 		currentPage: 1,
-		perPage: 2,
+		perPage: 10,
 		code: null,
 		name: null,
 	});
+
 	const rowSelection = {
 		onChange: (selectedRowKeys, selectedRows) => {
 			if (selectedRows.length > 0) {
@@ -47,6 +57,7 @@ const MessageList = () => {
 			}
 		},
 	};
+
 	const columns = [
 		{
 			title: '',
@@ -97,15 +108,21 @@ const MessageList = () => {
 			render: (text) => {
 				if (text == MESSAGE_STATUS.WATCHED) {
 					return (
-						<Tag color={'green'} key={'green'}>
-							CHƯA XEM
-						</Tag>
+						<Button
+							size='small'
+							className='border-sky-500 bg-sky-400 text-white'
+							icon={<ClockCircleOutlined style={{color: 'white'}} />}>
+							Chưa xem
+						</Button>
 					);
 				} else {
 					return (
-						<Tag color={'green'} key={'green'}>
-							ĐÃ XEM
-						</Tag>
+						<Button
+							size='small'
+							className='border-green-500 bg-green-400 text-white'
+							icon={<DownCircleOutlined style={{color: 'white'}} />}>
+							Đã xem
+						</Button>
 					);
 				}
 			},
@@ -113,6 +130,9 @@ const MessageList = () => {
 		{
 			title: 'Thao tác',
 			key: 'action',
+			onCell: (record) => ({
+				onClick: (event) => event.stopPropagation(),
+			}),
 			render: (_, record) => (
 				<Space size='middle'>
 					{record.deleted_at ? (
@@ -128,9 +148,7 @@ const MessageList = () => {
 							onClick={() => onRemoveConfirm(record.id)}
 							type='primary'
 							danger
-							icon={<DeleteOutlined />}>
-							Delete
-						</Button>
+							icon={<DeleteOutlined />}></Button>
 					)}
 				</Space>
 			),
@@ -221,6 +239,11 @@ const MessageList = () => {
 	}, [params.currentPage]);
 	return (
 		<>
+			<ModalMessage
+				visibleModal={visibleModal}
+				setVisibleModal={setVisibleModal}
+				dataModal={dataModal}
+			/>
 			<div className='flex gap-4 mb-5 items-center'>
 				Mã :
 				<Input
@@ -244,6 +267,21 @@ const MessageList = () => {
 						setParams({...params, name: e.target.value});
 					}}
 				/>
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Bắt đầu :<DatePicker onChange={onChange} />
+					</div>
+				)}
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Kết thúc :<DatePicker onChange={onChange} />
+					</div>
+				)}
+				<Button
+					onClick={() => setVisible(!visible)}
+					type='link'
+					ghost
+					icon={<ProjectOutlined />}></Button>
 				<Button
 					onClick={() => {
 						fetchMessageList(params);
@@ -279,9 +317,16 @@ const MessageList = () => {
 				rowSelection={{
 					...rowSelection,
 				}}
+				onRow={(record, rowIndex) => ({
+					onClick: (event) => {
+						event.stopPropagation();
+						setDataModal(record);
+						setVisibleModal(!visibleModal);
+					}, // click row
+				})}
 				pagination={false}
 				columns={columns}
-				dataSource={messageList?.data}
+				dataSource={messageList?.data?.map((item) => ({...item, key: item.id}))}
 			/>
 			<div className='my-5'>
 				<Pagination

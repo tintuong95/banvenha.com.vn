@@ -1,135 +1,243 @@
 // import ChartColumn from '../../../components/ChartColumn';
 import CountUp from 'react-countup';
-import {Divider, Progress, QRCode, Statistic, Table, Tag} from 'antd';
-import {DownCircleOutlined} from '@ant-design/icons';
+import {Button, Divider, Progress, QRCode, Statistic, Table, Tag} from 'antd';
+import {DownCircleOutlined, LoadingOutlined} from '@ant-design/icons';
+import {
+	getOrderListApi,
+	getRevenueMonthApi,
+	getRevenueTotalApi,
+} from '../../../apis/order';
+import {useEffect, useState} from 'react';
+import {countProductApi, getViewsLikesApi} from '../../../apis/product';
+import {countNewsApi} from '../../../apis/news';
+import {useMitt} from 'react-mitt';
+import {useSelector} from "react-redux"
+import { ORDER_STATUS } from '../../../contants/table';
 
 const formatter = (value) => <CountUp end={value} separator=',' />;
 const formatterNumber = (value) => <CountUp end={value} />;
-const columns = [
-	{
-		title: 'QRCode',
-		dataIndex: 'qrcode',
-		key: 'qrcode',
-		render: () => <QRCode size={60} value='https://ant.design/' />,
-	},
-	{
-		title: 'Mã',
-		dataIndex: 'code',
-		key: 'code',
-	},
-	{
-		title: 'Người mua',
-		dataIndex: 'user',
-		key: 'user',
-		render: (_, record) => {
-			return (
-				<div className='flex flex-col '>
-					<span className=''>{record.username}</span>
-					<span className='text-slate-400'>{record.email}</span>
-				</div>
-			);
-		},
-	},
 
-	// {
-	// 	title: 'Đối tács',
-	// 	dataIndex: 'partner',
-	// 	key: 'partner',
-	// },
-	{
-		title: 'Sản phẩm',
-		dataIndex: 'product',
-		key: 'product',
-		render: (_, record) => {
-			return (
-				<div className='flex flex-col '>
-					<span className='text-slate-400'>{record.product}</span>
-					<span className=''>{record.product_name}</span>
-				</div>
-			);
-		},
-	},
-	{
-		title: 'Giá bán',
-		dataIndex: 'price',
-		render: (text) => <Tag color='red'>{text}</Tag>,
-	},
-	{
-		title: 'Thanh toán',
-		dataIndex: 'payment',
-		key: 'payment',
-		render: () => {
-			return (
-				<div className='w-full text-center'>
-					<DownCircleOutlined style={{color: 'green'}} />
-				</div>
-			);
-		},
-	},
-	{
-		title: 'Thời gian',
-		dataIndex: 'updated_at',
-		key: 'updated_at',
-	},
-];
-const data = [
-	{
-		key: '1',
-		code: 'ZE0101',
-		partner: 'John Brown',
-		product: 'ZE0101',
-		price: '300.000',
-		updated_at: '10:10 20/02/2022',
-		product_name: 'Bản vẽ nhà cấp 4 5x10m',
-		username: 'Tin Tưởng',
-		email: 'xxxx@mail.com',
-	},
-	{
-		key: '2',
-		code: 'ZE0101',
-		partner: 'Jim Green',
-		product: 'ZE0101',
-		price: '300.000',
-		updated_at: '10:10 20/02/2022',
-		product_name: 'Bản vẽ nhà cấp 4 5x10m',
-		username: 'Tin Tưởng',
-		email: 'xxxx@mail.com',
-	},
-	{
-		key: '3',
-		code: 'ZE0101',
-		partner: 'Joe Black',
-		product: 'ZE0101',
-		price: '300.000',
-		updated_at: '10:10 20/02/2022',
-		product_name: 'Bản vẽ nhà cấp 4 5x10m',
-		username: 'Tin Tưởng',
-		email: 'xxxx@mail.com',
-	},
-	{
-		key: '4',
-		code: 'ZE0101',
-		partner: 'Joe Black',
-		product: 'ZE0101',
-		price: '300.000',
-		updated_at: '10:10 20/02/2022',
-		product_name: 'Bản vẽ nhà cấp 4 5x10m',
-		username: 'Tin Tưởng',
-		email: 'xxxx@mail.com',
-	},
-	{
-		key: '5',
-		code: 'ZE0101',
-		partner: 'Joe Black',
-		product: 'ZE0101',
-		price: '300.000',
-		updated_at: '10:10 20/02/2022',
-		product_name: 'Bản vẽ nhà cấp 4 5x10m',
-		username: 'Tin Tưởng',
-		email: 'xxxx@mail.com',
-	},
-];
+
 const DashBoard = () => {
+	const {emitter} = useMitt();
+	const [orderList, setOrderList] = useState([]);
+	const {self} = useSelector((state) => state.auth);
+	const [revenueMonthData, setRevenueMonthData] = useState({
+		revenueMonth: 0,
+		countOrderMonth: 0,
+	});
+	const [revenueTotalData, setRevenueTotalData] = useState({
+		revenueTotal: 0,
+		countOrderTotal: 0,
+	});
+
+	const [viewLikeData, setViewLikeData] = useState({
+		countViewsProduct: 0,
+		countLikesProduct: 0,
+	});
+
+	const [countNews, setCountNews] = useState(0);
+	const [countProducts, setCountProducts] = useState(0);
+
+	const columns = [
+		{
+			title: 'Mã',
+			dataIndex: 'code',
+			key: 'code',
+			render: (text) => <QRCode size={60} value={text} />,
+		},
+		{
+			title: 'Người mua',
+			dataIndex: 'name',
+			key: 'name',
+			render: (_, record) => {
+				return (
+					<div className='flex flex-col '>
+						<span className=''>{record.name}</span>
+						<span className='text-slate-400'>{record.email}</span>
+					</div>
+				);
+			},
+		},
+
+		{
+			title: 'Đối tác',
+			dataIndex: 'admin',
+			key: 'admin',
+			render: (text) => text.name,
+		},
+		{
+			title: 'Sản phẩm',
+			dataIndex: 'products',
+			key: 'products',
+			render: (text) => {
+				return (
+					<div className='flex flex-col '>
+						<span className='text-slate-400'>{text.name}</span>
+						<span className=''>{text.price}</span>
+					</div>
+				);
+			},
+		},
+		{
+			title: 'Giá bán',
+			dataIndex: 'price',
+			key: 'price',
+			render: (text) => (
+				<Tag className='text-sm' color='blue'>
+					{text.toLocaleString('vi-VN')} VND
+				</Tag>
+			),
+		},
+
+		{
+			title: 'Thanh toán',
+			dataIndex: 'status',
+			key: 'status',
+			render: (text) => {
+				return (
+					<div className='w-full flex items-center gap-2'>
+						{text == ORDER_STATUS.success ? (
+							<Button
+								size='small'
+								className='border-green-500 bg-green-400 text-white'
+								icon={<DownCircleOutlined style={{color: 'white'}} />}>
+								Success
+							</Button>
+						) : (
+							<Button
+								size='small'
+								className='border-yellow-500 bg-yellow-400 text-white'
+								icon={<LoadingOutlined style={{color: 'white'}} />}>
+								Pending
+							</Button>
+						)}
+					</div>
+				);
+			},
+		},
+		{
+			title: 'Thời gian',
+			dataIndex: 'updated_at',
+			key: 'updated_at',
+			render: (text) => moment(text).format('hh:mm DD/MM/YYYY '),
+		},
+		// {
+		// 	title: 'Thao tác',
+		// 	key: 'action',
+		// 	render: (_, record) => (
+		// 		<Space size='middle'>
+		// 			{record.deleted_at ? (
+		// 				<Button
+		// 					onClick={() => onRestoreConfirm(record.id)}
+		// 					type='primary'
+		// 					className='bg-slate-300 text-slate-800'
+		// 					icon={<RollbackOutlined />}>
+		// 					Restore
+		// 				</Button>
+		// 			) : (
+		// 				<Button
+		// 					onClick={() => onRemoveConfirm(record.id)}
+		// 					type='primary'
+		// 					danger
+		// 					icon={<DeleteOutlined />}>
+		// 					Delete
+		// 				</Button>
+		// 			)}
+		// 		</Space>
+		// 	),
+		// },
+	];
+
+	const fetchRevenueMonth = () => {
+		getRevenueMonthApi()
+			.then((result) => {
+				const {count, sum} = result.data;
+				setRevenueMonthData({
+					...revenueMonthData,
+					revenueMonth: sum,
+					countOrderMonth: count,
+				});
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+
+	const fetchRevenueTotal = () => {
+		getRevenueTotalApi()
+			.then((result) => {
+				const {count, sum} = result.data;
+				setRevenueTotalData({
+					...revenueTotalData,
+					revenueTotal: sum,
+					countOrderTotal: count,
+				});
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+
+	const fetchViewsLikesTotal = () => {
+		getViewsLikesApi()
+			.then((result) => {
+				const {views, likes} = result.data;
+				setViewLikeData({
+					...viewLikeData,
+					countViewsProduct: views,
+					countLikesProduct: likes,
+				});
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+
+	const fetchCountNews = () => {
+		countNewsApi()
+			.then((result) => {
+				const {count} = result.data;
+				setCountNews(count);
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+
+	const fetchCountProduct = () => {
+		countProductApi()
+			.then((result) => {
+				const {count} = result.data;
+				setCountProducts(count);
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+
+	const fetchOrderList = (params) => {
+		emitter.emit('pendingOn');
+		getOrderListApi(params)
+			.then((result) => {
+				setOrderList(result.data);
+				emitter.emit('pendingOff');
+			})
+			.catch((err) => {
+				console.log(err);
+				emitter.emit('pendingOff');
+			});
+	};
+
+	useEffect(() => {
+		fetchRevenueMonth();
+		fetchRevenueTotal();
+		fetchViewsLikesTotal();
+		fetchCountNews();
+		fetchCountProduct();
+		fetchOrderList();
+	}, []);
+
 	return (
 		<>
 			<div className='bg-white p-5 rounded'>
@@ -138,20 +246,20 @@ const DashBoard = () => {
 						<div>
 							<span>Chào bạn </span>
 							<span className='text-2xl font-bold text-blue-400'>
-								Tin Tưởng <Tag color='#87d068'>Level 1</Tag>
+								{self?.name} <Tag color='#87d068'>Level 1</Tag>
 							</span>
 						</div>
 
 						<Progress percent={30} size='small' />
 					</div>
-					<span className='text-slate-400'>Ngày tạo : 10/10/2012</span>
+					<span className='text-slate-400'>Ngày tạo : {moment(self.created_at).format("DD/MM/YYYY")}</span>
 				</div>
 				<Divider />
 				<div className='grid grid-cols-4 mb-5'>
 					<div className='text-center'>
 						<Statistic
 							title='DOANH THU THÁNG  (VND)'
-							value={112893}
+							value={revenueMonthData?.revenueMonth}
 							precision={2}
 							formatter={formatter}
 						/>
@@ -159,17 +267,21 @@ const DashBoard = () => {
 					<div className='text-center'>
 						<Statistic
 							title='TỔNG DOANH THU (VND)'
-							value={112893}
+							value={revenueTotalData.revenueTotal}
 							formatter={formatter}
 						/>
 					</div>
 					<div className='text-center'>
-						<Statistic title='SẢN PHẨM ' value={112} formatter={formatterNumber} />
+						<Statistic
+							title='SẢN PHẨM '
+							value={countProducts}
+							formatter={formatterNumber}
+						/>
 					</div>
 					<div className='text-center'>
 						<Statistic
 							title='BÀI VIẾT'
-							value={112}
+							value={countNews}
 							precision={2}
 							formatter={formatterNumber}
 						/>
@@ -180,22 +292,30 @@ const DashBoard = () => {
 					<div className='text-center'>
 						<Statistic
 							title='LƯỢT MUA (THÁNG)'
-							value={112}
+							value={revenueMonthData.countOrderMonth}
 							precision={2}
 							formatter={formatterNumber}
 						/>
 					</div>
 					<div className='text-center'>
-						<Statistic title='LƯỢT MUA' value={112} formatter={formatterNumber} />
+						<Statistic
+							title='LƯỢT MUA'
+							value={revenueTotalData.countOrderTotal}
+							formatter={formatterNumber}
+						/>
 					</div>
 
 					<div className='text-center'>
-						<Statistic title='LƯỢT XEM' value={112893} formatter={formatterNumber} />
+						<Statistic
+							title='LƯỢT XEM'
+							value={viewLikeData.countViewsProduct}
+							formatter={formatterNumber}
+						/>
 					</div>
 					<div className='text-center'>
 						<Statistic
 							title='LƯỢT THÍCH'
-							value={112893}
+							value={viewLikeData.countLikesProduct}
 							precision={2}
 							formatter={formatterNumber}
 						/>
@@ -203,7 +323,7 @@ const DashBoard = () => {
 				</div>
 			</div>
 			<div className='mt-8'>
-				<Table pagination={false} columns={columns} dataSource={data} />
+				<Table pagination={false} columns={columns} dataSource={orderList?.data} />
 			</div>
 		</>
 	);

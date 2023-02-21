@@ -24,6 +24,7 @@ import {FileFieldsInterceptor} from '@nestjs/platform-express';
 import {uploadFileConfig} from '~config/multer.config';
 import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
+import {REGEX_IMAGE_RAR} from '~util/regex';
 
 @Controller('product')
 @UseGuards(JwtAuthGuard)
@@ -37,6 +38,7 @@ export class ProductController {
 	): Promise<any> {
 		return await this.productService.getAllProducts(req, query, user);
 	}
+
 	@Get(':id/details')
 	async getProductDetails(
 		@Param('id', ParseIntPipe) id: number
@@ -44,47 +46,77 @@ export class ProductController {
 		return await this.productService.getProductDetails(id);
 	}
 
+	@Get(':slug/slug/details')
+	async getProductSlugDetails(@Param('slug') slug: string): Promise<Product> {
+		return await this.productService.getProductSlugDetails(slug);
+	}
+
 	@Roles(ROLE.PARTNER)
 	@Post('create')
-	// @UseInterceptors(
-	// 	FileInterceptor(
-	// 		'image',
-	// 		uploadFileConfig(1048576, /\/(jpg|jpeg|png|gif)$/, 'images/products')
-	// 	)
-	// )
 	@UseInterceptors(
 		FileFieldsInterceptor(
 			[
-				{name: 'image', maxCount: 1},
-				{name: 'images', maxCount: 10},
+				{name: 'file', maxCount: 2},
+				{name: 'image', maxCount: 2},
+				{name: 'images', maxCount: 5},
 			],
-			uploadFileConfig(1048576, /\/(jpg|jpeg|png|gif)$/, 'images/products')
+			uploadFileConfig(1048576, REGEX_IMAGE_RAR)
 		)
 	)
 	@HttpCode(HttpStatus.CREATED)
 	async createProduct(
 		// @UploadedFile() file: Express.Multer.File,
 		@UploadedFiles()
-		files: {image?: Express.Multer.File; images?: Express.Multer.File[]},
+		files: {
+			image?: Express.Multer.File;
+			images?: Express.Multer.File[];
+			file?: Express.Multer.File;
+		},
 		@Body() createProductAllDto: CreateProductAllFieldDto,
 		@User() user: UserDto
 	): Promise<Product | any> {
-		const {image, images} = files;
+		const {image, images, file} = files;
 		return await this.productService.createProduct(
 			createProductAllDto,
 			image,
 			images,
+			file,
 			user.id
 		);
 	}
 
 	@Post(':id/update')
+	@UseInterceptors(
+		FileFieldsInterceptor(
+			[
+				{name: 'file', maxCount: 2},
+				{name: 'image', maxCount: 2},
+				{name: 'images', maxCount: 5},
+			],
+			uploadFileConfig(1048576, REGEX_IMAGE_RAR)
+		)
+	)
 	@Roles(ROLE.PARTNER)
 	async updateProduct(
-		@Body(ValidationPipe) updateProductDto: UpdateProductDto,
-		@Param('id', ParseIntPipe) id: number
+		@UploadedFiles()
+		files: {
+			image?: Express.Multer.File;
+			images?: Express.Multer.File[];
+			file?: Express.Multer.File;
+		},
+		@Body(ValidationPipe) updateProductDto: any,
+		@Param('id', ParseIntPipe) id: number,
+		@User() user: UserDto
 	): Promise<Product> {
-		return await this.productService.updateProduct(id, updateProductDto);
+		const {image, images, file} = files;
+		return await this.productService.updateProduct(
+			id,
+			updateProductDto,
+			image,
+			images,
+			file,
+			user.id
+		);
 	}
 
 	@Post(':id/remove')
@@ -112,5 +144,17 @@ export class ProductController {
 		@Body() statusDto: UpdateProductDto
 	): Promise<string> {
 		return await this.productService.updateStatusByAdmin(id, statusDto);
+	}
+
+	@Get('/count')
+	@Roles(ROLE.PARTNER, ROLE.ADMIN)
+	async countProduct(@User() user: UserDto): Promise<string> {
+		return await this.productService.countProduct(user);
+	}
+
+	@Get('/informations')
+	@Roles(ROLE.PARTNER, ROLE.ADMIN)
+	async viewsLikeTotal(@User() user: UserDto): Promise<string> {
+		return await this.productService.viewsLikeTotal(user);
 	}
 }

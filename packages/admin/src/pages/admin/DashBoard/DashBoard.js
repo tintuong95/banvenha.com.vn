@@ -1,185 +1,239 @@
 // import ChartColumn from '../../../components/ChartColumn';
 import CountUp from 'react-countup';
-import {Badge, Divider, Statistic, Switch, Table, Tag} from 'antd';
-import {
-	// DeleteOutlined,
-	// UnlockOutlined,
-	// MessageOutlined,
-	EyeOutlined,
-	LikeOutlined,
-	ShoppingCartOutlined,
-} from '@ant-design/icons';
+import {Badge, Button, Divider, QRCode, Statistic, Switch, Table, Tag} from 'antd';
+import {DownCircleOutlined, LoadingOutlined} from '@ant-design/icons';
+
+import {useEffect, useState} from 'react';
+import {useMitt} from 'react-mitt';
+import {useSelector} from 'react-redux';
+import { getOrderListApi, getRevenueMonthApi, getRevenueTotalApi } from '../../../apis/order';
+import { countProductApi, getViewsLikesApi } from '../../../apis/product';
+import { countNewsApi } from '../../../apis/news';
+import { ORDER_STATUS } from '../../../contants/table';
 
 // import BaseIcon from '../../../components/BaseIcon';
 // import {WiTime5} from 'react-icons/wi';
 const formatter = (value) => <CountUp end={value} separator=',' />;
 const formatterNumber = (value) => <CountUp end={value} />;
-const columns = [
-	{
-		title: 'Mã',
-		dataIndex: 'code',
-		key: 'code',
-		render: (text) => {
-			return (
-				<div className='flex  items-center'>
-					<span className='mr-2'>{text}</span>
-					<Badge count={'NEWS'} style={{backgroundColor: '#87d068'}}></Badge>
-				</div>
-			);
-		},
-	},
 
-	{
-		title: 'Tên',
-		dataIndex: 'name',
-		key: 'name',
-		render: (_, record) => {
-			return (
-				<div className='flex flex-col'>
-					<span className='font-semibold'>{record.name}</span>
-					<a href='#d' className='text-slate-500'>
-						{record.partner}
-					</a>
-				</div>
-			);
-		},
-	},
-	{
-		title: 'Nhóm',
-		dataIndex: 'group',
-		key: 'group',
-	},
-	{
-		title: 'Tổng quan',
-		dataIndex: 'views',
-		key: 'views',
-		render: (_, record) => {
-			return (
-				<div className='flex gap-3'>
-					<div className='flex gap-1 items-center'>
-						<EyeOutlined style={{color: 'gray'}} />
-						{record.views}
-					</div>
-					<div className='flex gap-1 items-center'>
-						<LikeOutlined style={{color: 'blue'}} />
-						{record.views}
-					</div>
-					<div className='flex gap-1 items-center'>
-						<ShoppingCartOutlined style={{color: 'green'}} />
-						{record.views}
-					</div>
-				</div>
-			);
-		},
-	},
-
-	{
-		title: 'Tình trạng',
-		key: 'state',
-		dataIndex: 'state',
-		render: () => (
-			<Switch
-				checkedChildren='NORMAL'
-				unCheckedChildren='DRAFT'
-				defaultChecked
-				disabled={true}
-			/>
-		),
-	},
-	{
-		title: 'Trạng thái',
-		key: 'status',
-		dataIndex: 'status',
-
-		render: () => (
-			<Tag color={'green'} key={'green'}>
-				NORMAL
-			</Tag>
-		),
-	},
-	{
-		title: 'Thời gian',
-		key: 'updated_at',
-		dataIndex: 'updated_at',
-	},
-	// {
-	// 	title: 'Thao tác',
-	// 	key: 'action',
-	// 	render: () => (
-	// 		<Space size='middle'>
-	// 			<Tooltip placement='top' title={'Gửi tin nhắn'}>
-	// 				<Button type='link' icon={<MessageOutlined />}></Button>
-	// 			</Tooltip>
-	// 			<Tooltip placement='top' title={'Khóa sản phẩm'}>
-	// 				<Button type='text' icon={<UnlockOutlined />}></Button>
-	// 			</Tooltip>
-	// 			<Tooltip placement='top' title={'Xóa sản phẩm'}>
-	// 				<Button type='link' danger icon={<DeleteOutlined />}></Button>
-	// 			</Tooltip>
-
-	// 			{/* <Button type='link' danger icon={<DeleteOutlined />}></Button> */}
-	// 		</Space>
-	// 	),
-	// },
-];
-const data = [
-	{
-		key: '1',
-		image: 'https://picsum.photos/200/200',
-		code: 'AZ100',
-		name: 'Bản vẽ nhà cấp 4 5x10',
-		group: 'Nhà cấp 4',
-		views: 1000,
-		likes: 500,
-		updated_at: '10:10 10/10/2020',
-		partner: 'KTS. Phan Tin Tưởng',
-	},
-	{
-		key: '2',
-		image: 'https://picsum.photos/200/200',
-		code: 'AZ100',
-		name: 'Bản vẽ nhà cấp 4 5x10',
-		group: 'Nhà cấp 4',
-		views: 1000,
-		likes: 500,
-		updated_at: '10:10 10/10/2020',
-		partner: 'KTS. Phan Tin Tưởng',
-	},
-	{
-		key: '3',
-		image: 'https://picsum.photos/200/200',
-		code: 'AZ100',
-		name: 'Bản vẽ nhà cấp 4 5x10',
-		group: 'Nhà cấp 4',
-		views: 1000,
-		likes: 500,
-		updated_at: '10:10 10/10/2020',
-		partner: 'KTS. Phan Tin Tưởng',
-	},
-	{
-		key: '4',
-		image: 'https://picsum.photos/200/200',
-		code: 'AZ100',
-		name: 'Bản vẽ nhà cấp 4 5x10',
-		group: 'Nhà cấp 4',
-		views: 1000,
-		likes: 500,
-		updated_at: '10:10 10/10/2020',
-		partner: 'KTS. Phan Tin Tưởng',
-	},
-	{
-		key: '5',
-		image: 'https://picsum.photos/200/200',
-		code: 'AZ100',
-		name: 'Bản vẽ nhà cấp 4 5x10',
-		group: 'Nhà cấp 4',
-		views: 1000,
-		likes: 500,
-		updated_at: '10:10 10/10/2020',
-		partner: 'KTS. Phan Tin Tưởng',
-	},
-];
 const DashBoard = () => {
+	const {emitter} = useMitt();
+	const [orderList, setOrderList] = useState([]);
+	const {self} = useSelector((state) => state.auth);
+	const [revenueMonthData, setRevenueMonthData] = useState({
+		revenueMonth: 0,
+		countOrderMonth: 0,
+	});
+	const [revenueTotalData, setRevenueTotalData] = useState({
+		revenueTotal: 0,
+		countOrderTotal: 0,
+	});
+
+	const [viewLikeData, setViewLikeData] = useState({
+		countViewsProduct: 0,
+		countLikesProduct: 0,
+	});
+
+	const [countNews, setCountNews] = useState(0);
+	const [countProducts, setCountProducts] = useState(0);
+
+		const columns = [
+			{
+				title: 'QRcode',
+				dataIndex: 'qrcode',
+				key: 'qrcode',
+				render: () => <QRCode size={60} value='https://ant.design/' />,
+			},
+
+			{
+				title: 'Người mua',
+				dataIndex: 'name',
+				key: 'name',
+				render: (_, record) => {
+					return (
+						<div className='flex flex-col '>
+							<span className=''>{record.name}</span>
+							<span className='text-slate-400'>{record.email}</span>
+						</div>
+					);
+				},
+			},
+
+			{
+				title: 'Đối tác',
+				dataIndex: 'admin',
+				key: 'admin',
+				render: (text) => text.name,
+			},
+			{
+				title: 'Sản phẩm',
+				dataIndex: 'products',
+				key: 'products',
+				render: (text) => {
+					return (
+						<div className='flex flex-col '>
+							<span className='text-slate-400'>{text.name}</span>
+							<span className=''>{text.price}</span>
+						</div>
+					);
+				},
+			},
+			{
+				title: 'Giá bán',
+				dataIndex: 'price',
+				key: 'price',
+				render: (text) => (
+					<Tag className='text-sm' color='blue'>
+						{text.toLocaleString('vi-VN')} VND
+					</Tag>
+				),
+			},
+
+			{
+				title: 'Thanh toán',
+				dataIndex: 'status',
+				key: 'status',
+				render: (text) => {
+					return (
+						<div className='w-full flex items-center gap-2'>
+							{text == ORDER_STATUS.success ? (
+								<Button
+									size='small'
+									className='border-green-500 bg-green-400 text-white'
+									icon={<DownCircleOutlined style={{color: 'white'}} />}>
+									Success
+								</Button>
+							) : (
+								<Button
+									size='small'
+									className='border-yellow-500 bg-yellow-400 text-white'
+									icon={<LoadingOutlined style={{color: 'white'}} />}>
+									Pending
+								</Button>
+							)}
+						</div>
+					);
+				},
+			},
+			{
+				title: 'Thời gian',
+				dataIndex: 'updated_at',
+				key: 'updated_at',
+				render: (text) => moment(text).format('hh:mm DD/MM/YYYY '),
+			},
+			// {
+			// 	title: 'Thao tác',
+			// 	key: 'action',
+			// 	render: (_, record) => (
+			// 		<Space size='middle'>
+			// 			{record.deleted_at ? (
+			// 				<Button
+			// 					onClick={() => onRestoreConfirm(record.id)}
+			// 					type='primary'
+			// 					className='bg-slate-300 text-slate-800'
+			// 					icon={<RollbackOutlined />}>
+			// 					Restore
+			// 				</Button>
+			// 			) : (
+			// 				<Button
+			// 					onClick={() => onRemoveConfirm(record.id)}
+			// 					type='primary'
+			// 					danger
+			// 					icon={<DeleteOutlined />}>
+			// 					Delete
+			// 				</Button>
+			// 			)}
+			// 		</Space>
+			// 	),
+			// },
+		];
+	const fetchRevenueMonth = () => {
+		getRevenueMonthApi()
+			.then((result) => {
+				const {count, sum} = result.data;
+				setRevenueMonthData({
+					...revenueMonthData,
+					revenueMonth: sum,
+					countOrderMonth: count,
+				});
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+
+	const fetchRevenueTotal = () => {
+		getRevenueTotalApi()
+			.then((result) => {
+				const {count, sum} = result.data;
+				setRevenueTotalData({
+					...revenueTotalData,
+					revenueTotal: sum,
+					countOrderTotal: count,
+				});
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+
+	const fetchViewsLikesTotal = () => {
+		getViewsLikesApi()
+			.then((result) => {
+				const {views, likes} = result.data;
+				setViewLikeData({
+					...viewLikeData,
+					countViewsProduct: views,
+					countLikesProduct: likes,
+				});
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+
+	const fetchCountNews = () => {
+		countNewsApi()
+			.then((result) => {
+				const {count} = result.data;
+				setCountNews(count);
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+
+	const fetchCountProduct = () => {
+		countProductApi()
+			.then((result) => {
+				const {count} = result.data;
+				setCountProducts(count);
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+
+	const fetchOrderList = (params) => {
+		emitter.emit('pendingOn');
+		getOrderListApi(params)
+			.then((result) => {
+				setOrderList(result.data);
+				emitter.emit('pendingOff');
+			})
+			.catch((err) => {
+				console.log(err);
+				emitter.emit('pendingOff');
+			});
+	};
+	useEffect(() => {
+		fetchRevenueMonth();
+		fetchRevenueTotal();
+		fetchViewsLikesTotal();
+		fetchCountNews();
+		fetchCountProduct();
+		fetchOrderList();
+	}, []);
 	return (
 		<>
 			<div className='bg-white p-5 rounded'>
@@ -202,7 +256,7 @@ const DashBoard = () => {
 					<div className='text-center'>
 						<Statistic
 							title='DOANH THU THÁNG  (VND)'
-							value={112893}
+							value={revenueMonthData?.revenueMonth}
 							precision={2}
 							formatter={formatter}
 						/>
@@ -210,17 +264,21 @@ const DashBoard = () => {
 					<div className='text-center'>
 						<Statistic
 							title='TỔNG DOANH THU (VND)'
-							value={112893}
+							value={revenueTotalData.revenueTotal}
 							formatter={formatter}
 						/>
 					</div>
 					<div className='text-center'>
-						<Statistic title='SẢN PHẨM ' value={112} formatter={formatterNumber} />
+						<Statistic
+							title='SẢN PHẨM '
+							value={countProducts}
+							formatter={formatterNumber}
+						/>
 					</div>
 					<div className='text-center'>
 						<Statistic
 							title='BÀI VIẾT'
-							value={112}
+							value={countNews}
 							precision={2}
 							formatter={formatterNumber}
 						/>
@@ -231,22 +289,30 @@ const DashBoard = () => {
 					<div className='text-center'>
 						<Statistic
 							title='LƯỢT MUA (THÁNG)'
-							value={112}
+							value={revenueMonthData.countOrderMonth}
 							precision={2}
 							formatter={formatterNumber}
 						/>
 					</div>
 					<div className='text-center'>
-						<Statistic title='LƯỢT MUA' value={112} formatter={formatterNumber} />
+						<Statistic
+							title='LƯỢT MUA'
+							value={revenueTotalData.countOrderTotal}
+							formatter={formatterNumber}
+						/>
 					</div>
 
 					<div className='text-center'>
-						<Statistic title='LƯỢT XEM' value={112893} formatter={formatterNumber} />
+						<Statistic
+							title='LƯỢT XEM'
+							value={viewLikeData.countViewsProduct}
+							formatter={formatterNumber}
+						/>
 					</div>
 					<div className='text-center'>
 						<Statistic
 							title='LƯỢT THÍCH'
-							value={112893}
+							value={viewLikeData.countLikesProduct}
 							precision={2}
 							formatter={formatterNumber}
 						/>
@@ -254,7 +320,7 @@ const DashBoard = () => {
 				</div>
 			</div>
 			<div className='mt-8'>
-				<Table pagination={false} columns={columns} dataSource={data} />
+				<Table pagination={false} columns={columns} dataSource={orderList?.data} />
 			</div>
 		</>
 	);

@@ -2,9 +2,11 @@ import {Button} from 'antd';
 import React, {useState} from 'react';
 import BaseStep from '../../../components/BaseStep';
 import CreateStepFirst from './Create/CreateStepFirst';
+import CreateStepFive from './Create/CreateStepFive';
 import CreateStepFour from './Create/CreateStepFour';
 import CreateStepThree from './Create/CreateStepThree';
 import CreateStepTwo from './Create/CreateStepTwo';
+
 
 export default function ProductCreate() {
 	const [stepPage, setStepPage] = useState(1);
@@ -17,7 +19,7 @@ export default function ProductCreate() {
 		state: null,
 	});
 	const onNextStep = () => {
-		const step = stepPage < 4 ? stepPage + 1 : stepPage;
+		const step = stepPage < 5 ? stepPage + 1 : stepPage;
 		setStepPage(step);
 	};
 	const onPreviousStep = () => {
@@ -69,14 +71,27 @@ export default function ProductCreate() {
 					setDataProduct={setDataProduct}
 				/>
 			);
+		else if (stepPage == 5)
+			return (
+				<CreateStepFive
+					onNextStep={onNextStep}
+					onPreviousStep={onPreviousStep}
+					stepPage={stepPage}
+					setStepPage={setStepPage}
+					dataProduct={dataProduct}
+					setDataProduct={setDataProduct}
+				/>
+			);
 	};
 
 	return (
 		<div>
-			<div className='w-2/4 m-auto mb-5'>
+			<div className='w-2/4 m-auto mb-5' style={{minWidth: 825}}>
 				<BaseStep current={stepPage} />
 			</div>
-			<div className='bg-white w-2/4 m-auto p-10 rounded-md shadow-sm'>
+			<div
+				className='bg-white w-2/4 m-auto p-10 rounded-md shadow-sm'
+				style={{minWidth: 825}}>
 				{renderStepCreate(stepPage)}
 			</div>
 		</div>

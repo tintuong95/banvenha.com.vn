@@ -32,13 +32,13 @@ const CreateStepThree = ({
 	};
 	const onSubmit = (state) => {
 		const data = new FormData();
-	
+		console.log(dataNews);
 		data.append('name', dataNews.name);
 		data.append('description', dataNews.description);
 		data.append('content', dataNews.content);
 		data.append('group_id', dataNews.group_id);
 		data.append('state', state);
-		data.append('file', dataNews.file);
+		data.append('image', dataNews.image[0].originFileObj);
 
 		createNewsApi(data)
 			.then((result) => {

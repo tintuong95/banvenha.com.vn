@@ -13,6 +13,7 @@ import {ADMIN_KEY, PRODUCT_KEY} from '~contants/relation';
 import {Admin} from '~module/admin/entity/admin.entity';
 import {Exclude} from 'class-transformer';
 import {generateCode} from '~util/generate';
+import {ORDER_STATUS} from '../type/order.type';
 
 @Entity({name: 'orders'})
 export class Order extends BaseEntity {
@@ -55,6 +56,14 @@ export class Order extends BaseEntity {
 	})
 	@ApiProperty()
 	price: number;
+
+	@Column({
+		type: 'enum',
+		enum: ORDER_STATUS,
+		default: ORDER_STATUS.UNPAID,
+	})
+	@ApiProperty()
+	status: ORDER_STATUS;
 
 	@OneToOne(() => Product, {cascade: true})
 	@JoinColumn({name: 'product_id'})

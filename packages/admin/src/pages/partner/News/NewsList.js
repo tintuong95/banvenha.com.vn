@@ -10,6 +10,8 @@ import {
 	Tooltip,
 	Modal,
 	notification,
+	DatePicker,
+	QRCode,
 } from 'antd';
 import AddButton from '../../../components/AddButton';
 import {
@@ -22,6 +24,10 @@ import {
 	ClearOutlined,
 	ExclamationCircleFilled,
 	ToolOutlined,
+	ProjectOutlined,
+	ClockCircleOutlined,
+	DownCircleOutlined,
+	LockOutlined,
 } from '@ant-design/icons';
 import {useEffect, useState} from 'react';
 import {
@@ -41,19 +47,20 @@ import {
 	updateNewstState,
 } from '../../../apis/news';
 import {useMitt} from 'react-mitt';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 const {confirm} = Modal;
 
 const NewsList = () => {
 	const {emitter} = useMitt();
 	const navigate = useNavigate();
+	const [visible, setVisible] = useState(true);
 	const [newsList, setNewsList] = useState([]);
 	const [newsGroupList, setNewsGroupList] = useState([]);
 
 	const [params, setParams] = useState({
 		currentPage: 1,
-		perPage: 2,
+		perPage: 10,
 		name: null,
 		status: null,
 		state: null,
@@ -166,10 +173,10 @@ const NewsList = () => {
 
 	const columns = [
 		{
-			title: 'Hình',
-			dataIndex: 'image',
-			key: 'image',
-			render: (text) => <BaseAvatar src={text} />,
+			title: 'Mã',
+			dataIndex: 'qrcode',
+			key: 'qrcode',
+			render: () => <QRCode size={60} value='https://ant.design/' />,
 		},
 
 		{
@@ -181,7 +188,6 @@ const NewsList = () => {
 					<div className='flex flex-col'>
 						<span className='font-semibold'>{record.name}</span>
 						<div className='text-sm'>
-							<span className='text-slate-500'>{record.id}</span> -
 							<a href='#d' className='text-slate-500'>
 								{record.admin.name}
 							</a>
@@ -189,6 +195,12 @@ const NewsList = () => {
 					</div>
 				);
 			},
+		},
+		{
+			title: 'Hình',
+			dataIndex: 'image',
+			key: 'image',
+			render: (text) => <BaseAvatar src={text} />,
 		},
 		{
 			title: 'Nhóm',
@@ -241,23 +253,32 @@ const NewsList = () => {
 			render: (text) => {
 				if (text == NEWS_STATUS.PROCESS)
 					return (
-						<Tag color={'cyan'} key={'cyan'}>
+						<Button
+							size='small'
+							className='border-sky-500 bg-sky-400 text-white'
+							icon={<ClockCircleOutlined style={{color: 'white'}} />}>
 							{NEWS_STATUS_TEXT[NEWS_STATUS.PROCESS]}
-						</Tag>
+						</Button>
 					);
 
 				if (text == NEWS_STATUS.ACTIVED)
 					return (
-						<Tag color={'green'} key={'green'}>
+						<Button
+							size='small'
+							className='border-green-500 bg-green-400 text-white'
+							icon={<DownCircleOutlined style={{color: 'white'}} />}>
 							{NEWS_STATUS_TEXT[NEWS_STATUS.ACTIVED]}
-						</Tag>
+						</Button>
 					);
 
 				if (text == NEWS_STATUS.BLOCKED)
 					return (
-						<Tag color={'volcano'} key={'volcano'}>
+						<Button
+							size='small'
+							className='border-red-500 bg-red-400 text-white'
+							icon={<LockOutlined style={{color: 'white'}} />}>
 							{NEWS_STATUS_TEXT[NEWS_STATUS.BLOCKED]}
-						</Tag>
+						</Button>
 					);
 			},
 		},
@@ -280,8 +301,8 @@ const NewsList = () => {
 							onClick={() => {
 								navigate(`/news/${record.id}/update`);
 							}}
-							type='text'
-							icon={<ToolOutlined />}></Button>
+							type='link'
+							icon={<ToolOutlined rotate={-135} />}></Button>
 					</Tooltip>
 					<Tooltip placement='top' title={'Xóa tin tức'}>
 						<Button
@@ -310,7 +331,7 @@ const NewsList = () => {
 
 	return (
 		<>
-			<div className='flex gap-4 mb-5 items-center'>
+			<div className='flex flex-wrap gap-4 mb-5 items-center'>
 				Tên :
 				<Input
 					style={{
@@ -381,6 +402,21 @@ const NewsList = () => {
 						},
 					]}
 				/>
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Bắt đầu :<DatePicker onChange={onChange} />
+					</div>
+				)}
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Kết thúc :<DatePicker onChange={onChange} />
+					</div>
+				)}
+				<Button
+					onClick={() => setVisible(!visible)}
+					type='link'
+					ghost
+					icon={<ProjectOutlined />}></Button>
 				<Button
 					onClick={() => {
 						fetchNewsList(params);

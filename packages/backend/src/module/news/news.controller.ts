@@ -26,6 +26,7 @@ import {FileInterceptor} from '@nestjs/platform-express';
 import {uploadFileConfig} from '~config/multer.config';
 import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
+import {REGEX_IMAGE} from '~util/regex';
 
 @Controller('news')
 @UseGuards(JwtAuthGuard)
@@ -39,38 +40,37 @@ export class NewsController {
 	): Promise<any> {
 		return await this.newsService.getAllNews(req, query, user);
 	}
+
 	@Get(':id/details')
 	async getNewsDetails(@Param('id', ParseIntPipe) id: number): Promise<News> {
 		return await this.newsService.getNewsDetails(id);
 	}
 
+	@Get(':slug/slug/details')
+	async getNewsSlugDetails(@Param('slug') slug: string): Promise<News> {
+		return await this.newsService.getNewsSlugDetails(slug);
+	}
+
 	@Roles(ROLE.PARTNER)
 	@Post('create')
 	@UseInterceptors(
-		FileInterceptor(
-			'file',
-			uploadFileConfig(1048576, /\/(jpg|jpeg|png|gif)$/, 'images/news')
-		)
+		FileInterceptor('image', uploadFileConfig(10000, REGEX_IMAGE))
 	)
 	@HttpCode(HttpStatus.CREATED)
 	@UsePipes(new ValidationPipe({transform: true}))
 	async createNews(
 		@Body() createNewsDto: any,
-		@UploadedFile() file: Express.Multer.File,
+		@UploadedFile() image: Express.Multer.File,
 		@User() user: UserDto
 	): Promise<News> {
-		console.log('createNewsDto', createNewsDto);
 		const {id} = user;
-		return await this.newsService.createNews(createNewsDto, file, id);
+		return await this.newsService.createNews(createNewsDto, image, id);
 	}
 
 	@Roles(ROLE.PARTNER)
 	@Post(':id/update')
 	@UseInterceptors(
-		FileInterceptor(
-			'file',
-			uploadFileConfig(1048576, /\/(jpg|jpeg|png|gif)$/, 'images/news')
-		)
+		FileInterceptor('image', uploadFileConfig(1000, REGEX_IMAGE))
 	)
 	async updateNews(
 		@Body(ValidationPipe) updateNewsDto: UpdateNewsDto,
@@ -87,7 +87,7 @@ export class NewsController {
 		return await this.newsService.deleteNews(id);
 	}
 
-	@Roles(ROLE.PARTNER)
+	@Roles(ROLE.PARTNER, ROLE.ADMIN)
 	@Post(':id/remove')
 	async removeNews(
 		@Param('id', ParseIntPipe) id: number,
@@ -109,5 +109,11 @@ export class NewsController {
 		@Body() statusDto: UpdateNewsDto
 	): Promise<string> {
 		return await this.newsService.changeStatusNewsByAdmin(id, statusDto);
+	}
+
+	@Get('/count')
+	@Roles(ROLE.PARTNER, ROLE.ADMIN)
+	async countProduct(@User() user: UserDto): Promise<string> {
+		return await this.newsService.countNews(user);
 	}
 }

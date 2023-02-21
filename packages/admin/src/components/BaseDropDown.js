@@ -1,6 +1,6 @@
 import {Button, Divider, Dropdown, theme} from 'antd';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { cloneElement } from 'react';
 import {useDispatch} from 'react-redux';
 import {evtLogout} from '../stores/reducers/auth';
 const {useToken} = theme;
@@ -41,9 +41,9 @@ const BaseDropdown = ({children}) => {
 			key: '4',
 			danger: true,
 			label: (
-				<span aria-hidden role='button' onClick={onLogout}>
+				<div aria-hidden role='button' className='w-full h-full' onClick={onLogout}>
 					Đăng xuất
-				</span>
+				</div>
 			),
 		},
 	];
@@ -65,7 +65,7 @@ const BaseDropdown = ({children}) => {
 			}}
 			dropdownRender={(menu) => (
 				<div style={contentStyle}>
-					{React.cloneElement(menu, {
+					{cloneElement(menu, {
 						style: menuStyle,
 					})}
 					<Divider

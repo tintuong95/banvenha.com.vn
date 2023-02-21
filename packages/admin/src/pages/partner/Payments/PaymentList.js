@@ -8,6 +8,7 @@ import {
 	Table,
 	Tag,
 	Modal,
+	DatePicker,
 } from 'antd';
 import {
 	SearchOutlined,
@@ -15,9 +16,8 @@ import {
 	ClearOutlined,
 	FileExcelOutlined,
 	PrinterOutlined,
-	ExclamationCircleFilled,
-	RollbackOutlined,
-	DeleteOutlined,
+	LoadingOutlined,
+	ProjectOutlined,
 } from '@ant-design/icons';
 import {useEffect, useState} from 'react';
 import {useMitt} from 'react-mitt';
@@ -26,44 +26,32 @@ import {
 	removePaymentById,
 	restorePaymentById,
 } from '../../../apis/payment';
-import {removeOrderById, restoreRestoreById} from '../../../apis/order';
-import {NOTIFICATION_TYPE} from '../../../contants/table';
+import {NOTIFICATION_TYPE, PAYMENT_STATUS} from '../../../contants/table';
+import {useNavigate} from 'react-router-dom';
 
 const {confirm} = Modal;
 
 const PaymentList = () => {
-	const [paymentList, setPaymentList] = useState([]);
 	const {emitter} = useMitt();
+	const navigate = useNavigate();
+
+	const [visible, setVisible] = useState(true);
+	const [paymentList, setPaymentList] = useState([]);
+
 	const [params, setParams] = useState({
 		currentPage: 1,
-		perPage: 2,
+		perPage: 10,
 		code: null,
 		name: null,
+		start: null,
+		end: null,
+		bank_transaction:null
 	});
 	const columns = [
-		{
-			title: 'QRCode',
-			dataIndex: 'qrcode',
-			key: 'qrcode',
-			render: () => <QRCode size={60} value='https://ant.design/' />,
-		},
 		{
 			title: 'Mã',
 			dataIndex: 'code',
 			key: 'code',
-		},
-		{
-			title: 'Người nhận',
-			dataIndex: 'amdin',
-			key: 'amdin',
-			render: (text, record) => {
-				return (
-					<div className='flex flex-col '>
-						<span className=''>{record?.admin?.name}</span>
-						<span className='text-slate-400'>{record?.admin?.email}</span>
-					</div>
-				);
-			},
 		},
 
 		// {
@@ -85,19 +73,48 @@ const PaymentList = () => {
 			},
 		},
 		{
+			title: 'Mã giao dịch',
+			dataIndex: 'bank_transaction',
+			key: 'bank_transaction',
+		},
+		{
 			title: 'Số tiền',
 			dataIndex: 'money',
 			key: 'money',
-			render: (text) => <Tag color='red'>{text}</Tag>,
+			render: (text) => (
+				<Tag className='text-sm' color='blue'>
+					{text.toLocaleString('vi-VN')} VND
+				</Tag>
+			),
+		},
+		{
+			title: 'QRCode',
+			dataIndex: 'qrcode',
+			key: 'qrcode',
+			render: () => <QRCode size={60} value='https://ant.design/' />,
 		},
 		{
 			title: 'Thanh toán',
-			dataIndex: 'payment',
-			key: 'payment',
-			render: () => {
+			dataIndex: 'status',
+			key: 'status',
+			render: (text) => {
 				return (
-					<div className='w-full text-center'>
-						<DownCircleOutlined style={{color: 'green'}} />
+					<div className='w-full flex items-center gap-2'>
+						{text == PAYMENT_STATUS.success ? (
+							<Button
+								size='small'
+								className='border-green-500 bg-green-400 text-white'
+								icon={<DownCircleOutlined style={{color: 'white'}} />}>
+								Success
+							</Button>
+						) : (
+							<Button
+								size='small'
+								className='border-yellow-500 bg-yellow-400 text-white'
+								icon={<LoadingOutlined style={{color: 'white'}} />}>
+								Pending
+							</Button>
+						)}
 					</div>
 				);
 			},
@@ -157,72 +174,77 @@ const PaymentList = () => {
 			});
 	};
 
-	const fetchPaymentRemove = (id) => {
-		removePaymentById(id)
-			.then((result) => {
-				fetchPaymentList(params);
-				openNotification(NOTIFICATION_TYPE.success, 'Đã xóa thành công !');
-			})
-			.catch((err) => {
-				console.log(err);
-				openNotification(NOTIFICATION_TYPE.error, 'Xóa thất bại !');
-			});
-	};
+	// const fetchPaymentRemove = (id) => {
+	// 	removePaymentById(id)
+	// 		.then((result) => {
+	// 			fetchPaymentList(params);
+	// 			openNotification(NOTIFICATION_TYPE.success, 'Đã xóa thành công !');
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 			openNotification(NOTIFICATION_TYPE.error, 'Xóa thất bại !');
+	// 		});
+	// };
 
-	const fetchPaymentReStore = (id) => {
-		restorePaymentById(id)
-			.then((result) => {
-				fetchPaymentList(params);
-				openNotification(NOTIFICATION_TYPE.success, 'Phục hồi thành công !');
-			})
-			.catch((err) => {
-				console.log(err);
-				openNotification(NOTIFICATION_TYPE.error, 'Phục hồi thất bại !');
-			});
-	};
+	// const fetchPaymentReStore = (id) => {
+	// 	restorePaymentById(id)
+	// 		.then((result) => {
+	// 			fetchPaymentList(params);
+	// 			openNotification(NOTIFICATION_TYPE.success, 'Phục hồi thành công !');
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 			openNotification(NOTIFICATION_TYPE.error, 'Phục hồi thất bại !');
+	// 		});
+	// };
 
 	const onChange = (pageNumber) => {
 		setParams({...params, currentPage: pageNumber});
 	};
 
-	const onRemoveConfirm = (id) => {
-		confirm({
-			title: 'Vui lòng xác nhận xóa !',
-			icon: <ExclamationCircleFilled />,
-			content: '',
-			onOk() {
-				fetchPaymentRemove(id);
-			},
-			onCancel() {
-				console.log('Cancel');
-			},
-		});
+	const onChangeForm = (e) => {
+		const {name, value} = e.target;
+		setParams({...params, [name]: value});
 	};
 
-	const onRestoreConfirm = (id) => {
-		confirm({
-			title: 'Vui lòng xác nhận phục hồi !',
-			icon: <ExclamationCircleFilled />,
-			content: '',
-			onOk() {
-				fetchPaymentReStore(id);
-			},
-			onCancel() {
-				console.log('Cancel');
-			},
-		});
-	};
+	// const onRemoveConfirm = (id) => {
+	// 	confirm({
+	// 		title: 'Vui lòng xác nhận xóa !',
+	// 		icon: <ExclamationCircleFilled />,
+	// 		content: '',
+	// 		onOk() {
+	// 			fetchPaymentRemove(id);
+	// 		},
+	// 		onCancel() {
+	// 			console.log('Cancel');
+	// 		},
+	// 	});
+	// };
 
-	const openNotification = (type, message, description) => {
-		notification[type]({
-			type,
-			message,
-			description,
-			onClick: () => {
-				console.log('Notification Clicked!');
-			},
-		});
-	};
+	// const onRestoreConfirm = (id) => {
+	// 	confirm({
+	// 		title: 'Vui lòng xác nhận phục hồi !',
+	// 		icon: <ExclamationCircleFilled />,
+	// 		content: '',
+	// 		onOk() {
+	// 			fetchPaymentReStore(id);
+	// 		},
+	// 		onCancel() {
+	// 			console.log('Cancel');
+	// 		},
+	// 	});
+	// };
+
+	// const openNotification = (type, message, description) => {
+	// 	notification[type]({
+	// 		type,
+	// 		message,
+	// 		description,
+	// 		onClick: () => {
+	// 			console.log('Notification Clicked!');
+	// 		},
+	// 	});
+	// };
 
 	useEffect(() => {
 		fetchPaymentList(params);
@@ -232,29 +254,82 @@ const PaymentList = () => {
 			<div className='flex gap-4 mb-5 items-center'>
 				Mã :
 				<Input
+					name='code'
 					style={{
 						width: 200,
 					}}
-					placeholder='Basic usage'
+					value={params.code}
+					placeholder='Vui lòng nhập'
+					onChange={onChangeForm}
 				/>
-				Người mua :
+				Mã giao dịch :
 				<Input
+					name='bank_transaction'
 					style={{
 						width: 200,
 					}}
-					placeholder='Basic usage'
+					value={params.bank_transaction}
+					placeholder='Vui lòng nhập '
+					onChange={onChangeForm}
 				/>
-				Đối tác :
+				Số tài khoản :
 				<Input
+					name='bank_number'
+					value={params.bank_number}
 					style={{
 						width: 200,
 					}}
-					placeholder='Basic usage'
+					placeholder='Vui lòng nhập'
+					onChange={onChangeForm}
 				/>
-				<Button type='primary' icon={<SearchOutlined />}>
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Bắt đầu :
+						<DatePicker
+							value={params.start}
+							onChange={(_, dateString) => {
+								setParams({...params, start: dateString});
+							}}
+						/>
+					</div>
+				)}
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Kết thúc :
+						<DatePicker
+							value={params.end}
+							onChange={(_, dateString) => {
+								setParams({...params, end: dateString});
+							}}
+						/>
+					</div>
+				)}
+				<Button
+					onClick={() => setVisible(!visible)}
+					type='link'
+					ghost
+					icon={<ProjectOutlined />}></Button>
+				<Button
+					onClick={() => {
+						fetchPaymentList(params);
+					}}
+					type='primary'
+					icon={<SearchOutlined />}>
 					Tìm kiếm
 				</Button>
-				<Button type='link' icon={<ClearOutlined />}>
+				<Button
+					onClick={() => {
+						setParams({
+							...params,
+							code: null,
+							bank_number: null,
+							bank_transaction: null,
+							start: null,
+							end: null,
+						});
+					}}
+					type='link'
+					icon={<ClearOutlined />}>
 					Clear
 				</Button>
 			</div>
@@ -272,6 +347,11 @@ const PaymentList = () => {
 				rowSelection={{
 					...rowSelection,
 				}}
+				onRow={(record, rowIndex) => ({
+					onClick: (event) => {
+						navigate(`/payment/${record.id}/details`);
+					}, // click row
+				})}
 				pagination={false}
 				columns={columns}
 				dataSource={paymentList?.data}

@@ -113,7 +113,12 @@ export default function CreateStepFirst({
 					title: 'Tooltip with customize icon',
 					icon: <InfoCircleOutlined />,
 				}}>
-				<BaseUpload count={1} data={dataNews} setData={setDataNews} />
+				<BaseUpload
+					field={'image'}
+					count={1}
+					data={dataNews}
+					setData={setDataNews}
+				/>
 			</Form.Item>
 			<Divider />
 			<div className='m-auto flex justify-end mt-5 gap-5'>

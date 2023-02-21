@@ -12,6 +12,7 @@ import {findOptionWhere} from '~util/query';
 import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
 import {ROLE} from '~contants/role';
+import * as fs from 'fs-extra';
 
 @Injectable()
 export class NewsService {
@@ -48,18 +49,27 @@ export class NewsService {
 		return result;
 	}
 
+	async getNewsSlugDetails(slug: string): Promise<News | any> {
+		const result = await this.newsRepository.findOne({
+			where: {param: slug},
+			relations: [ADMIN_KEY, NEWS_GROUP_KEY],
+		});
+		if (!result)
+			throw new NotFoundException('News Slug ' + slug + ' Not Found !');
+		return result;
+	}
+
 	async createNews(
 		createNewsDto: CreateNewsDto,
-		file: Express.Multer.File,
+		image: Express.Multer.File,
 		creator_id: number
 	): Promise<News> {
-		createNewsDto.image = file.filename;
+		createNewsDto.image = image.filename;
 		createNewsDto.creator_id = creator_id;
 
 		const result = this.newsRepository.create(createNewsDto);
 		return await this.newsRepository.save(result);
 	}
-
 	async updateNews(
 		id: number,
 		updateNewsDto: UpdateNewsDto,
@@ -75,8 +85,10 @@ export class NewsService {
 		_(updateNewsDto).forEach((val, key) => {
 			if (val) result[key] = val;
 		});
-		if (file) result.image = file.filename;
-
+		if (file) {
+			// fs.removeSync('../../../uploads/images' + result.image);
+			result.image = file.filename;
+		}
 		return this.newsRepository.save(result);
 	}
 
@@ -111,5 +123,18 @@ export class NewsService {
 		if (!result) throw new NotFoundException('News Id ' + id + ' Not Found !');
 		result.status = status;
 		return this.newsRepository.save(result);
+	}
+	async countNews(user: UserDto): Promise<any> {
+		const options = {};
+		if (user.role === ROLE.PARTNER) {
+			options['creator_id'] = user.id;
+		}
+		const result = await this.newsRepository.count({
+			where: options,
+		});
+		if (!result)
+			throw new NotFoundException('Count ' + user.id + ' Not Found !');
+
+		return {count: result};
 	}
 }

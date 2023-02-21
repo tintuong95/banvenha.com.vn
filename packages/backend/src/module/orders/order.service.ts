@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {ForbiddenException, Injectable} from '@nestjs/common';
 import {NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {CreateOrderDto, UpdateOrderDto} from './dto/order.dto';
@@ -11,6 +11,7 @@ import {ADMIN_KEY, PRODUCT_KEY} from '~contants/relation';
 import {Request} from 'express';
 import {UserDto} from '~shared/user.dto';
 import {ROLE} from '~contants/role';
+import * as moment from 'moment';
 
 @Injectable()
 export class OrderService {
@@ -43,7 +44,10 @@ export class OrderService {
 	}
 
 	async getOrderDetails(id: number): Promise<Order | any> {
-		const result = await this.orderRepository.findOne({where: {id}});
+		const result = await this.orderRepository.findOne({
+			where: {id},
+			relations: [ADMIN_KEY, PRODUCT_KEY],
+		});
 		if (!result) throw new NotFoundException('Order Id ' + id + ' Not Found !');
 		return result;
 	}
@@ -83,5 +87,57 @@ export class OrderService {
 		if (result.affected > 0)
 			return 'Deleted Order Id ' + id + ' successfully !';
 		throw new NotFoundException('Order Id ' + id + ' Not Found !');
+	}
+
+	async revenueMounth(user: UserDto): Promise<any> {
+		const currentDate = moment().format('YYYY-MM-DD');
+		const afterDate = moment(currentDate).startOf('month').format('YYYY-MM-DD');
+		const beforeDate = moment(currentDate).endOf('month').format('YYYY-MM-DD');
+
+		if (user.role === ROLE.PARTNER) {
+			return await this.orderRepository
+				.createQueryBuilder('orders')
+				.where('orders.admin_id = :admin_id', {admin_id: user.id})
+				.andWhere('orders.updated_at >= :after', {
+					after: afterDate,
+				})
+				.andWhere('orders.updated_at < :before', {
+					before: beforeDate,
+				})
+				.select('SUM(orders.price)', 'sum')
+				.addSelect('COUNT(*)', 'count')
+				.getRawOne();
+		} else if (user.role === ROLE.ADMIN) {
+			return await this.orderRepository
+				.createQueryBuilder('orders')
+				.where('orders.updated_at >= :after', {
+					after: afterDate,
+				})
+				.andWhere('orders.updated_at < :before', {
+					before: beforeDate,
+				})
+				.select('SUM(orders.price)', 'sum')
+				.addSelect('COUNT(*)', 'count')
+				.getRawOne();
+		}
+		throw new ForbiddenException('Forbidden !');
+	}
+
+	async revenueTotal(user: UserDto): Promise<any> {
+		if (user.role === ROLE.PARTNER) {
+			return await this.orderRepository
+				.createQueryBuilder('orders')
+				.where('orders.admin_id = :admin_id', {admin_id: user.id})
+				.select('SUM(orders.price)', 'sum')
+				.addSelect('COUNT(*)', 'count')
+				.getRawOne();
+		} else if (user.role === ROLE.ADMIN) {
+			return await this.orderRepository
+				.createQueryBuilder('orders')
+				.select('SUM(orders.price)', 'sum')
+				.addSelect('COUNT(*)', 'count')
+				.getRawOne();
+		}
+		throw new ForbiddenException('Forbidden !');
 	}
 }

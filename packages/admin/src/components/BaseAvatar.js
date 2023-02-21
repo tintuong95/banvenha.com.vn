@@ -8,20 +8,23 @@ export default function BaseAvatar({src}) {
 
 	const fetchImage = () => {
 		axios
-			.get(src, {responseType: 'blob'})
+			.get('http://localhost:5000/images/'+src, {responseType: 'blob'})
 			.then((res) => {
+				console.log("data",res.data)
 				var urlCreator = window.URL || window.webkitURL;
 				var imageUrl = urlCreator.createObjectURL(res.data);
+				
 				imageRef.current.src = imageUrl;
 			})
 			.catch((err) => {
+					console.log('data');
 				console.log(err);
 			});
 	};
 
 	useEffect(() => {
 		fetchImage();
-	}, []);
+	}, [src]);
 	return (
 		<img
 			ref={imageRef}

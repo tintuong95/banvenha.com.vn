@@ -11,19 +11,24 @@ import {
 	Tooltip,
 	notification,
 	Modal,
+	DatePicker,
+	QRCode,
 } from 'antd';
 import AddButton from '../../../components/AddButton';
 import {
 	SearchOutlined,
 	DeleteOutlined,
 	UnlockOutlined,
-	MessageOutlined,
+	ProjectOutlined,
 	EyeOutlined,
 	LikeOutlined,
 	ShoppingCartOutlined,
 	ClearOutlined,
 	ExclamationCircleFilled,
 	ToolOutlined,
+	LockOutlined,
+	ClockCircleOutlined,
+	DownCircleOutlined,
 } from '@ant-design/icons';
 import {useMitt} from 'react-mitt';
 import {useEffect, useState} from 'react';
@@ -43,15 +48,18 @@ import {
 	PRODUCT_STATUS_UPDATE_TEXT,
 } from '../../../contants/table';
 import BaseAvatar from '../../../components/BaseAvatar';
+import {useNavigate} from 'react-router-dom';
 
 const {confirm} = Modal;
 const ProductList = () => {
+	const {emitter} = useMitt();
+	const navigate = useNavigate();
+	const [visible, setVisible] = useState(true);
 	const [productList, setProductList] = useState([]);
 	const [productGroupList, setProductGroupList] = useState([]);
-	const {emitter} = useMitt();
 	const [params, setParams] = useState({
 		currentPage: 1,
-		perPage: 2,
+		perPage: 10,
 		name: null,
 		status: null,
 		state: null,
@@ -60,10 +68,10 @@ const ProductList = () => {
 
 	const columns = [
 		{
-			title: 'Hình',
-			dataIndex: 'image',
-			key: 'image',
-			render: (text) => <BaseAvatar src={text} />,
+			title: 'Mã',
+			dataIndex: 'qrcode',
+			key: 'qrcode',
+			render: () => <QRCode size={60} value='https://ant.design/' />,
 		},
 
 		{
@@ -75,7 +83,7 @@ const ProductList = () => {
 					<div className='flex flex-col'>
 						<span className='font-semibold'>{record.name}</span>
 						<div className='text-sm'>
-							<span className='text-slate-500'>{record.code}</span> -
+							{/* <span className='text-slate-500'>{record.code}</span> - */}
 							<a href='#d' className='text-slate-500'>
 								{record.admin.name}
 							</a>
@@ -83,6 +91,12 @@ const ProductList = () => {
 					</div>
 				);
 			},
+		},
+		{
+			title: 'Hình',
+			dataIndex: 'image',
+			key: 'image',
+			render: (text) => <BaseAvatar src={text} />,
 		},
 		{
 			title: 'Nhóm',
@@ -139,23 +153,32 @@ const ProductList = () => {
 			render: (text) => {
 				if (text == PRODUCT_STATUS.PROCESS)
 					return (
-						<Tag color={'cyan'} key={'cyan'}>
+						<Button
+							size='small'
+							className='border-sky-500 bg-sky-400 text-white'
+							icon={<ClockCircleOutlined style={{color: 'white'}} />}>
 							{PRODUCT_STATUS_TEXT[PRODUCT_STATUS.PROCESS]}
-						</Tag>
+						</Button>
 					);
 
 				if (text == PRODUCT_STATUS.ACTIVED)
 					return (
-						<Tag color={'green'} key={'green'}>
+						<Button
+							size='small'
+							className='border-green-500 bg-green-400 text-white'
+							icon={<DownCircleOutlined style={{color: 'white'}} />}>
 							{PRODUCT_STATUS_TEXT[PRODUCT_STATUS.ACTIVED]}
-						</Tag>
+						</Button>
 					);
 
 				if (text == PRODUCT_STATUS.BLOCKED)
 					return (
-						<Tag color={'volcano'} key={'volcano'}>
+						<Button
+							size='small'
+							className='border-red-500 bg-red-400 text-white'
+							icon={<LockOutlined style={{color: 'white'}} />}>
 							{PRODUCT_STATUS_TEXT[PRODUCT_STATUS.BLOCKED]}
-						</Tag>
+						</Button>
 					);
 			},
 		},
@@ -171,7 +194,10 @@ const ProductList = () => {
 			render: (_, record) => (
 				<Space size='middle'>
 					<Tooltip placement='top' title={'Chỉnh sửa'}>
-						<Button type='link' icon={<ToolOutlined />}></Button>
+						<Button
+							onClick={() => navigate(`/product/${record.id}/update`)}
+							type='link'
+							icon={<ToolOutlined rotate={-135} />}></Button>
 					</Tooltip>
 					{/* <Tooltip placement='top' title={PRODUCT_STATUS_UPDATE_TEXT[record.status]}>
 						<Button
@@ -231,7 +257,7 @@ const ProductList = () => {
 		removeProductById(id)
 			.then((result) => {
 				console.log(result);
-				fetchProductList(params)
+				fetchProductList(params);
 				openNotification(NOTIFICATION_TYPE.success, 'Đã xóa thành công !');
 			})
 			.catch((err) => {
@@ -244,17 +270,14 @@ const ProductList = () => {
 		updateProductState(id, state)
 			.then((result) => {
 				console.log(result);
-	
 				openNotification(NOTIFICATION_TYPE.success, 'Cập nhật thành công !');
 			})
 			.catch((err) => {
 				console.log(err);
-					fetchProductList(params);
+				fetchProductList(params);
 				openNotification(NOTIFICATION_TYPE.error, 'Cập nhật thất bại !');
 			});
 	};
-
-	
 
 	const openNotification = (type, message, description) => {
 		notification[type]({
@@ -315,7 +338,7 @@ const ProductList = () => {
 
 	return (
 		<>
-			<div className='flex gap-4 mb-5 items-center'>
+			<div className='flex flex-wrap gap-4 mb-5 items-center'>
 				Tên :
 				<Input
 					style={{
@@ -385,6 +408,31 @@ const ProductList = () => {
 						},
 					]}
 				/>
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Bắt đầu :
+						<DatePicker
+							onChange={(_, dateString) => {
+								setParams({...params, start: dateString});
+							}}
+						/>
+					</div>
+				)}
+				{!visible && (
+					<div className='flex gap-2 items-center'>
+						Kết thúc :
+						<DatePicker
+							onChange={(_, dateString) => {
+								setParams({...params, end: dateString});
+							}}
+						/>
+					</div>
+				)}
+				<Button
+					onClick={() => setVisible(!visible)}
+					type='link'
+					ghost
+					icon={<ProjectOutlined />}></Button>
 				<Button
 					onClick={() => {
 						fetchProductList(params);
@@ -401,6 +449,8 @@ const ProductList = () => {
 							name: null,
 							state: null,
 							status: null,
+							start:null,
+							end:null
 						});
 					}}
 					type='link'
@@ -410,14 +460,11 @@ const ProductList = () => {
 			</div>
 			<div className='hidden-cover mb-4 ' id='list-action'>
 				<div className='flex gap-4'>
-					<Button type='link' icon={<DeleteOutlined />}>
-						Xóa nhiều
-					</Button>
 					<Button type='link' icon={<UnlockOutlined />}>
-						Mở khóa
+						Xuất excel
 					</Button>
-					<Button type='link' icon={<MessageOutlined />}>
-						Gửi tin nhắn
+					<Button type='link' danger icon={<DeleteOutlined />}>
+						Xóa nhiều
 					</Button>
 				</div>
 			</div>

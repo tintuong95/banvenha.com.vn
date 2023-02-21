@@ -5,9 +5,9 @@ export const NEWS_STATUS = {
 };
 
 export const NEWS_STATUS_TEXT = {
-	0: 'Đang duyệt',
-	1: 'Hoạt động',
-	2: 'Bị khóa',
+	0: 'Process',
+	1: 'Actived',
+	2: 'Blocked',
 };
 
 export const NEWS_STATE = {
@@ -16,8 +16,8 @@ export const NEWS_STATE = {
 };
 
 export const NEWS_STATE_TEXT = {
-	0: 'Bình thường',
-	1: 'Bản nháp',
+	0: 'NORMAL',
+	1: 'DRAFT',
 };
 
 export const NEWS_STATUS_UPDATE_TEXT = {
@@ -40,9 +40,9 @@ export const PRODUCT_STATUS = {
 };
 
 export const PRODUCT_STATUS_TEXT = {
-	0: 'Đang duyệt',
-	1: 'Hoạt động',
-	2: 'Bị khóa',
+	0: 'Process',
+	1: 'Actived',
+	2: 'Blocked',
 };
 
 export const PRODUCT_STATE = {
@@ -51,8 +51,8 @@ export const PRODUCT_STATE = {
 };
 
 export const PRODUCT_STATE_TEXT = {
-	0: 'Bình thường',
-	1: 'Bản nháp',
+	0: 'NORMAL',
+	1: 'DRAFT',
 };
 
 export const PRODUCT_STATUS_UPDATE_TEXT = {
@@ -64,4 +64,26 @@ export const PRODUCT_STATUS_UPDATE_TEXT = {
 export const MESSAGE_STATUS = {
 	WATCHED: 1,
 	NOT_SEEN: 0,
+};
+
+export const PAYMENT_STATUS = {
+	pending: 0,
+	success: 1,
+};
+
+export const ORDER_STATUS = {
+	pending: 0,
+	success: 1,
+};
+
+export const PARTNER_STATUS = {
+	process: 0,
+	actived: 1,
+	blocked: 2,
+};
+
+export const PARTNER_STATUS_TEXT = {
+	0: 'Processing',
+	1: 'Actived',
+	2: 'Blocked',
 };

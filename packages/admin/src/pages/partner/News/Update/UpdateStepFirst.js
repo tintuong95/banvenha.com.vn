@@ -10,6 +10,7 @@ import BaseSelectEdit from '../../../../components/BaseSelectEdit';
 import BaseTextAreaEdit from '../../../../components/BaseTextAreaEdit';
 import { validateRequired } from '../../../../utils/validate';
 import { MESSAGE_REQUIRE_INPUT } from '../../../../contants/message';
+import BaseUploadEdit from '../../../../components/BaseUploadEdit';
 
 export default function CreateStepFirst({
 	stepPage,
@@ -43,8 +44,7 @@ export default function CreateStepFirst({
 
 	useEffect(() => {
 		fetchNewsGroupList();
-		console.log('dataNews', dataNews);
-	}, []);
+	}, [dataNews.id]);
 	return (
 		<div
 
@@ -94,15 +94,15 @@ export default function CreateStepFirst({
 				}}
 			/>
 			<Divider />
-			<Form.Item
-				label='Hình đại diện '
-				name='file'
-				tooltip={{
-					title: 'Tooltip with customize icon',
-					icon: <InfoCircleOutlined />,
-				}}>
-				<BaseUpload dataNews={dataNews} setDataNews={setDataNews} />
-			</Form.Item>
+		
+				<BaseUploadEdit
+					fetchUpdate={updateNews}
+					count={1}
+					data={dataNews}
+					label={"Hình đại diện"}
+					field={"image"}
+				/>
+			
 			<Divider />
 			<div className='m-auto flex justify-end mt-5 gap-5'>
 				<Button

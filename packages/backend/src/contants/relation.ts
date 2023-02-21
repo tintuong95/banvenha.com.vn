@@ -15,3 +15,4 @@ export const RECEIVER_KEY = 'receiver';
 export const SENDER_KEY = 'sender';
 export const MESSAGE_RECEIVER_KEY = 'message_receiver';
 export const MESSAGE_SENDER_KEY = 'message_sender';
+export const PRODUCT_IMAGES_KEY = 'images';

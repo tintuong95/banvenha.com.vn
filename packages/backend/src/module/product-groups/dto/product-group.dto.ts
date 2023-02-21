@@ -9,10 +9,6 @@ export class CreateProductGroupDto {
 
 	@IsString()
 	@Expose()
-	param: string;
-
-	@IsString()
-	@Expose()
 	description: string;
 }
 
