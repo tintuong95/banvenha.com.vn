@@ -1,10 +1,12 @@
 export const getNewsList = async (params) => {
-	const newParams = new URLSearchParams(params);
-	const result = await fetch(
-		'http://localhost:5000/v1/api/news/list?' + newParams
-	);
 
-	return result.json();
+		const newParams = new URLSearchParams(params);
+		const result = await fetch(
+			'http://localhost:5000/v1/api/news/list?' + newParams
+		);
+
+		return result.json();
+
 };
 
 export const getGroupNewsList = async () => {

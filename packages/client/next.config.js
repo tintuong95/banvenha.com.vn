@@ -15,6 +15,14 @@ const nextConfig = {
 			},
 		],
 	},
+	async rewrites() {
+		return [
+			{
+				source: '/images',
+				destination: 'http://localhost:5000/images',
+			},
+		];
+	},
 };
 
 module.exports = nextConfig;

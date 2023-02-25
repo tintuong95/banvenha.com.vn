@@ -2,8 +2,8 @@ import {Module} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {JwtModule} from '@nestjs/jwt/dist';
 import {PassportModule} from '@nestjs/passport';
-import {AccountModule} from '~module/account/account.module';
 import {AdminChildModule} from '~module/admin/auth/admin.auth.module';
+import {VerifiedModule} from '~module/verified/verified.module';
 import {AppController} from './auth.controller';
 
 import {AuthService} from './auth.service';
@@ -11,12 +11,11 @@ import {JwtStrategy} from './jwt.strategy';
 
 @Module({
 	imports: [
-		AccountModule,
+		VerifiedModule,
 		PassportModule,
 		AdminChildModule,
 		JwtModule.registerAsync({
 			useFactory: (configService: ConfigService) => {
-				console.log(configService.get<string>('jwt.secret_key'));
 				return {
 					secret: configService.get<string>('jwt.secret_key'),
 					signOptions: {

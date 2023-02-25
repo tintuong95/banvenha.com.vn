@@ -2,6 +2,7 @@
 
 import React from 'react'
 import {Avatar, Button, Pagination, Table, Tag} from 'antd';
+import BasePagination from '../../components/BasePagination';
 const columns = [
 	{
 		title: 'Hình',
@@ -87,17 +88,11 @@ const data = [
 ];
 export default function History() {
   return (
-			<>
+			<div className='w-max-1250 m-auto'>
 				<div className='my-5'>Lịch sử mua</div>
 				<Table pagination={false} columns={columns} dataSource={data} />
 				<div className='my-5'></div>
-				<Pagination
-					className='text-center '
-					simple
-					showQuickJumper
-					defaultCurrent={2}
-					total={500}
-				/>
-			</>
+			<BasePagination/>
+			</div>
 		);
 }

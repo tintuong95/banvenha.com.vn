@@ -32,7 +32,7 @@ function BasePagination({link, search}) {
 					onClick={() => {
 						handleLink(--search.currentPage);
 					}}
-					className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 '>
+					className='inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 hover:bg-slate-100  rounded  bg-slate-200'>
 					<svg
 						aria-hidden='true'
 						className='w-5 h-5 mr-2'
@@ -48,14 +48,14 @@ function BasePagination({link, search}) {
 				</button>
 				<div className='flex items-center gap-1'>
 					<input
-						className='inline-flex w-14 items-center px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 '
+						className='inline-flex items-center w-10 px-4 py-2 text-sm font-medium text-gray-500 hover:bg-slate-100  rounded  bg-slate-200 '
 						// value={page}
 						// onChange={inputChangePage}
 					/>
 					|
 					<input
 						readOnly
-						className='inline-flex w-14 items-center px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 '
+						className='inline-flex items-center w-16 px-4 py-2 text-sm font-medium text-gray-500 hover:bg-slate-100  rounded  bg-slate-200 '
 						value={100}
 					/>
 				</div>
@@ -63,7 +63,7 @@ function BasePagination({link, search}) {
 					onClick={() => {
 						handleLink(++search.currentPage);
 					}}
-					className='inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border-0 border-l border-gray-700  hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 '>
+					className='inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 hover:bg-slate-100  rounded  bg-slate-200'>
 					Next
 					<svg
 						aria-hidden='true'

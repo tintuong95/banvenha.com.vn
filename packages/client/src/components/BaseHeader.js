@@ -1,12 +1,13 @@
 import React, {use} from 'react';
 import Link from 'next/link';
-import {MailIcon, PhoneIcon, UserIcon} from '../contants/icon';
+import {LoginIcon, MailIcon, PhoneIcon, UserIcon} from '../contants/icon';
 import BaseIcon from './BaseIcon';
 import BaseDropdown from './BaseDropdown';
 import {Logo} from '../contants/image';
 import Image from 'next/image';
 import {getGroupProductList} from '../apis/product';
 import {getGroupNewsList} from '../apis/news';
+import BtnLogin from './BtnLogin';
 
 export default async function BaseHeader() {
 	const productGroupPromise = getGroupProductList();
@@ -82,7 +83,8 @@ export default async function BaseHeader() {
 									{name: 'Bản vẽ nhà xưởng', pathname: '/san-pham/ban-ve-nha-cap-64'},
 									{name: 'Bản vẽ điện nước', pathname: '/san-pham/ban-ve-nha-cap-47'},
 								]}
-								pathname={'/doi-tac'}/>
+								pathname={'/doi-tac'}
+							/>
 							<BaseDropdown
 								nameBtn={'THÔNG TIN'}
 								menu={[
@@ -98,50 +100,9 @@ export default async function BaseHeader() {
 									{name: 'Bản vẽ nhà xưởng', pathname: '/san-pham/ban-ve-nha-cap-64'},
 									{name: 'Bản vẽ điện nước', pathname: '/san-pham/ban-ve-nha-cap-47'},
 								]}
-								pathname={'/thong-tin'}/>
-							<Link href={{pathname: '/'}}>
-								<div className='dropdown'>
-									<button
-										type='text'
-										className='flex gap-2 items-center  py-1   border-2 border-white bg-white px-3 rounded '>
-										<BaseIcon icon={UserIcon} name={'user icon'} />
-										HOÀNG ANH
-									</button>
-									<div className='z-10 dropdownHover hidden hover:block '>
-										<div className='h-3 opacity-100'></div>
-										<div
-											className='text-sm overflow-hidden bg-white divide-y  divide-gray-100 rounded-lg shadow w-44  text-gray-700 '
-											aria-labelledby='dropdownHoverButton'>
-											
-												<a
-													href='#a'
-													className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
-													Thông tin
-												</a>
-											
-												<a
-													href='#a'
-													className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
-													Lịch sử
-												</a>
-										
-										
-												<a
-													href='#a'
-													className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
-													Giỏ hàng
-												</a>
-										
-												<a
-													href='#a'
-													className='block px-4 py-2 hover:bg-red-500 hover:text-white dark:hover:bg-gray-600 dark:hover:text-white'>
-													Đăng xuất
-												</a>
-										
-										</div>
-									</div>
-								</div>
-							</Link>
+								pathname={'/thong-tin'}
+							/>
+							<BtnLogin/>
 						</div>
 					</div>
 				</nav>

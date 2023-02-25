@@ -11,11 +11,11 @@ export default function BaseSearchSub() {
 				onChange={(e) => {
 					setSearch(e.target.value);
 				}}
-				className='w-full p-2 border rounded '
+				className='w-full p-2 border rounded text-sm'
 				placeholder='Tên bản vẽ'
 			/>
 			<Link href={{pathname: 'san-pham', query: {name: search}}}>
-				<button className='p-2 bg-sky-600  text-white w-full rounded mt-2 '>
+				<button className='p-2 bg-rose-600 hover:bg-rose-500  text-white w-full rounded mt-2 '>
 					Tìm kiếm
 				</button>
 			</Link>

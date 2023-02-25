@@ -7,8 +7,6 @@ function randomNumber() {
 	return Math.floor(Math.random() * 1000) + 1;
 }
 
-export const generateCode = (code: string) => {
-	return (
-		code + '-' + zeroPad(randomNumber(), 3) + '-' + zeroPad(randomNumber(), 4)
-	);
+export const generateId = (code: string) => {
+	return code + zeroPad(randomNumber(), 7);
 };

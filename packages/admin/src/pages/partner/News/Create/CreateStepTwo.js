@@ -1,9 +1,10 @@
 import {Alert, Button, Divider, Form} from 'antd';
 import React, {useState} from 'react';
 import {CKEditor} from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import PropTypes from 'prop-types';
 import {ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons';
+//eslint-disable-next-line
+import Editor from 'ckeditor5-custom-build/build/ckeditor';
 
 export default function CreateStepTwo({
 	stepPage,
@@ -45,7 +46,7 @@ export default function CreateStepTwo({
 				''
 			)}
 			<CKEditor
-				editor={ClassicEditor}
+				editor={Editor}
 				data='<p>Hello from CKEditor 5!</p>'
 				onReady={(editor) => {
 					// You can store the "editor" and use when it is needed.
@@ -56,13 +57,18 @@ export default function CreateStepTwo({
 					setContent(data);
 					setDataNews({...dataNews, content: data});
 					console.log({event, editor, data});
-					
 				}}
 				onBlur={(event, editor) => {
 					console.log('Blur.', editor);
 				}}
 				onFocus={(event, editor) => {
 					console.log('Focus.', editor);
+				}}
+				config={{
+					ckfinder: {
+						uploadUrl: 'http://localhost:5000/v1/api/upload/single',
+						withCredentials: true,
+					},
 				}}
 			/>
 			<Divider />

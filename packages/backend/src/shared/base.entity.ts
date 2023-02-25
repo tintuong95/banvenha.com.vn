@@ -1,6 +1,5 @@
 import {
 	BaseEntity as ShareEnity,
-	PrimaryGeneratedColumn,
 	CreateDateColumn,
 	UpdateDateColumn,
 	DeleteDateColumn,
@@ -8,19 +7,15 @@ import {
 import {ApiProperty} from '@nestjs/swagger';
 
 export class BaseEntity extends ShareEnity {
-	@PrimaryGeneratedColumn()
-	@ApiProperty()
-	id: number;
-
 	@CreateDateColumn()
 	@ApiProperty()
-	created_at: Date;
+	createdAt: Date;
 
 	@UpdateDateColumn()
 	@ApiProperty()
-	updated_at: Date;
+	updatedAt: Date;
 
 	@DeleteDateColumn()
 	@ApiProperty()
-	deleted_at: Date;
+	deletedAt: Date;
 }

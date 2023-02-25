@@ -1,23 +1,23 @@
 import {Injectable} from '@nestjs/common';
 
 import {JwtService} from '@nestjs/jwt';
-import {AccountService} from '~module/account/account.service';
+import {VerifiedService} from '~module/verified/verified.service';
 import {
-	CreateAccountDto,
-	SignInAccountDto,
-} from '~module/account/dto/account.dto';
+	CreateVerifiedDto,
+	SignInVerifiedDto,
+} from '~module/verified/dto/verified.dto';
 import {AdminChildService} from '~module/admin/auth/admin.auth.service';
 
 @Injectable()
 export class AuthService {
 	constructor(
-		private accountService: AccountService,
+		private verifiedService: VerifiedService,
 		private jwtService: JwtService,
 		private adminChildService: AdminChildService
 	) {}
 
-	async validateLogin(signInAccountDto: SignInAccountDto) {
-		const {admin} = await this.accountService.signIn(signInAccountDto);
+	async signInVerified(signInVerifiedDto: SignInVerifiedDto) {
+		const {admin} = await this.verifiedService.signIn(signInVerifiedDto);
 		const accessToken = this.jwtService.sign({
 			id: admin.id,
 			name: admin.name,
@@ -29,8 +29,8 @@ export class AuthService {
 		};
 	}
 
-	async createAccount(createAccountDto: CreateAccountDto) {
-		const {admin} = await this.accountService.signUp(createAccountDto);
+	async signUpVerified(createVerifiedDto: CreateVerifiedDto) {
+		const {admin} = await this.verifiedService.signUp(createVerifiedDto);
 		const accessToken = this.jwtService.sign({
 			id: admin.id,
 			name: admin.name,

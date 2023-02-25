@@ -32,8 +32,17 @@ export class UploadController {
 	}
 
 	@Post('single')
-	@UseInterceptors(FileInterceptor('file'))
+	@UseInterceptors(
+		FileInterceptor(
+			'upload',
+			uploadFileConfig(1048576, /\/(jpg|jpeg|png|gif)$/)
+		)
+	)
 	uploadFile(@UploadedFile() file: Express.Multer.File) {
 		console.log(file);
+		return {
+			uploaded: true,
+			url: 'http://localhost:5000/images/' + file.filename,
+		};
 	}
 }

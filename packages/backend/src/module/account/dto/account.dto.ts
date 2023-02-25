@@ -1,23 +1,76 @@
 import {PartialType} from '@nestjs/mapped-types';
-import {IsNumber, IsString} from 'class-validator';
+import {Expose} from 'class-transformer';
+import {
+	IsString,
+	IsEnum,
+	IsOptional,
+	MaxLength,
+	IsNumber,
+} from 'class-validator';
+import {ACCOUNT_STATUS, ROLE_STATUS} from '../type/account.type';
 
 export class CreateAccountDto {
 	@IsString()
-	email: string;
+	@Expose()
+	@MaxLength(50)
+	nickname: string;
 
 	@IsString()
-	password: string;
+	@Expose()
+	@MaxLength(200)
+	address: string;
+
+	@IsString()
+	@Expose()
+	@MaxLength(50)
+	tel: string;
+
+	@IsString()
+	@Expose()
+	@MaxLength(500)
+	avatar: string;
+
+	@IsString()
+	@Expose()
+	@MaxLength(50)
+	email: string;
+
+	@IsOptional()
+	@IsString()
+	@Expose()
+	@MaxLength(50)
+	bankName: string;
+
+	@IsOptional()
+	@IsString()
+	@Expose()
+	@MaxLength(50)
+	bankNumber: string;
+
+	@IsOptional()
+	@IsString()
+	@Expose()
+	@MaxLength(50)
+	bankHolder: string;
+
+	@IsString()
+	@Expose()
+	@MaxLength(50)
+	birthday: Date;
 
 	@IsNumber()
-	admin_id: number;
+	@Expose()
+	account_id: number;
+
+	@IsOptional()
+	@IsEnum(ACCOUNT_STATUS)
+	@Expose()
+	status: ACCOUNT_STATUS;
+
+	@IsOptional()
+	@IsEnum(ROLE_STATUS)
+	@Expose()
+	role: ROLE_STATUS;
 }
 
 export class UpdateAccountDto extends PartialType(CreateAccountDto) {}
-
-export class SignInAccountDto {
-	@IsString()
-	email: string;
-
-	@IsString()
-	password: string;
-}

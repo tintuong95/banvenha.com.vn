@@ -1,7 +1,7 @@
 import {Alert, Button, Form} from 'antd';
 import React, {useState} from 'react';
 import {CKEditor} from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import Editor from 'ckeditor5-custom-build'
 import PropTypes from 'prop-types';
 import {
 	InboxOutlined,

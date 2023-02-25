@@ -14,7 +14,6 @@ import PartnerList from '../pages/partner/Partner/PartnerList';
 import PaymentDetails from '../pages/partner/Payments/PaymentDetails';
 import PaymentList from '../pages/partner/Payments/PaymentList';
 import ProductCreate from '../pages/partner/Product/ProductCreate';
-import ProductDetails from '../pages/partner/Product/ProductDetails';
 import ProductList from '../pages/partner/Product/ProductList';
 import ProductUpdate from '../pages/partner/Product/ProductUpdate';
 
@@ -37,10 +36,6 @@ export const partnerRoutes = {
 		{
 			path: '/product/:id/update',
 			element: <ProductUpdate />,
-		},
-		{
-			path: '/product/:id/details',
-			element: <ProductDetails />,
 		},
 		{
 			path: '/news',

@@ -2,18 +2,22 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import BaseBreadcrumb from '../../../components/BaseBreadcrumb';
 import BaseDivide from '../../../components/BaseDivide';
-import {AuthorIcon, ClockIcon} from '../../../contants/icon';
+import {AuthorIcon, ClockIcon, DownloadIcon, LabelIcon} from '../../../contants/icon';
 import BaseIcon from '../../../components/BaseIcon';
 import {getProductDetails, getProductList} from '../../../apis/product';
 import BaseCarousel from '../../../components/BaseCarousel';
+import BaseCardAuthor from '../../../components/BaseCardAuthor';
+import Link from 'next/link';
 
 // eslint-disable-next-line react/prop-types
 export default async function Page({params}) {
 	// eslint-disable-next-line react/prop-types
+
 	const productDetailsPromise = getProductDetails(params.slug);
 	const [productDetails] = await Promise.all([productDetailsPromise]);
 
 	const {
+		id,
 		name,
 		updated_at,
 		description,
@@ -22,24 +26,32 @@ export default async function Page({params}) {
 		images,
 		product_details,
 		content,
+		param,
 	} = productDetails;
+	const options = [
+		{name: 'Trang chủ', path: '/'},
+		{name: 'Tin Tức', path: '/tin-tuc'},
+		{name: name, path: '/' + param},
+	];
 
 	return (
 		<div className='w-max-1250 m-auto'>
 			<div className='grid grid-cols-7 gap-5 pb-5 '>
 				<div className='col-span-4  p-3  rounded-md '>
 					<div className='mt-5'>
-						<BaseBreadcrumb />
+						<BaseBreadcrumb options={options} />
 					</div>
-					<div className='text-3xl text-center text-slate-600 font-bold mt-7 mb-2'>
+					<div className='text-3xl text-center text-slate-500 font-bold mt-7 mb-2'>
 						{name}
 					</div>
-					<div className=''>{description}</div>
-					<div className='text-center text-sm text-gray-600 flex items-center gap-2 justify-center'>
-						<BaseIcon name={'author icon'} icon={AuthorIcon} />
-						{admin.name} - <BaseIcon name={'clock icon'} icon={ClockIcon} />
-						{updated_at}
+
+					<div className='text-center text-sm text-gray-400 pb-4 flex items-center gap-2 justify-center'>
+						<BaseIcon width={20} name={'author icon'} icon={AuthorIcon} />
+						{admin.name} -
+						<BaseIcon width={20} name={'clock icon'} icon={ClockIcon} />
+						{new Date(updated_at).toLocaleDateString('vi-VN')}
 					</div>
+					<div className='text-gray-500'>{description}</div>
 					<div className='mt-5'>
 						<BaseCarousel />
 					</div>
@@ -72,27 +84,30 @@ export default async function Page({params}) {
 					</div>
 					<p className='mb-5  mt-10  font-semibold text-slate-700'>CHI TIẾT</p>
 					<div
-						className='pt-0 m-auto leading-8 tracking-wide'
+						className='pt-0 m-auto leading-8 tracking-wide text-slate-600'
 						dangerouslySetInnerHTML={{__html: content}}></div>
-					<div className='px-10'></div>
-					<BaseDivide />
-					<div className='text-center flex gap-3'>
-						<span className='bg-white text-slate-500 text-sm border p-1 px-2'>
+		
+
+					<div className='text-center flex gap-3 mt-5'>
+						<span className=' flex items-center gap-1 text-gray-600 text-sm  p-1 px-2'>
+							<BaseIcon width={20} icon={LabelIcon} />
 							nhà cấp 4
 						</span>
-						<span className='bg-white text-slate-500 text-sm border p-1 px-2'>
+						<span className=' flex items-center gap-1 text-gray-600 text-sm  p-1 px-2'>
+							<BaseIcon width={20} icon={LabelIcon} />
 							nhà đẹp
 						</span>
-						<span className='bg-white text-slate-500 text-sm border p-1 px-2'>
+						<span className=' flex items-center gap-1 text-gray-600 text-sm  p-1 px-2'>
+							<BaseIcon width={20} icon={LabelIcon} />
 							bản vẽ
 						</span>
 					</div>
-					<BaseDivide />
+	
 				</div>
 
 				<div className='col-span-2 mt-10'>
 					<div className='w-5/6'>
-						<div title='MUA BẢN VẼ'>
+						<div className='bg-white rounded-md p-4 shadow-lg'>
 							<ul className='mb-8 space-y-4 text-left text-gray-500 dark:text-gray-400'>
 								<li className='flex items-center space-x-3'>
 									<svg
@@ -176,40 +191,24 @@ export default async function Page({params}) {
 								</li>
 							</ul>
 
-							<button className='bg-rose-500 text-white p-2 w-full rounded-md shadow-md mt-5 flex items-center gap-2 justify-center'>
+							<Link
+								href={{
+									pathname: 'thanh-toan',
+									query: {id},
+								}}
+								className='bg-green-500 hover:bg-green-400 transition   duration-300 ease-in-out   group text-white p-2 w-full rounded-md shadow-md mt-3 flex items-center gap-2 justify-center'>
 								{/* <DownloadOutlined /> */}
+								<BaseIcon
+									className={'group-hover:animate-bounce'}
+									width={24}
+									icon={DownloadIcon}
+								/>
 								DOWNLOAD
-							</button>
+							</Link>
 						</div>
 					</div>
-					<div className='mt-5 w-full'>
-						<div className='w-5/6  bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700'>
-							<div className='flex flex-col items-center pb-10 mt-10'>
-								<img
-									className='w-24 h-24 mb-3 rounded-full shadow-lg'
-									src='https://picsum.photos/200/300'
-									alt='Bonnie im'
-								/>
-								<h5 className='mb-1 text-xl font-medium text-gray-900 dark:text-white'>
-									Bonnie Green
-								</h5>
-								<span className='text-sm text-gray-500 dark:text-gray-400'>
-									Visual Designer
-								</span>
-								<div className='flex mt-4 space-x-3 md:mt-6'>
-									<a
-										href='#a'
-										className='inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
-										Add friend
-									</a>
-									<a
-										href='#a'
-										className='inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700'>
-										Message
-									</a>
-								</div>
-							</div>
-						</div>
+					<div className=' w-full'>
+						<BaseCardAuthor />
 					</div>
 				</div>
 			</div>

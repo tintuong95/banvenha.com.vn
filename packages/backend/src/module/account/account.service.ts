@@ -1,16 +1,16 @@
-import {Injectable, UnauthorizedException} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {
-	CreateAccountDto,
-	SignInAccountDto,
-	UpdateAccountDto,
-} from './dto/account.dto';
+import {CreateAccountDto, UpdateAccountDto} from './dto/account.dto';
 import {Account} from './entity/account.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
-import {ADMIN_KEY} from '~contants/relation';
-import {instanceToInstance, instanceToPlain} from 'class-transformer';
+import {ACCOUNT_KEY} from '~contants/relation';
+import {Request} from 'express';
+import {UserDto} from '~shared/user.dto';
+import {handleQuery, pagination} from '~util/pagination';
+import {findOptionWhere} from '~util/query';
+import {ROLE} from '~contants/role';
 
 @Injectable()
 export class AccountService {
@@ -19,77 +19,70 @@ export class AccountService {
 		private accountRepository: Repository<Account>
 	) {}
 
-	async getAllAccounts(): Promise<any> {
-		return await this.accountRepository.find();
+	async getAllAccounts(
+		request: Request,
+		query: any,
+		user: UserDto
+	): Promise<any> {
+		const {skip, take, currentPage, perPage} = handleQuery(query);
+
+		const result = await this.accountRepository.findAndCount({
+			where: findOptionWhere(query, ['name']),
+			// relations: [ADMIN_KEY, NEWS_GROUP_KEY],
+			take,
+			skip,
+			withDeleted: user.role === ROLE.ADMIN,
+		});
+		return pagination(request, result, currentPage, perPage);
 	}
 
-	async getAccountDetails(id: number): Promise<Account | any> {
+	async getAccountDetails(id: string): Promise<Account | any> {
 		const result = await this.accountRepository.findOne({
 			where: {id},
+			relations: [ACCOUNT_KEY],
 		});
 		if (!result)
 			throw new NotFoundException('Account Id ' + id + ' Not Found !');
+
 		return result;
 	}
 
-	async signUp(createAccountDto: CreateAccountDto): Promise<Account> {
-		const account = this.accountRepository.create(createAccountDto);
-		const {email} = await this.accountRepository.save(account);
-		const result = await this.accountRepository.findOne({
-			where: {email},
-			relations: [ADMIN_KEY],
-		});
-		return instanceToInstance(result);
+	async createAccount(createAccountDto: CreateAccountDto): Promise<Account> {
+		const result = this.accountRepository.create(createAccountDto);
+		return await this.accountRepository.save(result);
 	}
 
 	async updateAccount(
-		id: number,
+		id: string,
 		updateAccountDto: UpdateAccountDto
-	): Promise<Account | any> {
+	): Promise<Account> {
 		const result = await this.accountRepository.findOne({where: {id}});
 		if (!result)
 			throw new NotFoundException('Account Id ' + id + ' Not Found !');
-
 		_(updateAccountDto).forEach((val, key) => {
 			if (val) result[key] = val;
 		});
 		return this.accountRepository.save(result);
 	}
 
-	async removeAccount(id: number): Promise<any> {
+	async removeAccount(id: string): Promise<string | any> {
 		const result = await this.accountRepository.softDelete(id);
 		if (result.affected > 0)
-			return 'Removed account Id ' + id + ' successfully !';
+			return 'Remove Account Id ' + id + ' successfully !';
 		throw new NotFoundException('Account Id ' + id + ' Not Found !');
 	}
 
-	async restoreAccount(id: number): Promise<any> {
+	async restoreAccount(id: string): Promise<string | any> {
 		const result = await this.accountRepository.restore(id);
 		if (result.affected > 0)
-			return 'Restored account Id ' + id + ' successfully !';
+			return 'Restore Account Id ' + id + ' successfully !';
 		throw new NotFoundException('Account Id ' + id + ' Not Found !');
 	}
 
-	async deleteAccount(id: number): Promise<any> {
+	async deleteAccount(id: string): Promise<string | any> {
 		const result = await this.accountRepository.delete(id);
 		if (result.affected > 0)
-			return 'Deleted account Id ' + id + ' successfully !';
+			return 'Deleted Account Id ' + id + ' successfully !';
 		throw new NotFoundException('Account Id ' + id + ' Not Found !');
-	}
-
-	async signIn(signInAccountDto: SignInAccountDto): Promise<any> {
-		const {email, password} = signInAccountDto;
-		const result = await this.accountRepository.findOne({
-			where: {email},
-			relations: [ADMIN_KEY],
-		});
-
-		if (!result)
-			throw new NotFoundException('Account ' + email + ' Not Found !');
-		else if (result && result.comparePassword(password)) {
-			return instanceToPlain(result);
-		}
-
-		throw new UnauthorizedException('Password Wrong !');
 	}
 }

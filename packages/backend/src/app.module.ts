@@ -31,6 +31,11 @@ import {join} from 'path';
 	imports: [
 		ServeStaticModule.forRoot({
 			rootPath: join(__dirname, '..', 'uploads'),
+			serveStaticOptions: {
+				setHeaders(res, path, stat) {
+					res.header('Cross-Origin-Resource-Policy', 'cross-origin');
+				},
+			},
 		}),
 		/**
 		 * import configuration

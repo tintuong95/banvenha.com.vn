@@ -1,3 +1,4 @@
+import {NotFoundException} from '@nestjs/common';
 import {Request} from 'express';
 
 export function pagination(
@@ -13,8 +14,8 @@ export function pagination(
 		currentPage,
 		perPage
 	);
-	if (currentPage > totalPage) {
-		return null;
+	if (currentPage > totalPage || data[0].length == 0) {
+		throw new NotFoundException('Not found');
 	}
 	return {
 		meta: {

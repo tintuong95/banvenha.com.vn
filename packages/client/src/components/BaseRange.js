@@ -8,7 +8,7 @@ function BaseRange({label,min, max,unit}) {
 		<div className='mb-2'>
 			<label
 				htmlFor='default-range'
-				className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>
+				className='block mb-2 text-sm font-medium text-gray-900 '>
 				{label}{' '}
 				<div className='bg-slate-200  rounded  p-1 px-2 flex justify-between'>
 					<span>{value}</span>
@@ -24,7 +24,7 @@ function BaseRange({label,min, max,unit}) {
 				}}
 				min={min}
 				max={max}
-				className='w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700'
+				className='w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer '
 			/>
 		</div>
 	);

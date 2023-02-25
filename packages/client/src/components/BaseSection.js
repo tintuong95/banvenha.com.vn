@@ -18,13 +18,20 @@ export default async function BaseSection({groupId,name}) {
 	return (
 		<>
 			<div className='mt-10 flex gap-2 justify-between mb-5'>
-				<div className='text-slate-700 font-semibold'>{name.toUpperCase()}</div>
-				<div className='ml-2 border px-2 border-sky-200 bg-sky-100 rounded text-sm'>
-					{productList.meta.total} sản phẩm
+				<div className='text-slate-600 font-semibold text-2xl flex items-center'>
+					{name.toUpperCase()}
+					<div className='ml-2 border px-2 inline font-light border-sky-200 bg-sky-100 rounded text-sm'>
+						{productList.meta.total} sản phẩm
+					</div>
+				</div>
+				<div>
+					<button className=' bg-gray-400 hover:bg-gray-300 px-3 py-1 text-sm rounded-md text-white'>
+						Xem thêm
+					</button>
 				</div>
 			</div>
 
-			<section className='grid grid-cols-4 gap-10'>
+			<section className='grid grid-cols-4 gap-10 pb-10'>
 				<ListProduct list={productList} />
 			</section>
 		</>

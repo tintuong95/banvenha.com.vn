@@ -1,5 +1,4 @@
 import {Module} from '@nestjs/common';
-
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {ProductDetailsModule} from '~module/product-details/product-details.module';
 import {ProductFilesModule} from '~module/product-files/product-files.module';

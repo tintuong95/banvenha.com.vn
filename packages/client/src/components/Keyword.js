@@ -7,108 +7,108 @@ export default function Keyword() {
 				<section className='grid grid-cols-4 p-4 px-8 bg-white rounded-md'>
 					<ul className='flex flex-col gap-2 list-disc'>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 						<li>
-							<a href='#a' className='underline'>
-								Mẫu nhà cấp 4 đẹp ...
-							</a>
-						</li>
-					</ul>
-					<ul className='flex flex-col gap-2 list-disc'>
-						<li>
-							<a href='#a' className='underline'>
-								Mẫu nhà cấp 4 đẹp ...
-							</a>
-						</li>
-						<li>
-							<a href='#a' className='underline'>
-								Mẫu nhà cấp 4 đẹp ...
-							</a>
-						</li>
-						<li>
-							<a href='#a' className='underline'>
-								Mẫu nhà cấp 4 đẹp ...
-							</a>
-						</li>
-						<li>
-							<a href='#a' className='underline'>
-								Mẫu nhà cấp 4 đẹp ...
-							</a>
-						</li>
-						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 					</ul>
 					<ul className='flex flex-col gap-2 list-disc'>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 					</ul>
 					<ul className='flex flex-col gap-2 list-disc'>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>
 						<li>
-							<a href='#a' className='underline'>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
+								Mẫu nhà cấp 4 đẹp ...
+							</a>
+						</li>
+					</ul>
+					<ul className='flex flex-col gap-2 list-disc'>
+						<li>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
+								Mẫu nhà cấp 4 đẹp ...
+							</a>
+						</li>
+						<li>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
+								Mẫu nhà cấp 4 đẹp ...
+							</a>
+						</li>
+						<li>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
+								Mẫu nhà cấp 4 đẹp ...
+							</a>
+						</li>
+						<li>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
+								Mẫu nhà cấp 4 đẹp ...
+							</a>
+						</li>
+						<li>
+							<a href='#a' className='text-gray-600 hover:text-gray-500'>
 								Mẫu nhà cấp 4 đẹp ...
 							</a>
 						</li>

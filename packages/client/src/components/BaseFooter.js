@@ -1,115 +1,173 @@
 'use client';
 
 import React from 'react';
+import { LogoWhite, VerifiedImage, VerifiedImage2 } from '../contants/image';
+import BaseIcon from './BaseIcon';
+import BaseImage from './BaseImage';
 
 export default function BaseFooter() {
 	return (
 		<>
-			<div className='w-screen bg-white mt-10'>
-				<footer className='bg-white dark:bg-gray-900 w-max-1250 m-auto'>
-					<div className='grid grid-cols-2 gap-8 px-6 py-8 md:grid-cols-4'>
-						<div>
-							<h2 className='mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400'>
-								Company
-							</h2>
-							<ul className='text-gray-500 dark:text-gray-400'>
-								<li className='mb-4'>
-									<a href='#a' className=' hover:underline'>
-										About
-									</a>
-								</li>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										Careers
-									</a>
-								</li>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										Brand Center
-									</a>
-								</li>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										Blog
-									</a>
-								</li>
-							</ul>
+			<div className='w-screen bg-slate-800 mt-10'>
+				<footer className=' w-max-1250 m-auto'>
+					<div className=' px-6 py-8 '>
+						<div className='flex items-center gap-4 mb-5'>
+							<BaseIcon className={'hover:animate-spin'} width={70} icon={LogoWhite} />
+							<h1 className='text-2xl hover:text-white transition duration-200 ease-in hover:drop-shadow-lg font-bold cursor-pointer text-gray-500'>
+								BANVENHA.COM.VN
+							</h1>
 						</div>
-						<div>
-							<h2 className='mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400'>
-								Help center
-							</h2>
-							<ul className='text-gray-500 dark:text-gray-400'>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										Discord Server
-									</a>
-								</li>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										Twitter
-									</a>
-								</li>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										Facebook
-									</a>
-								</li>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										Contact Us
-									</a>
-								</li>
-							</ul>
-						</div>
-						<div>
-							<h2 className='mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400'>
-								Legal
-							</h2>
-							<ul className='text-gray-500 dark:text-gray-400'>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										Privacy Policy
-									</a>
-								</li>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										Licensing
-									</a>
-								</li>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										Terms &amp; Conditions
-									</a>
-								</li>
-							</ul>
-						</div>
-						<div>
-							<h2 className='mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400'>
-								Download
-							</h2>
-							<ul className='text-gray-500 dark:text-gray-400'>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										iOS
-									</a>
-								</li>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										Android
-									</a>
-								</li>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										Windows
-									</a>
-								</li>
-								<li className='mb-4'>
-									<a href='#a' className='hover:underline'>
-										MacOS
-									</a>
-								</li>
-							</ul>
+						<div className='grid grid-cols-5 gap-14 text-sm'>
+							<div className='col-span-2'>
+								<ul className='text-gray-500 dark:text-gray-400'>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline '>
+											GIỚI THIỆU
+										</a>
+										<h2 className='hover:text-white transition duration-200 ease-in mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400'>
+											Lorem Ipsum is simply dummy text of the printing and typesetting
+											industry. Lorem Ipsum has been the industrys standard dummy text ever
+											since the 1500s,
+										</h2>
+										<a href='#a' className=' hover:underline'>
+											TRỤ SỞ CHÍNH
+										</a>
+										<div className='hover:text-white transition duration-200 ease-in'>
+											<span className='font-semibold'>Địa chỉ : </span>
+											<span>
+												Tầng 15, Tòa nhà Robot, 308 - 308C Điện Biên Phủ, Phường 04, Quận 3,
+												Thành phố Hồ Chí Minh, Việt Nam
+											</span>
+										</div>
+										<div className='hover:text-white transition duration-200 ease-in'>
+											<span className='font-semibold'>Số điện thoại : </span>
+											<span>0973.343.433</span>
+										</div>
+										<div className='hover:text-white transition duration-200 ease-in'>
+											<span className='font-semibold'>Email : </span>
+											<span>admin@banvenha.com.vn</span>
+										</div>
+										<div className='hover:text-white transition duration-200 ease-in'>
+											<span className='font-semibold'>Thời gian làm việc : </span>
+											<span>Thứ 2 - Thứ 6 từ 8h30 - 17h30 Thứ 7 từ 8h30 - 12h30</span>
+										</div>
+									</li>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											CHI NHÁNH
+										</a>
+										<div className='hover:text-white transition duration-200 ease-in'>
+											<span className='font-semibold'>Địa chỉ : </span>
+											<span>
+												Tầng 15, Tòa nhà Robot, 308 - 308C Điện Biên Phủ, Phường 04, Quận 3,
+												Thành phố Hồ Chí Minh, Việt Nam
+											</span>
+										</div>
+										<div className='hover:text-white transition duration-200 ease-in'>
+											<span className='font-semibold'>Số điện thoại : </span>
+											<span>0973.343.433</span>
+										</div>
+										<div className='hover:text-white transition duration-200 ease-in'>
+											<span className='font-semibold'>Email : </span>
+											<span>admin@banvenha.com.vn</span>
+										</div>
+										<div className='hover:text-white transition duration-200 ease-in'>
+											<span className='font-semibold'>Thời gian làm việc : </span>
+											<span>Thứ 2 - Thứ 6 từ 8h30 - 17h30 Thứ 7 từ 8h30 - 12h30</span>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div>
+								<h2 className='mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400'>
+									DỊCH VỤ
+								</h2>
+								<ul className='text-gray-500 dark:text-gray-400'>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Bán bản vẽ thiết kế nhà cấp 4
+										</a>
+									</li>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Bán bản vẽ thiết kế nhà phố
+										</a>
+									</li>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Bán bản vẽ thiết kế nhà vườn
+										</a>
+									</li>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Bán bản vẽ thiết kế biệt thự
+										</a>
+									</li>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Bán bản vẽ thiết kế nội thất
+										</a>
+									</li>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Bán bản vẽ thiết kế điện nước
+										</a>
+									</li>
+								</ul>
+							</div>
+							<div>
+								<h2 className='mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400'>
+									Đối tác
+								</h2>
+								<ul className='text-gray-500 dark:text-gray-400'>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Đăng ký đối tác với chúng tối
+										</a>
+									</li>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Chính sách cho đối tác
+										</a>
+									</li>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Quy định cho đối tác
+										</a>
+									</li>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Hoa hồng cho đối tác
+										</a>
+									</li>
+								</ul>
+							</div>
+							<div>
+								<h2 className='mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400'>
+									QUAN TÂM
+								</h2>
+								<ul className='text-gray-500 dark:text-gray-400'>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Facebook
+										</a>
+									</li>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Youtube
+										</a>
+									</li>
+									<li className='mb-4'>
+										<a href='#a' className='hover:underline'>
+											Windows
+										</a>
+									</li>
+									<li className='mb-4 flex flex-col gap-4'>
+										<BaseIcon icon={VerifiedImage} width={120} />
+										<BaseIcon icon={VerifiedImage2} width={120} />
+									</li>
+								</ul>
+							</div>
 						</div>
 					</div>
 				</footer>
