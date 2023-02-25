@@ -1,14 +1,14 @@
 import {PartialType} from '@nestjs/mapped-types';
 import {Expose} from 'class-transformer';
-import {IsString, IsNumber, IsEnum, IsOptional} from 'class-validator';
+import {IsString, IsNumber, IsEnum, IsOptional, IsBoolean} from 'class-validator';
 import {IsFile} from '~shared/file.dto';
-import {News} from '../entity/blog.entity';
+import {Blog} from '../entity/blog.entity';
 import {NEWS_STATE, NEWS_STATUS} from '../type/blog.type';
 
-export class CreateNewsDto {
+export class CreateBlogDto {
 	@IsString()
 	@Expose()
-	name: string;
+	title: string;
 
 	@IsString()
 	@Expose()
@@ -21,31 +21,29 @@ export class CreateNewsDto {
 	@IsOptional()
 	@IsString()
 	@Expose()
-	image: string;
+	photo: string;
 
 	@IsOptional()
 	@IsEnum(NEWS_STATUS)
 	@Expose()
 	status: NEWS_STATUS;
 
-	@IsOptional()
-	@IsEnum(NEWS_STATE)
+	@IsBoolean()
 	@Expose()
-	state: NEWS_STATE;
+	published: boolean;
 
-	@IsNumber()
+	@IsString()
 	@Expose()
-	group_id: number;
+	creatorId: string;
 
-	@IsOptional()
-	@IsNumber()
+	@IsString()
 	@Expose()
-	creator_id: number;
+	groupId: string;
 
 	@IsFile({mime: ['image/jpg', 'image/png']})
-	file: any;
+	filePhoto: File;
 }
 
-export class UpdateNewsDto extends PartialType(CreateNewsDto) {}
+export class UpdateBlogDto extends PartialType(CreateBlogDto) {}
 
-export class NewsQueryDto extends PartialType(News) {}
+export class BlogQueryDto extends PartialType(Blog) {}

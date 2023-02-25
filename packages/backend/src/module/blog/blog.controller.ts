@@ -15,10 +15,10 @@ import {
 	Request,
 	UsePipes,
 } from '@nestjs/common';
-import {NewsService} from './blog.service';
+import {BlogService} from './blog.service';
 import {Express} from 'express';
-import {CreateNewsDto, NewsQueryDto, UpdateNewsDto} from './dto/blog.dto';
-import {News} from './entity/blog.entity';
+import {CreateBlogDto, BlogQueryDto, UpdateBlogDto} from './dto/blog.dto';
+import {Blog} from './entity/blog.entity';
 import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
 import {Roles} from '~module/auth/roles.decorator';
 import {ROLE} from '~contants/role';
@@ -28,92 +28,92 @@ import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
 import {REGEX_IMAGE} from '~util/regex';
 
-@Controller('news')
+@Controller('blog')
 @UseGuards(JwtAuthGuard)
-export class NewsController {
-	constructor(private newsService: NewsService) {}
+export class BlogController {
+	constructor(private blogService: BlogService) {}
 	@Get('list')
-	async getAllNewss(
+	async getAllBlogs(
 		@Query() query: any,
 		@Request() req: any,
 		@User() user: UserDto
 	): Promise<any> {
-		return await this.newsService.getAllNews(req, query, user);
+		return await this.blogService.getAllBlog(req, query, user);
 	}
 
 	@Get(':id/details')
-	async getNewsDetails(@Param('id', ParseIntPipe) id: number): Promise<News> {
-		return await this.newsService.getNewsDetails(id);
+	async getBlogDetails(@Param('id') id: string): Promise<Blog> {
+		return await this.blogService.getBlogDetails(id);
 	}
 
 	@Get(':slug/slug/details')
-	async getNewsSlugDetails(@Param('slug') slug: string): Promise<News> {
-		return await this.newsService.getNewsSlugDetails(slug);
+	async getBlogSlugDetails(@Param('slug') slug: string): Promise<Blog> {
+		return await this.blogService.getBlogSlugDetails(slug);
 	}
 
 	@Roles(ROLE.PARTNER)
 	@Post('create')
 	@UseInterceptors(
-		FileInterceptor('image', uploadFileConfig(10000, REGEX_IMAGE))
+		FileInterceptor('filePhoto', uploadFileConfig(10000, REGEX_IMAGE))
 	)
 	@HttpCode(HttpStatus.CREATED)
 	@UsePipes(new ValidationPipe({transform: true}))
-	async createNews(
-		@Body() createNewsDto: any,
-		@UploadedFile() image: Express.Multer.File,
+	async createBlog(
+		@Body() createBlogDto: any,
+		@UploadedFile() filePhoto: Express.Multer.File,
 		@User() user: UserDto
-	): Promise<News> {
+	): Promise<Blog> {
 		const {id} = user;
-		return await this.newsService.createNews(createNewsDto, image, id);
+		return await this.blogService.createBlog(createBlogDto, filePhoto, id);
 	}
 
 	@Roles(ROLE.PARTNER)
 	@Post(':id/update')
 	@UseInterceptors(
-		FileInterceptor('image', uploadFileConfig(1000, REGEX_IMAGE))
+		FileInterceptor('filePhoto', uploadFileConfig(1000, REGEX_IMAGE))
 	)
-	async updateNews(
-		@Body(ValidationPipe) updateNewsDto: UpdateNewsDto,
-		@Param('id', ParseIntPipe) id: number,
+	async updateBlog(
+		@Body(ValidationPipe) updateBlogDto: UpdateBlogDto,
+		@Param('id') id: string,
 		@User() user: UserDto,
 		@UploadedFile() file: Express.Multer.File
-	): Promise<News> {
-		return await this.newsService.updateNews(id, updateNewsDto, file, user.id);
+	): Promise<Blog> {
+		return await this.blogService.updateBlog(id, updateBlogDto, file, user.id);
 	}
 
 	@Roles(ROLE.ADMIN)
 	@Post(':id/delete')
-	async deleteNews(@Param('id', ParseIntPipe) id: number): Promise<string> {
-		return await this.newsService.deleteNews(id);
+	async deleteBlog(@Param('id') id: string): Promise<string> {
+		return await this.blogService.deleteBlog(id);
 	}
 
 	@Roles(ROLE.PARTNER, ROLE.ADMIN)
 	@Post(':id/remove')
-	async removeNews(
-		@Param('id', ParseIntPipe) id: number,
+	async removeBlog(
+		@Param('id') id: string,
 		@User() user: UserDto
 	): Promise<string> {
-		return await this.newsService.removeNews(id, user.id);
+		return await this.blogService.removeBlog(id, user.id);
 	}
 
 	@Roles(ROLE.ADMIN)
 	@Post(':id/restore')
-	async restoreNews(@Param('id', ParseIntPipe) id: number): Promise<string> {
-		return await this.newsService.restoreNews(id);
+	async restoreBlog(@Param('id') id: string): Promise<string> {
+		return await this.blogService.restoreBlog(id);
 	}
 
 	@Roles(ROLE.ADMIN)
 	@Post(':id/status')
-	async changeStatusNews(
-		@Param('id', ParseIntPipe) id: number,
-		@Body() statusDto: UpdateNewsDto
+	async changeStatusBlog(
+		@Param('id') id: string,
+		@Body() statusDto: UpdateBlogDto
 	): Promise<string> {
-		return await this.newsService.changeStatusNewsByAdmin(id, statusDto);
+		return await this.blogService.changeStatusBlogByAdmin(id, statusDto);
 	}
 
 	@Get('/count')
 	@Roles(ROLE.PARTNER, ROLE.ADMIN)
 	async countProduct(@User() user: UserDto): Promise<string> {
-		return await this.newsService.countNews(user);
+		return await this.blogService.countBlog(user);
 	}
 }

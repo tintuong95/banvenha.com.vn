@@ -6,6 +6,7 @@ import {
 	OneToOne,
 	BeforeInsert,
 	OneToMany,
+	PrimaryColumn,
 } from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
@@ -25,34 +26,35 @@ import {ProductFiles} from '~module/product-files/entity/product-files.entity';
 import {ProductGroup} from '~module/product-groups/entity/product-group.entity';
 import {Order} from '~module/orders/entity/order.entity';
 import {Exclude} from 'class-transformer';
-import {generateCode} from '~util/generate';
+import {generateCode, generateId} from '~util/generate';
 import {ProductImages} from '~module/product-images/entity/product-images.entity';
 
 @Entity({name: 'products'})
 export class Product extends BaseEntity {
+	@PrimaryColumn('varchar', {
+		length: 25,
+		unique: true,
+		default: () => generateId('PR'),
+	})
+	@ApiProperty()
+	id: string;
+
 	@Column({
-		length: 20,
+		length: 200,
 		nullable: false,
 	})
 	@ApiProperty()
-	code: string;
+	title: string;
 
 	@Column({
-		length: 50,
+		length: 200,
 		nullable: false,
 	})
 	@ApiProperty()
-	name: string;
+	slug: string;
 
 	@Column({
-		length: 50,
-		nullable: false,
-	})
-	@ApiProperty()
-	param: string;
-
-	@Column({
-		length: 100,
+		length: 500,
 		nullable: false,
 	})
 	@ApiProperty()
@@ -69,14 +71,14 @@ export class Product extends BaseEntity {
 	})
 	@Exclude()
 	@ApiProperty()
-	creator_id: number;
+	creatorId: string;
 
 	@Column({
 		nullable: false,
 	})
 	@ApiProperty()
 	@Exclude()
-	group_id: number;
+	groupId: string;
 
 	@Column({
 		type: 'enum',
@@ -86,27 +88,16 @@ export class Product extends BaseEntity {
 	@ApiProperty()
 	status: PRODUCT_STATUS;
 
-	@Column({
-		type: 'enum',
-		enum: PRODUCT_STATE,
-		default: PRODUCT_STATE.PUBLISHED,
-	})
+	@Column({})
 	@ApiProperty()
-	state: PRODUCT_STATE;
+	published: boolean;
 
 	@Column({
 		length: 50,
 		nullable: false,
 	})
 	@ApiProperty()
-	image: string;
-
-	// @Column({
-	// 	length: 50,
-	// 	nullable: false,
-	// })
-	// @ApiProperty()
-	// download: string;
+	photo: string;
 
 	@Column({
 		nullable: false,
@@ -135,6 +126,13 @@ export class Product extends BaseEntity {
 	})
 	@ApiProperty()
 	sale: number;
+
+	@Column({
+		nullable: false,
+		default: 0,
+	})
+	@ApiProperty()
+	listPhoto: string;
 
 	@ManyToOne(() => Admin, {cascade: true})
 	@JoinColumn({name: 'creator_id', referencedColumnName: 'id'})

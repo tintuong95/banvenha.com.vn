@@ -13,18 +13,18 @@ import {ApiProperty} from '@nestjs/swagger';
 import {NEWS_STATE, NEWS_STATUS} from '../type/blog.type';
 
 import {NEWS_GROUP_KEY, ADMIN_KEY} from '~contants/relation';
-import {NewsGroup} from '~module/news-groups/entity/news-group.entity';
-import {Admin} from '~module/admin/entity/admin.entity';
+// import {NewsGroup} from '~module/news-groups/entity/news-group.entity';
+// import {Admin} from '~module/admin/entity/admin.entity';
 import {Exclude} from 'class-transformer';
 import createSlug from '~util/createSlug';
-import {generateCode, generateId} from '~util/generate';
+import {generateId} from '~util/generate';
 
-@Entity({name: 'blog'})
+@Entity({name: 'Blogs'})
 export class Blog extends BaseEntity {
 	@PrimaryColumn('varchar', {
 		length: 25,
 		unique: true,
-		default: () => generateId('AC'),
+		default: () => generateId('BL'),
 	})
 	@ApiProperty()
 	id: string;
@@ -106,29 +106,24 @@ export class Blog extends BaseEntity {
 	@Exclude()
 	groupId: string;
 
-	@ManyToOne(() => Admin, {cascade: true})
-	@JoinColumn({name: 'creator_id', referencedColumnName: 'id'})
-	[ADMIN_KEY]: Admin;
+	// @ManyToOne(() => Admin, {cascade: true})
+	// @JoinColumn({name: 'creator_id', referencedColumnName: 'id'})
+	// [ADMIN_KEY]: Admin;
 
-	@ManyToOne(() => NewsGroup, {cascade: true})
-	@JoinColumn({name: 'group_id', referencedColumnName: 'id'})
-	[NEWS_GROUP_KEY]: NewsGroup;
+	// @ManyToOne(() => NewsGroup, {cascade: true})
+	// @JoinColumn({name: 'group_id', referencedColumnName: 'id'})
+	// [NEWS_GROUP_KEY]: NewsGroup;
 
 	// @OneToMany(() => NewsImage, (newsImage) => newsImage.id)
 	// [NEWS_IMAGE_LIST_KEY]: NewsImage[];
 
 	@BeforeInsert()
 	createSlug() {
-		this.param = createSlug(this.name);
+		this.slug = createSlug(this.title);
 	}
 
 	@BeforeUpdate()
 	updateSlug() {
-		this.param = createSlug(this.name);
-	}
-
-	@BeforeInsert()
-	generateCode() {
-		this.code = generateCode('NE');
+		this.slug = createSlug(this.title);
 	}
 }

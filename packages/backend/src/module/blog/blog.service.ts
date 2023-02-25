@@ -1,8 +1,8 @@
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {NotFoundException, ForbiddenException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {CreateNewsDto, UpdateNewsDto} from './dto/blog.dto';
-import {News} from './entity/blog.entity';
+import {CreateBlogDto, UpdateBlogDto} from './dto/blog.dto';
+import {Blog} from './entity/blog.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
 import {ADMIN_KEY, NEWS_GROUP_KEY, PARTNER_KEY} from '~contants/relation';
@@ -15,22 +15,22 @@ import {ROLE} from '~contants/role';
 import * as fs from 'fs-extra';
 
 @Injectable()
-export class NewsService {
+export class BlogService {
 	constructor(
-		@InjectRepository(News)
-		private newsRepository: Repository<News>
+		@InjectRepository(Blog)
+		private blogRepository: Repository<Blog>
 	) {}
 
-	async getAllNews(request: Request, query: any, user: UserDto): Promise<any> {
+	async getAllBlog(request: Request, query: any, user: UserDto): Promise<any> {
 		const {skip, take, currentPage, perPage} = handleQuery(query);
 
 		const newQuery = findOptionWhere(query, ['name']);
 
 		const isPartner = user.role === ROLE.PARTNER;
 
-		if (isPartner) newQuery['creator_id'] = user.id;
+		if (isPartner) newQuery['creatorId'] = user.id;
 
-		const result = await this.newsRepository.findAndCount({
+		const result = await this.blogRepository.findAndCount({
 			where: newQuery,
 			relations: [ADMIN_KEY, NEWS_GROUP_KEY],
 			take,
@@ -40,96 +40,95 @@ export class NewsService {
 		return pagination(request, result, currentPage, perPage);
 	}
 
-	async getNewsDetails(id: number): Promise<News | any> {
-		const result = await this.newsRepository.findOne({
+	async getBlogDetails(id: string): Promise<Blog | any> {
+		const result = await this.blogRepository.findOne({
 			where: {id},
 			relations: [ADMIN_KEY, NEWS_GROUP_KEY],
 		});
-		if (!result) throw new NotFoundException('News Id ' + id + ' Not Found !');
+		if (!result) throw new NotFoundException('Blog Id ' + id + ' Not Found !');
 		return result;
 	}
 
-	async getNewsSlugDetails(slug: string): Promise<News | any> {
-		const result = await this.newsRepository.findOne({
-			where: {param: slug},
+	async getBlogSlugDetails(slug: string): Promise<Blog | any> {
+		const result = await this.blogRepository.findOne({
+			where: {slug: slug},
 			relations: [ADMIN_KEY, NEWS_GROUP_KEY],
 		});
 		if (!result)
-			throw new NotFoundException('News Slug ' + slug + ' Not Found !');
+			throw new NotFoundException('Blog Slug ' + slug + ' Not Found !');
 		return result;
 	}
 
-	async createNews(
-		createNewsDto: CreateNewsDto,
+	async createBlog(
+		createBlogDto: CreateBlogDto,
 		image: Express.Multer.File,
-		creator_id: number
-	): Promise<News> {
-		createNewsDto.image = image.filename;
-		createNewsDto.creator_id = creator_id;
-
-		const result = this.newsRepository.create(createNewsDto);
-		return await this.newsRepository.save(result);
+		creatorId: string
+	): Promise<Blog> {
+		createBlogDto.photo = image.filename;
+		createBlogDto.creatorId = creatorId;
+		const result = this.blogRepository.create(createBlogDto);
+		return await this.blogRepository.save(result);
 	}
-	async updateNews(
-		id: number,
-		updateNewsDto: UpdateNewsDto,
+	async updateBlog(
+		id: string,
+		updateBlogDto: UpdateBlogDto,
 		file: Express.Multer.File,
-		creator_id: number
-	): Promise<News> {
-		const result = await this.newsRepository.findOne({where: {id}});
+		creatorId: string
+	): Promise<Blog> {
+		const result = await this.blogRepository.findOne({where: {id}});
 
-		if (!result) throw new NotFoundException('News Id ' + id + ' Not Found !');
-		if (result.creator_id !== creator_id)
+		if (!result) throw new NotFoundException('Blog Id ' + id + ' Not Found !');
+		if (result.creatorId !== creatorId)
 			throw new ForbiddenException('Forbidden !');
 
-		_(updateNewsDto).forEach((val, key) => {
+		_(updateBlogDto).forEach((val, key) => {
 			if (val) result[key] = val;
 		});
 		if (file) {
 			// fs.removeSync('../../../uploads/images' + result.image);
-			result.image = file.filename;
+			result.photo = file.filename;
 		}
-		return this.newsRepository.save(result);
+		return this.blogRepository.save(result);
 	}
 
-	async removeNews(id: number, creator_id: number): Promise<any> {
-		const findNews = await this.newsRepository.findOne({where: {id}});
-		if (!findNews && findNews?.creator_id !== creator_id) {
+	async removeBlog(id: string, creatorId: string): Promise<any> {
+		const findBlog = await this.blogRepository.findOne({where: {id}});
+		if (!findBlog && findBlog?.creatorId !== creatorId) {
 			throw new UnauthorizedException('Unauthorized !');
 		}
-		const result = await this.newsRepository.softDelete(id);
-		if (result.affected > 0) return 'Removed News Id ' + id + ' successfully !';
+		const result = await this.blogRepository.softDelete(id);
+		if (result.affected > 0) return 'Removed Blog Id ' + id + ' successfully !';
 
-		throw new NotFoundException('News Id ' + id + ' Not Found !');
+		throw new NotFoundException('Blog Id ' + id + ' Not Found !');
 	}
-	async deleteNews(id: number): Promise<any> {
-		const result = await this.newsRepository.delete(id);
-		if (result.affected > 0) return 'Deleted News Id ' + id + ' successfully !';
-		throw new NotFoundException('News Id ' + id + ' Not Found !');
+	async deleteBlog(id: string): Promise<any> {
+		const result = await this.blogRepository.delete(id);
+		if (result.affected > 0) return 'Deleted Blog Id ' + id + ' successfully !';
+		throw new NotFoundException('Blog Id ' + id + ' Not Found !');
 	}
-	async restoreNews(id: number): Promise<any> {
-		const result = await this.newsRepository.restore(id);
+	async restoreBlog(id: string): Promise<any> {
+		const result = await this.blogRepository.restore(id);
 		if (result.affected > 0)
-			return 'Restored News Id ' + id + ' successfully !';
-		throw new NotFoundException('News Id ' + id + ' Not Found !');
+			return 'Restored Blog Id ' + id + ' successfully !';
+		throw new NotFoundException('Blog Id ' + id + ' Not Found !');
 	}
 
-	async changeStatusNewsByAdmin(
-		id: number,
-		statusDto: UpdateNewsDto
+	async changeStatusBlogByAdmin(
+		id: string,
+		statusDto: UpdateBlogDto
 	): Promise<any> {
 		const {status = 0} = statusDto;
-		const result = await this.newsRepository.findOne({where: {id}});
-		if (!result) throw new NotFoundException('News Id ' + id + ' Not Found !');
+		const result = await this.blogRepository.findOne({where: {id}});
+		if (!result) throw new NotFoundException('Blog Id ' + id + ' Not Found !');
 		result.status = status;
-		return this.newsRepository.save(result);
+		return this.blogRepository.save(result);
 	}
-	async countNews(user: UserDto): Promise<any> {
+	async countBlog(user: UserDto): Promise<any> {
 		const options = {};
 		if (user.role === ROLE.PARTNER) {
-			options['creator_id'] = user.id;
+			options['creatorId'] = user.id;
 		}
-		const result = await this.newsRepository.count({
+		const result = await this.blogRepository.count({
 			where: options,
 		});
 		if (!result)

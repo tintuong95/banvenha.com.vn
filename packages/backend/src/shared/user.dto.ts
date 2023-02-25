@@ -1,9 +1,9 @@
-import {ROLE_TYPE} from '~module/admin/type/admin.type';
+import {ROLE_STATUS} from '~module/account/type/account.type';
 
 export class UserDto {
-	id: number;
+	id: string;
 	name: string;
-	role: ROLE_TYPE;
+	role: ROLE_STATUS;
 	iat: number;
 	exp: number;
 }
