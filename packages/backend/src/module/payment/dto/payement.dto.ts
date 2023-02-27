@@ -10,23 +10,23 @@ export class CreatePaymentDto {
 
 	@IsString()
 	@Expose()
-	bank_name: string;
+	bankName: string;
 
 	@IsString()
 	@Expose()
-	bank_number: string;
+	bankNumber: string;
 
 	@IsString()
 	@Expose()
-	bank_transaction: string;
+	bankTransaction: string;
+
+	@IsString()
+	@Expose()
+	bankHolder: string;
 
 	@IsNumber()
 	@Expose()
-	money: number;
-
-	@IsNumber()
-	@Expose()
-	admin_id: number;
+	value: number;
 
 	@IsOptional()
 	@IsEnum(PAYMENT_STATUS)

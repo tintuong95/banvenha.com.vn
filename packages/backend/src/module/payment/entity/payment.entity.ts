@@ -18,7 +18,6 @@ export class Payment extends BaseEntity {
 	@PrimaryColumn('varchar', {
 		length: 25,
 		unique: true,
-		default: () => generateId('PY'),
 	})
 	@ApiProperty()
 	id: string;
@@ -70,4 +69,9 @@ export class Payment extends BaseEntity {
 	// @ManyToOne(() => Admin, {cascade: true})
 	// @JoinColumn({name: 'admin_id'})
 	// [ADMIN_KEY]: Admin;
+
+	@BeforeInsert()
+	setId() {
+		this.id = generateId('BL');
+	}
 }

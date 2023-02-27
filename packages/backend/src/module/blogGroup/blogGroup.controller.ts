@@ -16,7 +16,7 @@ import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
 import {Roles} from '~module/auth/roles.decorator';
 import {ROLE} from '~contants/role';
 
-@Controller('blogGroup')
+@Controller('blog_groups')
 @UseGuards(JwtAuthGuard)
 export class BlogGroupController {
 	constructor(private blogGroupService: BlogGroupService) {}

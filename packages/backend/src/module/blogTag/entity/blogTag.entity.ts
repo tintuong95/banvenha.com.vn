@@ -12,12 +12,11 @@ import {NEWS_GROUP_KEY, NEWS_KEY} from '~contants/relation';
 import createSlug from '~util/createSlug';
 import {generateId} from '~util/generate';
 
-@Entity({name: 'BlogTags'})
+@Entity({name: 'blog_tags'})
 export class BlogTag extends BaseEntity {
 	@PrimaryColumn('varchar', {
 		length: 25,
 		unique: true,
-		default: () => generateId('BT'),
 	})
 	@ApiProperty()
 	id: string;
@@ -36,6 +35,11 @@ export class BlogTag extends BaseEntity {
 	})
 	@ApiProperty()
 	slug: string;
+
+	@BeforeInsert()
+	setId() {
+		this.id = generateId('BL');
+	}
 
 	@BeforeInsert()
 	createSlug() {

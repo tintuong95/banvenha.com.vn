@@ -1,26 +1,33 @@
-import {Entity, Column, ManyToOne, JoinColumn, BeforeInsert} from 'typeorm';
+import {
+	Entity,
+	Column,
+	ManyToOne,
+	JoinColumn,
+	BeforeInsert,
+	PrimaryColumn,
+} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {MESSAGE_STATUS} from '../type/message.type';
 import {RECEIVER_KEY, SENDER_KEY} from '~contants/relation';
-import {Admin} from '~module/admin/entity/admin.entity';
 import {Exclude} from 'class-transformer';
-import {generateCode} from '~util/generate';
+import {generateId} from '~util/generate';
 
 @Entity({name: 'messages'})
 export class Message extends BaseEntity {
-	@Column({
-		length: 20,
-		nullable: false,
+	@PrimaryColumn('varchar', {
+		length: 25,
+		unique: true,
 	})
 	@ApiProperty()
-	code: string;
+	id: string;
 
 	@Column({
 		nullable: false,
+		length: 200,
 	})
 	@ApiProperty()
-	name: string;
+	title: string;
 
 	@Column({
 		nullable: false,
@@ -30,17 +37,19 @@ export class Message extends BaseEntity {
 
 	@Column({
 		nullable: false,
+		length: 25,
 	})
 	@ApiProperty()
 	@Exclude()
-	receiver_id: number;
+	receiverId: string;
 
 	@Column({
 		nullable: false,
+		length: 25,
 	})
 	@ApiProperty()
 	@Exclude()
-	sender_id: number;
+	senderId: string;
 
 	@Column({
 		type: 'enum',
@@ -51,16 +60,16 @@ export class Message extends BaseEntity {
 	@ApiProperty()
 	status: MESSAGE_STATUS;
 
-	@ManyToOne(() => Admin, {cascade: true})
-	@JoinColumn({name: 'receiver_id'})
-	[RECEIVER_KEY]: Admin;
+	// @ManyToOne(() => Admin, {cascade: true})
+	// @JoinColumn({name: 'receiver_id'})
+	// [RECEIVER_KEY]: Admin;
 
-	@ManyToOne(() => Admin, {cascade: true})
-	@JoinColumn({name: 'sender_id'})
-	[SENDER_KEY]: Admin;
+	// @ManyToOne(() => Admin, {cascade: true})
+	// @JoinColumn({name: 'sender_id'})
+	// [SENDER_KEY]: Admin;
 
 	@BeforeInsert()
-	generateCode() {
-		this.code = generateCode('ME');
+	setId() {
+		this.id = generateId('BL');
 	}
 }

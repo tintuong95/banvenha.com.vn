@@ -1,11 +1,7 @@
 import {ForbiddenException, Injectable} from '@nestjs/common';
 import {NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {
-	CreateProductAllFieldDto,
-	CreateProductDto,
-	UpdateProductDto,
-} from './dto/product.dto';
+import {CreateProductDto, UpdateProductDto} from './dto/product.dto';
 import {Product} from './entity/product.entity';
 import * as _ from 'lodash';
 import {Repository} from 'typeorm';
@@ -17,12 +13,10 @@ import {
 	PRODUCT_FILE_KEY,
 	PRODUCT_IMAGES_KEY,
 } from '~contants/relation';
-import {ProductFilesService} from '~module/product-files/product-files.service';
-import {ProductImagesService} from '~module/product-images/product-images.service';
-import {ProductDetailsService} from '~module/product-details/product-details.service';
+
 import {Express} from 'express';
 import {plainToInstance} from 'class-transformer';
-import {CreateProductDetailsDto} from '~module/product-details/dto/product-details.dto';
+
 import {handleQuery, pagination} from '~util/pagination';
 import {findOptionWhere} from '~util/query';
 import {Request} from 'express';
@@ -34,10 +28,7 @@ import {ROLE} from '~contants/role';
 export class ProductService {
 	constructor(
 		@InjectRepository(Product)
-		private productRepository: Repository<Product>,
-		private productFileService: ProductFilesService,
-		private productImageService: ProductImagesService,
-		private productDetailService: ProductDetailsService
+		private productRepository: Repository<Product>
 	) {}
 
 	async getAllProducts(
@@ -90,13 +81,13 @@ export class ProductService {
 	}
 
 	async createProduct(
-		productAllField: CreateProductAllFieldDto,
+		createProductDto: CreateProductDto,
 		// image: Express.Multer.File,
 		// images: Express.Multer.File[],
 		// file: Express.Multer.File,
 		creatorId: string
 	): Promise<Product | any> {
-		const product = plainToInstance(CreateProductDto, productAllField, {
+		const product = plainToInstance(CreateProductDto, createProductDto, {
 			excludeExtraneousValues: true,
 		});
 

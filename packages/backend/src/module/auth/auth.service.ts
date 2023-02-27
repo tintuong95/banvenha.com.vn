@@ -6,14 +6,14 @@ import {
 	CreateVerifiedDto,
 	SignInVerifiedDto,
 } from '~module/verified/dto/verified.dto';
-import {AdminChildService} from '~module/admin/auth/admin.auth.service';
+import {AccountChildService} from '~module/account/auth/account.auth.service';
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private verifiedService: VerifiedService,
 		private jwtService: JwtService,
-		private adminChildService: AdminChildService
+		private adminChildService: AccountChildService
 	) {}
 
 	async signInVerified(signInVerifiedDto: SignInVerifiedDto) {
@@ -30,28 +30,28 @@ export class AuthService {
 	}
 
 	async signUpVerified(createVerifiedDto: CreateVerifiedDto) {
-		const {admin} = await this.verifiedService.signUp(createVerifiedDto);
-		const accessToken = this.jwtService.sign({
-			id: admin.id,
-			name: admin.name,
-			role: admin.role,
-		});
-		return {
-			self: admin,
-			accessToken: accessToken,
-		};
+		// const {account} = await this.verifiedService.signUp(createVerifiedDto);
+		// const accessToken = this.jwtService.sign({
+		// 	id: admin.id,
+		// 	name: admin.name,
+		// 	role: admin.role,
+		// });
+		// return {
+		// 	self: admin,
+		// 	accessToken: accessToken,
+		// };
 	}
 
 	async getProfile(id: number) {
-		const admin = await this.adminChildService.getAdminDetails(id);
-		const accessToken = this.jwtService.sign({
-			id: admin.id,
-			name: admin.name,
-			role: admin.role,
-		});
-		return {
-			self: admin,
-			accessToken: accessToken,
-		};
+		// const admin = await this.adminChildService.getAdminDetails(id);
+		// const accessToken = this.jwtService.sign({
+		// 	id: admin.id,
+		// 	name: admin.name,
+		// 	role: admin.role,
+		// });
+		// return {
+		// 	self: admin,
+		// 	accessToken: accessToken,
+		// };
 	}
 }

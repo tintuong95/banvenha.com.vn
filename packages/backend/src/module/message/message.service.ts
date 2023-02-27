@@ -44,7 +44,7 @@ export class MessageService {
 		return pagination(request, result, currentPage, perPage);
 	}
 
-	async getMessageDetails(id: number): Promise<Message | any> {
+	async getMessageDetails(id: string): Promise<Message | any> {
 		const result = await this.messageRepository.findOne({
 			where: {id},
 			relations: [PARTNER_KEY, ADMIN_KEY],
@@ -60,7 +60,7 @@ export class MessageService {
 	}
 
 	async updateMessage(
-		id: number,
+		id: string,
 		updateMessageDto: UpdateMessageDto
 	): Promise<Message> {
 		const result = await this.messageRepository.findOne({where: {id}});
@@ -72,21 +72,21 @@ export class MessageService {
 		return this.messageRepository.save(result);
 	}
 
-	async removeMessage(id: number): Promise<any> {
+	async removeMessage(id: string): Promise<any> {
 		const result = await this.messageRepository.softDelete(id);
 		if (result.affected > 0)
 			return 'Removed Message Id ' + id + ' successfully !';
 		throw new NotFoundException('Message Id ' + id + ' Not Found !');
 	}
 
-	async deleteMessage(id: number): Promise<any> {
+	async deleteMessage(id: string): Promise<any> {
 		const result = await this.messageRepository.delete(id);
 		if (result.affected > 0)
 			return 'Deleted Message Id ' + id + ' successfully !';
 		throw new NotFoundException('Message Id ' + id + ' Not Found !');
 	}
 
-	async restoreMessage(id: number): Promise<any> {
+	async restoreMessage(id: string): Promise<any> {
 		const result = await this.messageRepository.restore(id);
 		if (result.affected > 0)
 			return 'Restored Message Id ' + id + ' successfully !';

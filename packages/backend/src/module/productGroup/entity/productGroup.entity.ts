@@ -13,12 +13,11 @@ import {GROUP_PRODUCT_KEY, PRODUCT_KEY} from '~contants/relation';
 import createSlug, {handleSlug} from '~util/createSlug';
 import {generateId} from '~util/generate';
 
-@Entity({name: 'product_group'})
+@Entity({name: 'product_groups'})
 export class ProductGroup extends BaseEntity {
 	@PrimaryColumn('varchar', {
 		length: 25,
 		unique: true,
-		default: () => generateId('PG'),
 	})
 	@ApiProperty()
 	id: string;
@@ -50,4 +49,9 @@ export class ProductGroup extends BaseEntity {
 
 	// @OneToMany(() => Product, (product) => product[GROUP_PRODUCT_KEY])
 	// [PRODUCT_KEY]: Product[];
+
+	@BeforeInsert()
+	setId() {
+		this.id = generateId('BL');
+	}
 }

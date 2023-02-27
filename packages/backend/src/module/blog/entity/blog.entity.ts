@@ -19,12 +19,11 @@ import {Exclude} from 'class-transformer';
 import createSlug from '~util/createSlug';
 import {generateId} from '~util/generate';
 
-@Entity({name: 'Blogs'})
+@Entity({name: 'blogs'})
 export class Blog extends BaseEntity {
 	@PrimaryColumn('varchar', {
 		length: 25,
 		unique: true,
-		default: () => generateId('BL'),
 	})
 	@ApiProperty()
 	id: string;
@@ -116,6 +115,11 @@ export class Blog extends BaseEntity {
 
 	// @OneToMany(() => NewsImage, (newsImage) => newsImage.id)
 	// [NEWS_IMAGE_LIST_KEY]: NewsImage[];
+
+	@BeforeInsert()
+	setId() {
+		this.id = generateId('BL');
+	}
 
 	@BeforeInsert()
 	createSlug() {

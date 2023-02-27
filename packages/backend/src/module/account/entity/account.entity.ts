@@ -1,4 +1,11 @@
-import {Entity, Column, OneToOne, OneToMany, PrimaryColumn} from 'typeorm';
+import {
+	Entity,
+	Column,
+	OneToOne,
+	OneToMany,
+	PrimaryColumn,
+	BeforeInsert,
+} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {ACCOUNT_STATUS, ROLE_STATUS} from '../type/account.type';
@@ -15,18 +22,16 @@ import {
 	MESSAGE_SENDER_KEY,
 } from '~contants/relation';
 
-import {Product} from '~module/products/entity/product.entity';
 import {Payment} from '~module/payment/entity/payment.entity';
 import {Order} from '~module/orders/entity/order.entity';
 import {Message} from '~module/message/entity/message.entity';
 import {generateId} from '~util/generate';
 
-@Entity({name: 'Accounts'})
+@Entity({name: 'accounts'})
 export class Account extends BaseEntity {
 	@PrimaryColumn('varchar', {
 		length: 25,
 		unique: true,
-		default: () => generateId('AC'),
 	})
 	@ApiProperty()
 	id: string;
@@ -63,7 +68,7 @@ export class Account extends BaseEntity {
 	@ApiProperty()
 	bankHolder: string;
 
-	@Column({length: 50, nullable: true})
+	@Column({nullable: true})
 	@ApiProperty()
 	birthday: Date;
 
@@ -107,4 +112,9 @@ export class Account extends BaseEntity {
 
 	// @OneToMany(() => Message, (message) => message[SENDER_KEY])
 	// [MESSAGE_SENDER_KEY]: Message[];
+
+	@BeforeInsert()
+	setId() {
+		this.id = generateId('BL');
+	}
 }

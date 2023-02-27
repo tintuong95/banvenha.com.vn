@@ -21,7 +21,7 @@ import {
 } from '~module/productTagRelation/dto/productTagRelation.dto';
 import {ProductTagRelation} from './entity/productTagRelation.entity';
 
-@Controller('productTagRelation')
+@Controller('product_tag_relation')
 @UseGuards(JwtAuthGuard)
 export class ProductTagRelationController {
 	constructor(private productTagRelationService: ProductTagRelationService) {}

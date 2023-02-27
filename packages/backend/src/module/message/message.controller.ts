@@ -3,7 +3,6 @@ import {
 	Controller,
 	Get,
 	Param,
-	ParseIntPipe,
 	Post,
 	ValidationPipe,
 	HttpStatus,
@@ -21,7 +20,7 @@ import {ROLE} from '~contants/role';
 import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
 
-@Controller('message')
+@Controller('messages')
 @UseGuards(JwtAuthGuard)
 export class MessageController {
 	constructor(private messageService: MessageService) {}
@@ -36,9 +35,7 @@ export class MessageController {
 	}
 
 	@Get(':id/details')
-	async getMessageDetails(
-		@Param('id', ParseIntPipe) id: number
-	): Promise<Message> {
+	async getMessageDetails(@Param('id') id: string): Promise<Message> {
 		return await this.messageService.getMessageDetails(id);
 	}
 
@@ -55,26 +52,26 @@ export class MessageController {
 	@Post(':id/update')
 	async updateMessage(
 		@Body(ValidationPipe) updateMessageDto: UpdateMessageDto,
-		@Param('id', ParseIntPipe) id: number
+		@Param('id') id: string
 	): Promise<Message> {
 		return await this.messageService.updateMessage(id, updateMessageDto);
 	}
 
 	@Roles(ROLE.ADMIN, ROLE.PARTNER)
 	@Post(':id/remove')
-	async removeMessage(@Param('id', ParseIntPipe) id: number): Promise<string> {
+	async removeMessage(@Param('id') id: string): Promise<string> {
 		return await this.messageService.removeMessage(id);
 	}
 
 	@Roles(ROLE.ADMIN)
 	@Post(':id/delete')
-	async deleteMessage(@Param('id', ParseIntPipe) id: number): Promise<string> {
+	async deleteMessage(@Param('id') id: string): Promise<string> {
 		return await this.messageService.deleteMessage(id);
 	}
 
 	@Roles(ROLE.ADMIN)
 	@Post(':id/restore')
-	async restoreMessage(@Param('id', ParseIntPipe) id: number): Promise<string> {
+	async restoreMessage(@Param('id') id: string): Promise<string> {
 		return await this.messageService.restoreMessage(id);
 	}
 }

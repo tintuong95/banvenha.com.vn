@@ -6,11 +6,7 @@ import {MESSAGE_STATUS} from '../type/message.type';
 export class CreateMessageDto {
 	@IsString()
 	@Expose()
-	code: string;
-
-	@IsString()
-	@Expose()
-	name: string;
+	title: string;
 
 	@IsString()
 	@Expose()
@@ -18,11 +14,11 @@ export class CreateMessageDto {
 
 	@IsNumber()
 	@Expose()
-	sender_id: number;
+	senderId: string;
 
 	@IsNumber()
 	@Expose()
-	receiver_id: number;
+	receiverId: string;
 
 	@IsOptional()
 	@IsEnum(MESSAGE_STATUS)

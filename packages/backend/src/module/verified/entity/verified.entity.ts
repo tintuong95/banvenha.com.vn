@@ -19,7 +19,6 @@ export class Verified extends BaseEntity {
 	@PrimaryColumn('varchar', {
 		length: 25,
 		unique: true,
-		default: () => generateId('VR'),
 	})
 	@ApiProperty()
 	id: string;
@@ -50,6 +49,10 @@ export class Verified extends BaseEntity {
 	// @OneToOne(() => Admin, {cascade: true})
 	// @JoinColumn({name: 'admin_id', referencedColumnName: 'id'})
 	// [ADMIN_KEY]: Admin;
+	@BeforeInsert()
+	setId() {
+		this.id = generateId('BL');
+	}
 
 	@BeforeInsert()
 	hashPassword() {

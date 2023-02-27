@@ -9,9 +9,6 @@ import {
 	IsBoolean,
 	IsArray,
 } from 'class-validator';
-import {CreateProductDetailsDto} from '~module/product-details/dto/product-details.dto';
-import {CreateProductFilesDto} from '~module/product-files/dto/product-files.dto';
-import {CreateProductImagesDto} from '~module/product-images/dto/product-images.dto';
 import {PRODUCT_STATUS} from '../type/product.type';
 
 export class CreateProductDto {
@@ -59,15 +56,16 @@ export class CreateProductDto {
 	@Expose()
 	sale: number;
 
-	@IsArray()
+	@IsString()
 	@Expose()
-	photoList: string[];
+	photoList: string;
 }
 
-export class CreateProductAllFieldDto extends IntersectionType(
-	CreateProductDto,
-	CreateProductDetailsDto
-) {}
+
+// export class CreateProductAllFieldDto extends IntersectionType(
+// 	CreateProductDto,
+// 	CreateProductDetailsDto
+// ) {}
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
 

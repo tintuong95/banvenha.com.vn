@@ -19,7 +19,7 @@ import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
 import {Roles} from '~module/auth/roles.decorator';
 import {ROLE} from '~contants/role';
 
-@Controller('newsGroup')
+@Controller('blog_tags_relation')
 @UseGuards(JwtAuthGuard)
 export class BlogTagRelationController {
 	constructor(private newsGroupService: BlogTagRelationService) {}

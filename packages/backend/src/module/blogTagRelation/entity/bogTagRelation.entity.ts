@@ -12,12 +12,11 @@ import {NEWS_GROUP_KEY, NEWS_KEY} from '~contants/relation';
 import createSlug from '~util/createSlug';
 import {generateId} from '~util/generate';
 
-@Entity({name: 'BlogTagRelations'})
+@Entity({name: 'blog_tag_relations'})
 export class BlogTagRelation extends BaseEntity {
 	@PrimaryColumn('varchar', {
 		length: 25,
 		unique: true,
-		default: () => generateId('BTR'),
 	})
 	@ApiProperty()
 	id: string;
@@ -38,4 +37,9 @@ export class BlogTagRelation extends BaseEntity {
 
 	// @OneToMany(() => News, (news) => news[NEWS_GROUP_KEY])
 	// [NEWS_KEY]: News[];
+
+	@BeforeInsert()
+	setId() {
+		this.id = generateId('BL');
+	}
 }

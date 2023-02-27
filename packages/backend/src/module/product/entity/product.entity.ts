@@ -8,6 +8,7 @@ import {
 	OneToMany,
 	PrimaryColumn,
 	BeforeUpdate,
+	PrimaryGeneratedColumn,
 } from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
@@ -21,22 +22,17 @@ import {
 	PRODUCT_KEY,
 	PRODUCT_IMAGES_KEY,
 } from '~contants/relation';
-import {ProductDetails} from '~module/product-details/entity/product-details.entity';
-import {ProductFiles} from '~module/product-files/entity/product-files.entity';
-import {ProductGroup} from '~module/product-groups/entity/product-group.entity';
 import {Order} from '~module/orders/entity/order.entity';
 import {Exclude} from 'class-transformer';
 import {generateId} from '~util/generate';
-import {ProductImages} from '~module/product-images/entity/product-images.entity';
 import createSlug from '~util/createSlug';
 
 @Entity({name: 'products'})
 export class Product extends BaseEntity {
-	@PrimaryColumn('varchar', {
-		length: 25,
-		unique: true,
-		default: () => generateId('PR'),
-	})
+	// @PrimaryGeneratedColumn('uuid')
+	// @ApiProperty()
+	// id: string;
+	@PrimaryColumn()
 	@ApiProperty()
 	id: string;
 
@@ -128,9 +124,9 @@ export class Product extends BaseEntity {
 	@ApiProperty()
 	sale: number;
 
-	@Column('text', {array: true})
+	@Column('text') //{array: true}
 	@ApiProperty()
-	photoList: string[];
+	photoList: string;
 
 	// @ManyToOne(() => Admin, {cascade: true})
 	// @JoinColumn({name: 'creator_id', referencedColumnName: 'id'})
@@ -154,6 +150,10 @@ export class Product extends BaseEntity {
 
 	// @OneToMany(() => ProductImages, (images) => images[PRODUCT_KEY])
 	// [PRODUCT_IMAGES_KEY]: ProductImages;
+	@BeforeInsert()
+	setId() {
+		this.id = generateId('BL');
+	}
 
 	@BeforeInsert()
 	createSlug() {

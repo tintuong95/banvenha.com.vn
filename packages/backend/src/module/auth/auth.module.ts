@@ -2,7 +2,7 @@ import {Module} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {JwtModule} from '@nestjs/jwt/dist';
 import {PassportModule} from '@nestjs/passport';
-import {AdminChildModule} from '~module/admin/auth/admin.auth.module';
+import {AccountChildModule} from '~module/account/auth/account.auth.module';
 import {VerifiedModule} from '~module/verified/verified.module';
 import {AppController} from './auth.controller';
 
@@ -13,7 +13,7 @@ import {JwtStrategy} from './jwt.strategy';
 	imports: [
 		VerifiedModule,
 		PassportModule,
-		AdminChildModule,
+		AccountChildModule,
 		JwtModule.registerAsync({
 			useFactory: (configService: ConfigService) => {
 				return {

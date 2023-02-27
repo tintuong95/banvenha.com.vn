@@ -20,7 +20,7 @@ import {
 } from './dto/productPhotoList.dto';
 import {ProductPhotoListService} from './productPhotoList.service';
 
-@Controller('productPhotoLists')
+@Controller('product_photo_list')
 @UseGuards(JwtAuthGuard)
 export class ProductPhotoListController {
 	constructor(private productPhotoListService: ProductPhotoListService) {}

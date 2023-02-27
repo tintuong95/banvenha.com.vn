@@ -21,7 +21,7 @@ import {UserDto} from '~shared/user.dto';
 import {ProductTagsService} from './productTag.service';
 import {ProductTags} from './entity/productTag.entity';
 
-@Controller('productTags')
+@Controller('product_tags')
 @UseGuards(JwtAuthGuard)
 export class ProductTagsController {
 	constructor(private productTagsService: ProductTagsService) {}

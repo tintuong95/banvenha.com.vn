@@ -2,11 +2,13 @@ import {Injectable} from '@nestjs/common';
 import {NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
 import {ProductGroup} from './entity/productGroup.entity';
-import { CreateProductGroupDto, UpdateProductGroupDto } from './dto/productGroup.dto';
+import {
+	CreateProductGroupDto,
+	UpdateProductGroupDto,
+} from './dto/productGroup.dto';
 
 @Injectable()
 export class ProductGroupService {

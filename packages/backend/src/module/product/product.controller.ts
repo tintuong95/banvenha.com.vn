@@ -15,7 +15,7 @@ import {
 	Request,
 } from '@nestjs/common';
 import {ProductService} from './product.service';
-import {CreateProductAllFieldDto, UpdateProductDto} from './dto/product.dto';
+import {CreateProductDto, UpdateProductDto} from './dto/product.dto';
 import {Product} from './entity/product.entity';
 import {JwtAuthGuard} from '~module/auth/jwt-auth.guard';
 import {Roles} from '~module/auth/roles.decorator';
@@ -70,13 +70,10 @@ export class ProductController {
 		// 	images?: Express.Multer.File[];
 		// 	file?: Express.Multer.File;
 		// },
-		@Body() createProductAllDto: CreateProductAllFieldDto,
+		@Body() createProductDto: CreateProductDto,
 		@User() user: UserDto
 	): Promise<Product | any> {
-		return await this.productService.createProduct(
-			createProductAllDto,
-			user.id
-		);
+		return await this.productService.createProduct(createProductDto, user.id);
 	}
 
 	@Post(':id/update')

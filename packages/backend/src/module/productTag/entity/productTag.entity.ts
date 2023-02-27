@@ -14,12 +14,11 @@ import {Exclude} from 'class-transformer';
 import {generateId} from '~util/generate';
 import createSlug from '~util/createSlug';
 
-@Entity({name: 'productTags'})
+@Entity({name: 'product_tags'})
 export class ProductTags extends BaseEntity {
 	@PrimaryColumn('varchar', {
 		length: 25,
 		unique: true,
-		default: () => generateId('PT'),
 	})
 	@ApiProperty()
 	id: string;
@@ -47,5 +46,10 @@ export class ProductTags extends BaseEntity {
 	@BeforeUpdate()
 	updateSlug() {
 		this.slug = createSlug(this.title, true);
+	}
+
+	@BeforeInsert()
+	setId() {
+		this.id = generateId('BL');
 	}
 }

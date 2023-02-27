@@ -45,9 +45,6 @@ export class CreateBlogDto {
 	@IsString()
 	@Expose()
 	groupId: string;
-
-	@IsFile({mime: ['image/jpg', 'image/png']})
-	filePhoto: File;
 }
 
 export class UpdateBlogDto extends PartialType(CreateBlogDto) {}
