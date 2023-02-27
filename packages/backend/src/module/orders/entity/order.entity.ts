@@ -5,57 +5,67 @@ import {
 	JoinColumn,
 	ManyToOne,
 	BeforeInsert,
+	PrimaryColumn,
 } from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
-import {Product} from '~module/products/entity/product.entity';
 import {ADMIN_KEY, PRODUCT_KEY} from '~contants/relation';
-import {Admin} from '~module/admin/entity/admin.entity';
+
 import {Exclude} from 'class-transformer';
-import {generateCode} from '~util/generate';
+import {generateId} from '~util/generate';
 import {ORDER_STATUS} from '../type/order.type';
 
 @Entity({name: 'orders'})
 export class Order extends BaseEntity {
-	@Column({
-		length: 20,
-		nullable: false,
+	@PrimaryColumn('varchar', {
+		length: 25,
+		unique: true,
+		default: () => generateId('PY'),
 	})
 	@ApiProperty()
-	code: string;
+	id: string;
 
 	@Column({
+		length: 100,
 		nullable: false,
 	})
 	@ApiProperty()
-	@Exclude()
-	product_id: number;
-
-	@Column({
-		nullable: false,
-	})
-	@ApiProperty()
-	admin_id: number;
-
-	@Column({
-		length: 20,
-		nullable: false,
-	})
-	@ApiProperty()
-	email: string;
+	uid: string;
 
 	@Column({
 		length: 25,
 		nullable: false,
 	})
 	@ApiProperty()
-	name: string;
+	@Exclude()
+	productId: string;
+
+	@Column({
+		length: 25,
+		nullable: false,
+	})
+	@ApiProperty()
+	accountId: string;
+
+	@Column({
+		length: 100,
+		nullable: false,
+	})
+	@ApiProperty()
+	email: string;
+
+	@Column({
+		length: 100,
+		nullable: false,
+	})
+	@ApiProperty()
+	fullName: string;
 
 	@Column({
 		nullable: false,
 	})
 	@ApiProperty()
-	price: number;
+	total: number;
 
 	@Column({
 		type: 'enum',
@@ -65,16 +75,11 @@ export class Order extends BaseEntity {
 	@ApiProperty()
 	status: ORDER_STATUS;
 
-	@OneToOne(() => Product, {cascade: true})
-	@JoinColumn({name: 'product_id'})
-	[PRODUCT_KEY]: Product;
+	// @OneToOne(() => Product, {cascade: true})
+	// @JoinColumn({name: 'product_id'})
+	// [PRODUCT_KEY]: Product;
 
-	@ManyToOne(() => Admin, {cascade: true})
-	@JoinColumn({name: 'admin_id'})
-	[ADMIN_KEY]: Admin;
-
-	@BeforeInsert()
-	generateCode() {
-		this.code = generateCode('OD');
-	}
+	// @ManyToOne(() => Admin, {cascade: true})
+	// @JoinColumn({name: 'admin_id'})
+	// [ADMIN_KEY]: Admin;
 }

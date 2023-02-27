@@ -3,7 +3,6 @@ import {
 	Controller,
 	Get,
 	Param,
-	ParseIntPipe,
 	Post,
 	ValidationPipe,
 	HttpStatus,
@@ -35,7 +34,7 @@ export class OrderController {
 		return await this.orderService.getAllOrders(req, query, user);
 	}
 	@Get(':id/details')
-	async getOrderDetails(@Param('id', ParseIntPipe) id: number): Promise<Order> {
+	async getOrderDetails(@Param('id') id: string): Promise<Order> {
 		return await this.orderService.getOrderDetails(id);
 	}
 
@@ -49,25 +48,25 @@ export class OrderController {
 	@Roles(ROLE.ADMIN)
 	async updateOrder(
 		@Body(ValidationPipe) updateOrderDto: UpdateOrderDto,
-		@Param('id', ParseIntPipe) id: number
+		@Param('id') id: string
 	): Promise<Order> {
 		return await this.orderService.updateOrder(id, updateOrderDto);
 	}
 
 	@Post(':id/remove')
 	@Roles(ROLE.ADMIN)
-	async removeOrder(@Param('id', ParseIntPipe) id: number): Promise<string> {
+	async removeOrder(@Param('id') id: string): Promise<string> {
 		return await this.orderService.removeOrder(id);
 	}
 
 	@Post(':id/restore')
-	async restoreOrder(@Param('id', ParseIntPipe) id: number): Promise<string> {
+	async restoreOrder(@Param('id') id: string): Promise<string> {
 		return await this.orderService.restoreOrder(id);
 	}
 
 	@Post(':id/delete')
 	@Roles(ROLE.ADMIN)
-	async deleteOrder(@Param('id', ParseIntPipe) id: number): Promise<string> {
+	async deleteOrder(@Param('id') id: string): Promise<string> {
 		return await this.orderService.deleteOrder(id);
 	}
 

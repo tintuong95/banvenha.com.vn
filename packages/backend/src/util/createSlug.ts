@@ -34,3 +34,7 @@ export default function createSlug(str: string, ext = false) {
 		);
 	return str.toLowerCase().split(' ').join('-');
 }
+
+export function handleSlug() {
+	this.slug = createSlug(this.title, true);
+}

@@ -1,6 +1,12 @@
 import {PartialType} from '@nestjs/mapped-types';
 import {Expose} from 'class-transformer';
-import {IsString, IsNumber, IsEnum, IsOptional, IsBoolean} from 'class-validator';
+import {
+	IsString,
+	IsNumber,
+	IsEnum,
+	IsOptional,
+	IsBoolean,
+} from 'class-validator';
 import {IsFile} from '~shared/file.dto';
 import {Blog} from '../entity/blog.entity';
 import {NEWS_STATE, NEWS_STATUS} from '../type/blog.type';

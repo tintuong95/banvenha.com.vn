@@ -1,0 +1,5 @@
+export enum PRODUCT_STATUS {
+	PROCESS = 0,
+	ACTIVED = 1,
+	BLOCKED = 2,
+}

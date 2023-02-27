@@ -42,7 +42,7 @@ export class PaymentService {
 		return pagination(requset, result, currentPage, perPage);
 	}
 
-	async getPaymentDetails(id: number): Promise<Payment | any> {
+	async getPaymentDetails(id: string): Promise<Payment | any> {
 		const result = await this.paymentRepository.findOne({where: {id}});
 		if (!result)
 			throw new NotFoundException('Payment Id ' + id + ' Not Found !');
@@ -54,7 +54,7 @@ export class PaymentService {
 	}
 
 	async updatePayment(
-		id: number,
+		id: string,
 		updatePaymentDto: UpdatePaymentDto
 	): Promise<Payment> {
 		const result = await this.paymentRepository.findOne({where: {id}});
@@ -67,21 +67,21 @@ export class PaymentService {
 		return this.paymentRepository.save(result);
 	}
 
-	async removePayment(id: number): Promise<any> {
+	async removePayment(id: string): Promise<any> {
 		const result = await this.paymentRepository.softDelete(id);
 		if (result.affected > 0)
 			return 'Removed Payment Id ' + id + ' successfully !';
 		throw new NotFoundException('Payment Id ' + id + ' Not Found !');
 	}
 
-	async deletePayment(id: number): Promise<any> {
+	async deletePayment(id: string): Promise<any> {
 		const result = await this.paymentRepository.delete(id);
 		if (result.affected > 0)
 			return 'Deleted Payment Id ' + id + ' successfully !';
 		throw new NotFoundException('Payment Id ' + id + ' Not Found !');
 	}
 
-	async restorePayment(id: number): Promise<any> {
+	async restorePayment(id: string): Promise<any> {
 		const result = await this.paymentRepository.restore(id);
 		if (result.affected > 0)
 			return 'Restored Payment Id ' + id + ' successfully !';

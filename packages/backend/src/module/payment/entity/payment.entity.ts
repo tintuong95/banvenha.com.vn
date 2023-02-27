@@ -1,51 +1,63 @@
-import {Entity, Column, ManyToOne, JoinColumn, BeforeInsert} from 'typeorm';
+import {
+	Entity,
+	Column,
+	ManyToOne,
+	JoinColumn,
+	BeforeInsert,
+	PrimaryColumn,
+} from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {PAYMENT_STATUS} from '../type/payement.type';
-import {Admin} from '~module/admin/entity/admin.entity';
 import {ADMIN_KEY} from '~contants/relation';
 import {Exclude} from 'class-transformer';
-import {generateCode} from '~util/generate';
+import {generateId} from '~util/generate';
 
 @Entity({name: 'payments'})
 export class Payment extends BaseEntity {
+	@PrimaryColumn('varchar', {
+		length: 25,
+		unique: true,
+		default: () => generateId('PY'),
+	})
+	@ApiProperty()
+	id: string;
+
 	@Column({
-		length: 20,
+		length: 100,
 		nullable: false,
 	})
 	@ApiProperty()
-	code: string;
+	bankName: string;
 
 	@Column({
 		nullable: false,
+		length: 100,
 	})
 	@ApiProperty()
-	bank_name: string;
+	bankNumber: string;
 
 	@Column({
 		nullable: false,
+		length: 100,
 	})
 	@ApiProperty()
-	bank_number: string;
+	bankTransaction: string;
 
-	@Column({
-		nullable: false,
-	})
+	@Column({nullable: false, length: 100})
 	@ApiProperty()
-	bank_transaction: string;
-
-	@Column({
-		nullable: false,
-	})
-	@ApiProperty()
-	money: number;
+	bankHolder: string;
 
 	@Column({
 		nullable: false,
 	})
 	@ApiProperty()
 	@Exclude()
-	admin_id: number;
+	value: number;
+
+	@Column({nullable: false, length: 25})
+	@ApiProperty()
+	accountId: string;
 
 	@Column({
 		type: 'enum',
@@ -55,12 +67,7 @@ export class Payment extends BaseEntity {
 	@ApiProperty()
 	status: PAYMENT_STATUS;
 
-	@ManyToOne(() => Admin, {cascade: true})
-	@JoinColumn({name: 'admin_id'})
-	[ADMIN_KEY]: Admin;
-
-	@BeforeInsert()
-	generateCode() {
-		this.code = generateCode('PM');
-	}
+	// @ManyToOne(() => Admin, {cascade: true})
+	// @JoinColumn({name: 'admin_id'})
+	// [ADMIN_KEY]: Admin;
 }

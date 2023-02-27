@@ -31,7 +31,7 @@ export class OrderService {
 
 		const isPartner = user.role === ROLE.PARTNER;
 
-		if (isPartner) newQuery['admin_id'] = user.id;
+		if (isPartner) newQuery['accountId'] = user.id;
 
 		const result = await this.orderRepository.findAndCount({
 			where: newQuery,
@@ -43,7 +43,7 @@ export class OrderService {
 		return pagination(request, result, currentPage, perPage);
 	}
 
-	async getOrderDetails(id: number): Promise<Order | any> {
+	async getOrderDetails(id: string): Promise<Order | any> {
 		const result = await this.orderRepository.findOne({
 			where: {id},
 			relations: [ADMIN_KEY, PRODUCT_KEY],
@@ -57,7 +57,7 @@ export class OrderService {
 	}
 
 	async updateOrder(
-		id: number,
+		id: string,
 		updateOrderDto: UpdateOrderDto
 	): Promise<Order> {
 		const result = await this.orderRepository.findOne({where: {id}});
@@ -68,21 +68,21 @@ export class OrderService {
 		return this.orderRepository.save(result);
 	}
 
-	async removeOrder(id: number): Promise<any> {
+	async removeOrder(id: string): Promise<any> {
 		const result = await this.orderRepository.softDelete(id);
 		if (result.affected > 0)
 			return 'Removed Order Id ' + id + ' successfully !';
 		throw new NotFoundException('Order Id ' + id + ' Not Found !');
 	}
 
-	async restoreOrder(id: number): Promise<any> {
+	async restoreOrder(id: string): Promise<any> {
 		const result = await this.orderRepository.restore(id);
 		if (result.affected > 0)
 			return 'Restored Order Id ' + id + ' successfully !';
 		throw new NotFoundException('Order Id ' + id + ' Not Found !');
 	}
 
-	async deleteOrder(id: number): Promise<any> {
+	async deleteOrder(id: string): Promise<any> {
 		const result = await this.orderRepository.delete(id);
 		if (result.affected > 0)
 			return 'Deleted Order Id ' + id + ' successfully !';
@@ -97,7 +97,7 @@ export class OrderService {
 		if (user.role === ROLE.PARTNER) {
 			return await this.orderRepository
 				.createQueryBuilder('orders')
-				.where('orders.admin_id = :admin_id', {admin_id: user.id})
+				.where('orders.accountId = :accountId', {accountId: user.id})
 				.andWhere('orders.updated_at >= :after', {
 					after: afterDate,
 				})
@@ -127,7 +127,7 @@ export class OrderService {
 		if (user.role === ROLE.PARTNER) {
 			return await this.orderRepository
 				.createQueryBuilder('orders')
-				.where('orders.admin_id = :admin_id', {admin_id: user.id})
+				.where('orders.accountId = :accountId', {accountId: user.id})
 				.select('SUM(orders.price)', 'sum')
 				.addSelect('COUNT(*)', 'count')
 				.getRawOne();

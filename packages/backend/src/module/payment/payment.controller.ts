@@ -2,8 +2,6 @@ import {
 	Body,
 	Controller,
 	Get,
-	Param,
-	ParseIntPipe,
 	Post,
 	ValidationPipe,
 	HttpStatus,
@@ -11,6 +9,7 @@ import {
 	UseGuards,
 	Query,
 	Request,
+	Param,
 } from '@nestjs/common';
 import {PaymentService} from './payment.service';
 import {CreatePaymentDto, UpdatePaymentDto} from './dto/payement.dto';
@@ -21,7 +20,7 @@ import {ROLE} from '~contants/role';
 import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
 
-@Controller('payment')
+@Controller('payments')
 @UseGuards(JwtAuthGuard)
 export class PaymentController {
 	constructor(private paymentService: PaymentService) {}
@@ -37,9 +36,7 @@ export class PaymentController {
 
 	@Roles(ROLE.PARTNER, ROLE.ADMIN)
 	@Get(':id/details')
-	async getPaymentDetails(
-		@Param('id', ParseIntPipe) id: number
-	): Promise<Payment> {
+	async getPaymentDetails(@Param('id') id: string): Promise<Payment> {
 		return await this.paymentService.getPaymentDetails(id);
 	}
 
@@ -56,26 +53,26 @@ export class PaymentController {
 	@Post(':id/update')
 	async updatePayment(
 		@Body(ValidationPipe) updatePaymentDto: UpdatePaymentDto,
-		@Param('id', ParseIntPipe) id: number
+		@Param('id') id: string
 	): Promise<Payment> {
 		return await this.paymentService.updatePayment(id, updatePaymentDto);
 	}
 
 	@Roles(ROLE.ADMIN, ROLE.PARTNER)
 	@Post(':id/remove')
-	async removePayment(@Param('id', ParseIntPipe) id: number): Promise<string> {
+	async removePayment(@Param('id') id: string): Promise<string> {
 		return await this.paymentService.removePayment(id);
 	}
 
 	@Roles(ROLE.ADMIN)
 	@Post(':id/restore')
-	async restorePayment(@Param('id', ParseIntPipe) id: number): Promise<string> {
+	async restorePayment(@Param('id') id: string): Promise<string> {
 		return await this.paymentService.restorePayment(id);
 	}
 
 	@Roles(ROLE.ADMIN)
 	@Post(':id/delete')
-	async deletePayment(@Param('id', ParseIntPipe) id: number): Promise<string> {
+	async deletePayment(@Param('id') id: string): Promise<string> {
 		return await this.paymentService.deletePayment(id);
 	}
 }
