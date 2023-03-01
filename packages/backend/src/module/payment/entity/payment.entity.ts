@@ -9,9 +9,10 @@ import {
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {PAYMENT_STATUS} from '../type/payement.type';
-import {ADMIN_KEY} from '~contants/relation';
+import {ACCOUNT_RELATION} from '~contants/relation';
 import {Exclude} from 'class-transformer';
 import {generateId} from '~util/generate';
+import {Account} from '~module/account/entity/account.entity';
 
 @Entity({name: 'payments'})
 export class Payment extends BaseEntity {
@@ -66,12 +67,12 @@ export class Payment extends BaseEntity {
 	@ApiProperty()
 	status: PAYMENT_STATUS;
 
-	// @ManyToOne(() => Admin, {cascade: true})
-	// @JoinColumn({name: 'admin_id'})
-	// [ADMIN_KEY]: Admin;
-
 	@BeforeInsert()
 	setId() {
 		this.id = generateId('BL');
 	}
+
+	@ManyToOne(() => Account, {cascade: true})
+	@JoinColumn({name: 'accountId'})
+	[ACCOUNT_RELATION]: Account;
 }

@@ -10,22 +10,23 @@ import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {ACCOUNT_STATUS, ROLE_STATUS} from '../type/account.type';
 import {
-	ACCOUNT_KEY,
-	NEWS_KEY,
-	ORDER_KEY,
-	ADMIN_KEY,
-	PAYMENT_KEY,
-	PRODUCT_KEY,
-	MESSAGE_RECEIVER_KEY,
-	RECEIVER_KEY,
-	SENDER_KEY,
-	MESSAGE_SENDER_KEY,
+	ACCOUNT_RELATION,
+	ORDER_RELATION,
+	PAYMENT_RELATION,
+	PRODUCT_RELATION,
+	MESSAGE_RECEIVER_RELATION,
+	RECEIVER_RELATION,
+	SENDER_RELATION,
+	MESSAGE_SENDER_RELATION,
+	BLOG_RELATION,
 } from '~contants/relation';
 
 import {Payment} from '~module/payment/entity/payment.entity';
 import {Order} from '~module/orders/entity/order.entity';
 import {Message} from '~module/message/entity/message.entity';
 import {generateId} from '~util/generate';
+import {Blog} from '~module/blog/entity/blog.entity';
+import {Product} from '~module/product/entity/product.entity';
 
 @Entity({name: 'accounts'})
 export class Account extends BaseEntity {
@@ -36,9 +37,9 @@ export class Account extends BaseEntity {
 	@ApiProperty()
 	id: string;
 
-	@Column({length: 50, nullable: false})
+	@Column({length: 200, nullable: false})
 	@ApiProperty()
-	nickname: string;
+	fullName: string;
 
 	@Column({length: 200, nullable: false})
 	@ApiProperty()
@@ -92,29 +93,29 @@ export class Account extends BaseEntity {
 	@ApiProperty()
 	role: ROLE_STATUS;
 
-	// @OneToOne(() => Account, (account) => account[ADMIN_KEY])
-	// [ACCOUNT_KEY]: Account;
-
-	// @OneToMany(() => News, (news) => news.id)
-	// [NEWS_KEY]: News[];
-
-	// @OneToMany(() => Product, (product) => product[ADMIN_KEY])
-	// [PRODUCT_KEY]: Product[];
-
-	// @OneToMany(() => Payment, (payment) => payment[ADMIN_KEY])
-	// [PAYMENT_KEY]: Payment[];
-
-	// @OneToMany(() => Order, (order) => order[ADMIN_KEY])
-	// [ORDER_KEY]: Order[];
-
-	// @OneToMany(() => Message, (message) => message[RECEIVER_KEY])
-	// [MESSAGE_RECEIVER_KEY]: Message[];
-
-	// @OneToMany(() => Message, (message) => message[SENDER_KEY])
-	// [MESSAGE_SENDER_KEY]: Message[];
-
 	@BeforeInsert()
 	setId() {
 		this.id = generateId('BL');
 	}
+
+	@OneToOne(() => Account, (account) => account[ACCOUNT_RELATION])
+	[ACCOUNT_RELATION]: Account;
+
+	@OneToMany(() => Blog, (blog) => blog[ACCOUNT_RELATION])
+	[BLOG_RELATION]: Blog[];
+
+	@OneToMany(() => Message, (message) => message[RECEIVER_RELATION])
+	[MESSAGE_RECEIVER_RELATION]: Message[];
+
+	@OneToMany(() => Message, (message) => message[SENDER_RELATION])
+	[MESSAGE_SENDER_RELATION]: Message[];
+
+	@OneToMany(() => Product, (product) => product[ACCOUNT_RELATION])
+	[PRODUCT_RELATION]: Product[];
+
+	@OneToMany(() => Order, (order) => order[ACCOUNT_RELATION])
+	[ORDER_RELATION]: Order[];
+
+	@OneToMany(() => Payment, (payment) => payment[ACCOUNT_RELATION])
+	[PAYMENT_RELATION]: Payment[];
 }

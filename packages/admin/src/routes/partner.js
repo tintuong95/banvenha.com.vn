@@ -17,73 +17,69 @@ import ProductCreate from '../pages/partner/Product/ProductCreate';
 import ProductList from '../pages/partner/Product/ProductList';
 import ProductUpdate from '../pages/partner/Product/ProductUpdate';
 
-export const partnerRoutes = {
-	path: '/',
-	element: <MainLayout />,
-	children: [
-		{
-			path: '/',
-			element: <DashBoard />,
-		},
-		{
-			path: '/products',
-			element: <ProductList />,
-		},
-		{
-			path: '/product/create',
-			element: <ProductCreate />,
-		},
-		{
-			path: '/product/:id/update',
-			element: <ProductUpdate />,
-		},
-		{
-			path: '/news',
-			element: <NewsList />,
-		},
-		{
-			path: '/news/create',
-			element: <NewsCreate />,
-		},
-		{
-			path: '/news/:id/update',
-			element: <NewsUpdate />,
-		},
-		{
-			path: '/news/:id/details',
-			element: <NewsDetails />,
-		},
-		{
-			path: '/orders',
-			element: <OrderList />,
-		},
-		{
-			path: '/order/:id/details',
-			element: <OrderDetails />,
-		},
-		{
-			path: '/partners',
-			element: <PartnerList />,
-		},
-		{
-			path: '/messages',
-			element: <MessageList />,
-		},
-		{
-			path: '/about',
-			element: <About />,
-		},
-		{
-			path: '/account/details',
-			element: <AccountDetails />,
-		},
-		{
-			path: '/payments',
-			element: <PaymentList />,
-		},
-		{
-			path: '/payment/:id/details',
-			element: <PaymentDetails />,
-		},
-	],
-};
+export const partnerRoutes = [
+	{
+		path: '/',
+		element: <DashBoard />,
+	},
+	{
+		path: '/products',
+		element: <ProductList />,
+	},
+	{
+		path: '/product/create',
+		element: <ProductCreate />,
+	},
+	{
+		path: '/product/:id/update',
+		element: <ProductUpdate />,
+	},
+	{
+		path: '/news',
+		element: <NewsList />,
+	},
+	{
+		path: '/news/create',
+		element: <NewsCreate />,
+	},
+	{
+		path: '/news/:id/update',
+		element: <NewsUpdate />,
+	},
+	{
+		path: '/news/:id/details',
+		element: <NewsDetails />,
+	},
+	{
+		path: '/orders',
+		element: <OrderList />,
+	},
+	{
+		path: '/order/:id/details',
+		element: <OrderDetails />,
+	},
+	{
+		path: '/partners',
+		element: <PartnerList />,
+	},
+	{
+		path: '/messages',
+		element: <MessageList />,
+	},
+	{
+		path: '/about',
+		element: <About />,
+	},
+	{
+		path: '/account/details',
+		element: <AccountDetails />,
+	},
+	{
+		path: '/payments',
+		element: <PaymentList />,
+	},
+	{
+		path: '/payment/:id/details',
+		element: <PaymentDetails />,
+	},
+];

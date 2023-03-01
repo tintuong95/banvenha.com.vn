@@ -5,7 +5,7 @@ import {CreateBlogGroupDto, UpdateBlogGroupDto} from './dto/blogGroup.dto';
 import {BlogGroup} from './entity/blogGroup.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
-import {NEWS_KEY} from '~contants/relation';
+import {BLOG_RELATION} from '~contants/relation';
 
 @Injectable()
 export class BlogGroupService {
@@ -26,7 +26,7 @@ export class BlogGroupService {
 		try {
 			const result = await this.blogGroupRepository.findOne({
 				where: {id},
-				relations: [NEWS_KEY],
+				relations: [BLOG_RELATION],
 			});
 			if (!result)
 				throw new NotFoundException('BlogGroup Id ' + id + ' Not Found !');

@@ -9,11 +9,13 @@ import {
 } from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
-import {ADMIN_KEY, PRODUCT_KEY} from '~contants/relation';
+import {ACCOUNT_RELATION, PRODUCT_RELATION} from '~contants/relation';
 
 import {Exclude} from 'class-transformer';
 import {generateId} from '~util/generate';
 import {ORDER_STATUS} from '../type/order.type';
+import {Account} from '~module/account/entity/account.entity';
+import {Product} from '~module/product/entity/product.entity';
 
 @Entity({name: 'orders'})
 export class Order extends BaseEntity {
@@ -74,16 +76,16 @@ export class Order extends BaseEntity {
 	@ApiProperty()
 	status: ORDER_STATUS;
 
-	// @OneToOne(() => Product, {cascade: true})
-	// @JoinColumn({name: 'product_id'})
-	// [PRODUCT_KEY]: Product;
-
-	// @ManyToOne(() => Admin, {cascade: true})
-	// @JoinColumn({name: 'admin_id'})
-	// [ADMIN_KEY]: Admin;
-
 	@BeforeInsert()
 	setId() {
 		this.id = generateId('BL');
 	}
+
+	@ManyToOne(() => Account, {cascade: true})
+	@JoinColumn({name: 'accountId'})
+	[ACCOUNT_RELATION]: Account;
+
+	@OneToOne(() => Product, {cascade: true})
+	@JoinColumn({name: 'productId'})
+	[PRODUCT_RELATION]: Product;
 }

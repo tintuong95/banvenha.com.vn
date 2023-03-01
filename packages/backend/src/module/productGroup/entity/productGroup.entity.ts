@@ -8,10 +8,11 @@ import {
 } from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
-import {GROUP_PRODUCT_KEY, PRODUCT_KEY} from '~contants/relation';
+import {PRODUCT_GROUP_RELATION, PRODUCT_RELATION} from '~contants/relation';
 // import {Product} from '~module/products/entity/product.entity';
 import createSlug, {handleSlug} from '~util/createSlug';
 import {generateId} from '~util/generate';
+import {Product} from '~module/product/entity/product.entity';
 
 @Entity({name: 'product_groups'})
 export class ProductGroup extends BaseEntity {
@@ -47,11 +48,11 @@ export class ProductGroup extends BaseEntity {
 		this.slug = createSlug(this.title, true);
 	}
 
-	// @OneToMany(() => Product, (product) => product[GROUP_PRODUCT_KEY])
-	// [PRODUCT_KEY]: Product[];
-
 	@BeforeInsert()
 	setId() {
 		this.id = generateId('BL');
 	}
+
+	@OneToMany(() => Product, (product) => product[PRODUCT_GROUP_RELATION])
+	[PRODUCT_RELATION]: Product[];
 }

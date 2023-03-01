@@ -8,11 +8,12 @@ import {
 } from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
-import {ADMIN_KEY} from '~contants/relation';
+import {ACCOUNT_RELATION} from '~contants/relation';
 
 import * as bcrypt from 'bcrypt';
 import {Exclude} from 'class-transformer';
 import {generateId} from '~util/generate';
+import {Account} from '~module/account/entity/account.entity';
 
 @Entity({name: 'Verified'})
 export class Verified extends BaseEntity {
@@ -46,9 +47,6 @@ export class Verified extends BaseEntity {
 	@Exclude()
 	password: string;
 
-	// @OneToOne(() => Admin, {cascade: true})
-	// @JoinColumn({name: 'admin_id', referencedColumnName: 'id'})
-	// [ADMIN_KEY]: Admin;
 	@BeforeInsert()
 	setId() {
 		this.id = generateId('BL');
@@ -65,4 +63,8 @@ export class Verified extends BaseEntity {
 	comparePassword(attempt: string): boolean {
 		return bcrypt.compareSync(attempt, this.password);
 	}
+
+	@OneToOne(() => Account, {cascade: true})
+	@JoinColumn({name: 'accountId', referencedColumnName: 'id'})
+	[ACCOUNT_RELATION]: Account;
 }

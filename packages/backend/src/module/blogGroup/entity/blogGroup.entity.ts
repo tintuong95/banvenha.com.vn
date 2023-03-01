@@ -9,9 +9,10 @@ import {
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 // import {News} from '~module/news/entity/news.entity';
-import {NEWS_GROUP_KEY, NEWS_KEY} from '~contants/relation';
+import {BLOG_GROUP_RELATION, BLOG_RELATION} from '~contants/relation';
 import createSlug from '~util/createSlug';
 import {generateId} from '~util/generate';
+import {Blog} from '~module/blog/entity/blog.entity';
 
 @Entity({name: 'blog_groups'})
 export class BlogGroup extends BaseEntity {
@@ -37,8 +38,6 @@ export class BlogGroup extends BaseEntity {
 	@ApiProperty()
 	slug: string;
 
-	// @OneToMany(() => News, (news) => news[NEWS_GROUP_KEY])
-	// [NEWS_KEY]: News[];
 	@BeforeInsert()
 	setId() {
 		this.id = generateId('BL');
@@ -53,4 +52,7 @@ export class BlogGroup extends BaseEntity {
 	updateSlug() {
 		this.slug = createSlug(this.title, true);
 	}
+
+	@OneToMany(() => Blog, (blog) => blog[BLOG_GROUP_RELATION])
+	[BLOG_RELATION]: Blog[];
 }

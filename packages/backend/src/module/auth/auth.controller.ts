@@ -7,10 +7,7 @@ import {
 	Body,
 	ForbiddenException,
 } from '@nestjs/common';
-import {
-	CreateVerifiedDto,
-	SignInVerifiedDto,
-} from '~module/verified/dto/verified.dto';
+import {SignInDto, SignUpDto} from '~module/verified/dto/verified.dto';
 import {AuthService} from './auth.service';
 import {JwtAuthGuard} from './jwt-auth.guard';
 
@@ -19,13 +16,13 @@ export class AppController {
 	constructor(private authService: AuthService) {}
 
 	@Post('login')
-	async login(@Body() signInVerifiedDto: SignInVerifiedDto) {
-		return this.authService.signInVerified(signInVerifiedDto);
+	async login(@Body() signInDto: SignInDto) {
+		return this.authService.signInVerified(signInDto);
 	}
 
 	@Post('signup')
-	async signup(@Body() createVerifiedDto: CreateVerifiedDto) {
-		return this.authService.signUpVerified(createVerifiedDto);
+	async signup(@Body() signUpDto: SignUpDto) {
+		return this.authService.signUpVerified(signUpDto);
 	}
 
 	@UseGuards(JwtAuthGuard)

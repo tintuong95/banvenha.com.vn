@@ -9,9 +9,10 @@ import {
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {MESSAGE_STATUS} from '../type/message.type';
-import {RECEIVER_KEY, SENDER_KEY} from '~contants/relation';
+import {RECEIVER_RELATION, SENDER_RELATION} from '~contants/relation';
 import {Exclude} from 'class-transformer';
 import {generateId} from '~util/generate';
+import {Account} from '~module/account/entity/account.entity';
 
 @Entity({name: 'messages'})
 export class Message extends BaseEntity {
@@ -60,13 +61,13 @@ export class Message extends BaseEntity {
 	@ApiProperty()
 	status: MESSAGE_STATUS;
 
-	// @ManyToOne(() => Admin, {cascade: true})
-	// @JoinColumn({name: 'receiver_id'})
-	// [RECEIVER_KEY]: Admin;
+	@ManyToOne(() => Account, {cascade: true})
+	@JoinColumn({name: 'receiverId'})
+	[RECEIVER_RELATION]: Account;
 
-	// @ManyToOne(() => Admin, {cascade: true})
-	// @JoinColumn({name: 'sender_id'})
-	// [SENDER_KEY]: Admin;
+	@ManyToOne(() => Account, {cascade: true})
+	@JoinColumn({name: 'senderId'})
+	[SENDER_RELATION]: Account;
 
 	@BeforeInsert()
 	setId() {

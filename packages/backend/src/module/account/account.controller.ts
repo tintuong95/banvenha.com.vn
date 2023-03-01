@@ -40,14 +40,14 @@ export class AccountController {
 		return await this.accountService.getAccountDetails(id);
 	}
 
-	@Post(':id/update')
-	@Roles(ROLE.ADMIN)
-	async updateAccount(
-		@Body(ValidationPipe) updateAccountDto: UpdateAccountDto,
-		@Param('id') id: string
-	): Promise<Account> {
-		return await this.accountService.updateAccount(id, updateAccountDto);
-	}
+	// @Post(':id/update')
+	// @Roles(ROLE.ADMIN)
+	// async updateAccount(
+	// 	@Body(ValidationPipe) updateAccountDto: UpdateAccountDto,
+	// 	@Param('id') id: string
+	// ): Promise<Account> {
+	// 	return await this.accountService.updateAccount(id, updateAccountDto);
+	// }
 
 	@Post(':id/remove')
 	@Roles(ROLE.ADMIN)

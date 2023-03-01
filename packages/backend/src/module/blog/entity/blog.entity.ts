@@ -7,17 +7,26 @@ import {
 	BeforeUpdate,
 	PrimaryGeneratedColumn,
 	PrimaryColumn,
+	OneToMany,
 } from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {NEWS_STATE, NEWS_STATUS} from '../type/blog.type';
 
-import {NEWS_GROUP_KEY, ADMIN_KEY} from '~contants/relation';
+import {
+	ACCOUNT_RELATION,
+	BLOG_GROUP_RELATION,
+	BLOG_RELATION,
+	BLOG_TAG_RE_RELATION,
+} from '~contants/relation';
 // import {NewsGroup} from '~module/news-groups/entity/news-group.entity';
 // import {Admin} from '~module/admin/entity/admin.entity';
 import {Exclude} from 'class-transformer';
 import createSlug from '~util/createSlug';
 import {generateId} from '~util/generate';
+import {BlogGroup} from '~module/blogGroup/entity/blogGroup.entity';
+import {BlogTagRelation} from '~module/blogTagRelation/entity/bogTagRelation.entity';
+import {Account} from '~module/account/entity/account.entity';
 
 @Entity({name: 'blogs'})
 export class Blog extends BaseEntity {
@@ -105,17 +114,6 @@ export class Blog extends BaseEntity {
 	@Exclude()
 	groupId: string;
 
-	// @ManyToOne(() => Admin, {cascade: true})
-	// @JoinColumn({name: 'creator_id', referencedColumnName: 'id'})
-	// [ADMIN_KEY]: Admin;
-
-	// @ManyToOne(() => NewsGroup, {cascade: true})
-	// @JoinColumn({name: 'group_id', referencedColumnName: 'id'})
-	// [NEWS_GROUP_KEY]: NewsGroup;
-
-	// @OneToMany(() => NewsImage, (newsImage) => newsImage.id)
-	// [NEWS_IMAGE_LIST_KEY]: NewsImage[];
-
 	@BeforeInsert()
 	setId() {
 		this.id = generateId('BL');
@@ -130,4 +128,18 @@ export class Blog extends BaseEntity {
 	updateSlug() {
 		this.slug = createSlug(this.title);
 	}
+
+	@ManyToOne(() => BlogGroup, {cascade: true})
+	@JoinColumn({name: 'groupId', referencedColumnName: 'id'})
+	[BLOG_GROUP_RELATION]: BlogGroup;
+
+	@OneToMany(
+		() => BlogTagRelation,
+		(blogTagRelation) => blogTagRelation[BLOG_RELATION]
+	)
+	[BLOG_TAG_RE_RELATION]: BlogTagRelation[];
+
+	@ManyToOne(() => Account, {cascade: true})
+	@JoinColumn({name: 'creatorId', referencedColumnName: 'id'})
+	[ACCOUNT_RELATION]: Account;
 }

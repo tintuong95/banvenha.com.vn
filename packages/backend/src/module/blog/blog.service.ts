@@ -5,7 +5,7 @@ import {CreateBlogDto, UpdateBlogDto} from './dto/blog.dto';
 import {Blog} from './entity/blog.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
-import {ADMIN_KEY, NEWS_GROUP_KEY, PARTNER_KEY} from '~contants/relation';
+import {ACCOUNT_RELATION, BLOG_GROUP_RELATION} from '~contants/relation';
 import {handleQuery, pagination} from '~util/pagination';
 import {Request} from 'express';
 import {findOptionWhere} from '~util/query';
@@ -32,7 +32,7 @@ export class BlogService {
 
 		const result = await this.blogRepository.findAndCount({
 			where: newQuery,
-			relations: [ADMIN_KEY, NEWS_GROUP_KEY],
+			relations: [ACCOUNT_RELATION, BLOG_GROUP_RELATION],
 			take,
 			skip,
 			withDeleted: user.role === ROLE.ADMIN,
@@ -43,7 +43,7 @@ export class BlogService {
 	async getBlogDetails(id: string): Promise<Blog | any> {
 		const result = await this.blogRepository.findOne({
 			where: {id},
-			relations: [ADMIN_KEY, NEWS_GROUP_KEY],
+			relations: [ACCOUNT_RELATION, BLOG_GROUP_RELATION],
 		});
 		if (!result) throw new NotFoundException('Blog Id ' + id + ' Not Found !');
 		return result;
@@ -52,7 +52,7 @@ export class BlogService {
 	async getBlogSlugDetails(slug: string): Promise<Blog | any> {
 		const result = await this.blogRepository.findOne({
 			where: {slug: slug},
-			relations: [ADMIN_KEY, NEWS_GROUP_KEY],
+			relations: [ACCOUNT_RELATION, BLOG_GROUP_RELATION],
 		});
 		if (!result)
 			throw new NotFoundException('Blog Slug ' + slug + ' Not Found !');

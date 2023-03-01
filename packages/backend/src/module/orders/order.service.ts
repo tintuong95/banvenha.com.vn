@@ -7,7 +7,7 @@ import {Repository} from 'typeorm';
 import * as _ from 'lodash';
 import {handleQuery, pagination} from '~util/pagination';
 import {findOptionWhere} from '~util/query';
-import {ADMIN_KEY, PRODUCT_KEY} from '~contants/relation';
+import {ACCOUNT_RELATION, PRODUCT_RELATION} from '~contants/relation';
 import {Request} from 'express';
 import {UserDto} from '~shared/user.dto';
 import {ROLE} from '~contants/role';
@@ -35,7 +35,7 @@ export class OrderService {
 
 		const result = await this.orderRepository.findAndCount({
 			where: newQuery,
-			relations: [ADMIN_KEY, PRODUCT_KEY],
+			relations: [ACCOUNT_RELATION, PRODUCT_RELATION],
 			take,
 			skip,
 			withDeleted: user.role === ROLE.ADMIN,
@@ -46,7 +46,7 @@ export class OrderService {
 	async getOrderDetails(id: string): Promise<Order | any> {
 		const result = await this.orderRepository.findOne({
 			where: {id},
-			relations: [ADMIN_KEY, PRODUCT_KEY],
+			relations: [ACCOUNT_RELATION, PRODUCT_RELATION],
 		});
 		if (!result) throw new NotFoundException('Order Id ' + id + ' Not Found !');
 		return result;

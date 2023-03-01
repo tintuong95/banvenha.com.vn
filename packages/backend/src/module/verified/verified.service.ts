@@ -1,60 +1,43 @@
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {
-	CreateVerifiedDto,
-	SignInVerifiedDto,
-	UpdateVerifiedDto,
-} from './dto/verified.dto';
+import {SignInDto, SignUpDto} from './dto/verified.dto';
 import {Verified} from './entity/verified.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
-import {ADMIN_KEY} from '~contants/relation';
-import {instanceToInstance, instanceToPlain} from 'class-transformer';
+import {
+	instanceToInstance,
+	instanceToPlain,
+	plainToInstance,
+} from 'class-transformer';
+import {ACCOUNT_RELATION} from '~contants/relation';
+import {AccountChildService} from '~module/account/auth/account.auth.service';
+import {CreateAccountDto} from '~module/account/dto/account.dto';
 
 @Injectable()
 export class VerifiedService {
 	constructor(
 		@InjectRepository(Verified)
-		private verifiedRepository: Repository<Verified>
+		private verifiedRepository: Repository<Verified>,
+		private accountChildService: AccountChildService
 	) {}
 
-	// async getAllVerifieds(): Promise<any> {
-	// 	return await this.verifiedRepository.find();
-	// }
-
-	// async getVerifiedDetails(id: string): Promise<Verified | any> {
-	// 	const result = await this.verifiedRepository.findOne({
-	// 		where: {id},
-	// 	});
-	// 	if (!result)
-	// 		throw new NotFoundException('Verified Id ' + id + ' Not Found !');
-	// 	return result;
-	// }
-
-	async signUp(createVerifiedDto: CreateVerifiedDto): Promise<Verified> {
-		const verified = this.verifiedRepository.create(createVerifiedDto);
+	async signUp(signUpDto: SignUpDto): Promise<Verified> {
+		const {password, username} = signUpDto;
+		const newAccount = plainToInstance(CreateAccountDto, signUpDto);
+		const createAccount = await this.accountChildService.createAccount(
+			newAccount
+		);
+		const newVerified = {password, username, accountId: createAccount.id};
+		const verified = this.verifiedRepository.create(newVerified);
 		const {id} = await this.verifiedRepository.save(verified);
+
 		const result = await this.verifiedRepository.findOne({
 			where: {id},
-			// relations: [ADMIN_KEY],
+			relations: [ACCOUNT_RELATION],
 		});
 		return instanceToInstance(result);
 	}
-
-	// async updateVerified(
-	// 	id: number,
-	// 	updateVerifiedDto: UpdateVerifiedDto
-	// ): Promise<Verified | any> {
-	// 	const result = await this.verifiedRepository.findOne({where: {id}});
-	// 	if (!result)
-	// 		throw new NotFoundException('Verified Id ' + id + ' Not Found !');
-
-	// 	_(updateVerifiedDto).forEach((val, key) => {
-	// 		if (val) result[key] = val;
-	// 	});
-	// 	return this.verifiedRepository.save(result);
-	// }
 
 	async removeVerified(id: string): Promise<string> {
 		const result = await this.verifiedRepository.softDelete(id);
@@ -77,11 +60,11 @@ export class VerifiedService {
 		throw new NotFoundException('Verified Id ' + id + ' Not Found !');
 	}
 
-	async signIn(signInVerifiedDto: SignInVerifiedDto): Promise<any> {
-		const {username, password} = signInVerifiedDto;
+	async signIn(signInDto: SignInDto): Promise<any> {
+		const {username, password} = signInDto;
 		const result = await this.verifiedRepository.findOne({
 			where: {username},
-			// relations: [ADMIN_KEY],
+			relations: [ACCOUNT_RELATION],
 		});
 
 		if (!result)

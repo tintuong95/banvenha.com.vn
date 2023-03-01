@@ -54,7 +54,7 @@ export default function CreateStepFirst({
 			layout='horizontal'>
 			<Form.Item
 				label='Tên bài viết '
-				name='name'
+				name='title'
 				rules={[validateRequired(MESSAGE_REQUIRE_INPUT)]}
 				tooltip={{
 					title: 'Tooltip with customize icon',

@@ -5,12 +5,19 @@ import {
 	BeforeInsert,
 	BeforeUpdate,
 	PrimaryColumn,
+	ManyToOne,
+	JoinColumn,
 } from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
-import {GROUP_PRODUCT_KEY, PRODUCT_KEY} from '~contants/relation';
+import {
+	PRODUCT_RELATION,
+	PRODUCT_TAG_RELATION,
+	PRODUCT_TAG_RE_RELATION,
+} from '~contants/relation';
 import createSlug from '~util/createSlug';
 import {generateId} from '~util/generate';
+import {Product} from '~module/product/entity/product.entity';
 
 @Entity({name: 'product_tag_relation'})
 export class ProductTagRelation extends BaseEntity {
@@ -39,4 +46,12 @@ export class ProductTagRelation extends BaseEntity {
 	setId() {
 		this.id = generateId('BL');
 	}
+
+	@ManyToOne(() => Product, {cascade: true})
+	@JoinColumn({name: 'productId'})
+	[PRODUCT_RELATION]: Product;
+
+	@ManyToOne(() => ProductTagRelation, {cascade: true})
+	@JoinColumn({name: 'productTagId'})
+	[PRODUCT_TAG_RELATION]: ProductTagRelation;
 }

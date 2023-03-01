@@ -14,24 +14,24 @@ import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
 import {PRODUCT_STATUS} from '../type/product.type';
 import {
-	GROUP_PRODUCT_KEY,
-	ORDER_KEY,
-	ADMIN_KEY,
-	PRODUCT_DETAIL_KEY,
-	PRODUCT_FILE_KEY,
-	PRODUCT_KEY,
-	PRODUCT_IMAGES_KEY,
+	ORDER_RELATION,
+	PRODUCT_RELATION,
+	PRODUCT_GROUP_RELATION,
+	PRODUCT_TAG_RE_RELATION,
+	PRODUCT_PHOTO_LIST_RELATION,
+	ACCOUNT_RELATION,
 } from '~contants/relation';
 import {Order} from '~module/orders/entity/order.entity';
 import {Exclude} from 'class-transformer';
 import {generateId} from '~util/generate';
 import createSlug from '~util/createSlug';
+import {ProductGroup} from '~module/productGroup/entity/productGroup.entity';
+import {ProductTagRelation} from '~module/productTagRelation/entity/productTagRelation.entity';
+import {ProductPhotoList} from '~module/productPhotoList/entity/productPhotoList.entity';
+import {Account} from '~module/account/entity/account.entity';
 
 @Entity({name: 'products'})
 export class Product extends BaseEntity {
-	// @PrimaryGeneratedColumn('uuid')
-	// @ApiProperty()
-	// id: string;
 	@PrimaryColumn()
 	@ApiProperty()
 	id: string;
@@ -124,32 +124,10 @@ export class Product extends BaseEntity {
 	@ApiProperty()
 	sale: number;
 
-	@Column('text') //{array: true}
+	@Column('text')
 	@ApiProperty()
 	photoList: string;
 
-	// @ManyToOne(() => Admin, {cascade: true})
-	// @JoinColumn({name: 'creator_id', referencedColumnName: 'id'})
-	// [ADMIN_KEY]: Admin;
-
-	// @OneToOne(
-	// 	() => ProductDetails,
-	// 	(productDetails) => productDetails[PRODUCT_KEY]
-	// )
-	// [PRODUCT_DETAIL_KEY]: ProductDetails;
-
-	// @OneToOne(() => ProductFiles, (productFile) => productFile[PRODUCT_KEY])
-	// [PRODUCT_FILE_KEY]: ProductFiles;
-
-	// @ManyToOne(() => ProductGroup, {cascade: true})
-	// @JoinColumn({name: 'group_id'})
-	// [GROUP_PRODUCT_KEY]: ProductGroup;
-
-	// @OneToOne(() => Order, (order) => order[PRODUCT_KEY])
-	// [ORDER_KEY]: Order;
-
-	// @OneToMany(() => ProductImages, (images) => images[PRODUCT_KEY])
-	// [PRODUCT_IMAGES_KEY]: ProductImages;
 	@BeforeInsert()
 	setId() {
 		this.id = generateId('BL');
@@ -164,4 +142,27 @@ export class Product extends BaseEntity {
 	updateSlug() {
 		this.slug = createSlug(this.title);
 	}
+
+	@ManyToOne(() => ProductGroup, {cascade: true})
+	@JoinColumn({name: 'groupId'})
+	[PRODUCT_GROUP_RELATION]: ProductGroup;
+
+	@OneToMany(
+		() => ProductTagRelation,
+		(productTagRelation) => productTagRelation[PRODUCT_RELATION]
+	)
+	[PRODUCT_TAG_RE_RELATION]: ProductTagRelation;
+
+	@OneToMany(
+		() => ProductPhotoList,
+		(productPhotoList) => productPhotoList[PRODUCT_RELATION]
+	)
+	[PRODUCT_PHOTO_LIST_RELATION]: ProductPhotoList;
+
+	@ManyToOne(() => Account, {cascade: true})
+	@JoinColumn({name: 'creatorId', referencedColumnName: 'id'})
+	[ACCOUNT_RELATION]: Account;
+
+	@OneToOne(() => Order, (order) => order[PRODUCT_RELATION])
+	[ORDER_RELATION]: Order;
 }

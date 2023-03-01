@@ -70,7 +70,7 @@ const MainLayout = () => {
 					<Menu theme='light' mode='inline' className='p-2 '>
 						<Menu.Item>
 							<Link to={'/'} className='flex items-center gap-2'>
-								<BaseIcon color='#60a5fa' size={24}>
+								<BaseIcon color='#f43f5e' size={24}>
 									<IoHomeOutline />
 								</BaseIcon>
 								Trang chủ
@@ -79,7 +79,7 @@ const MainLayout = () => {
 					<Divider/>
 						<Menu.Item>
 							<Link to={'/products'} className='flex items-center gap-2'>
-								<BaseIcon color='#60a5fa' size={24}>
+								<BaseIcon color='#f43f5e' size={24}>
 									<RiProductHuntLine />
 								</BaseIcon>
 								Sản phẩm
@@ -87,7 +87,7 @@ const MainLayout = () => {
 						</Menu.Item>
 						<Menu.Item>
 							<Link to={'/news'} className='flex items-center gap-2'>
-								<BaseIcon color='#60a5fa' size={24}>
+								<BaseIcon color='#f43f5e' size={24}>
 									<BsNewspaper />
 								</BaseIcon>
 								Tin tức
@@ -97,7 +97,7 @@ const MainLayout = () => {
 						<Divider />
 						<Menu.Item>
 							<Link to={'/orders'} className='flex items-center gap-2'>
-								<BaseIcon color='#60a5fa' size={24}>
+								<BaseIcon color='#f43f5e' size={24}>
 									<FaOpencart />
 								</BaseIcon>
 								Đơn hàng
@@ -105,7 +105,7 @@ const MainLayout = () => {
 						</Menu.Item>
 						<Menu.Item>
 							<Link to={'/payments'} className='flex items-center gap-2'>
-								<BaseIcon color='#60a5fa' size={24}>
+								<BaseIcon color='#f43f5e' size={24}>
 									<MdOutlinePayment />
 								</BaseIcon>
 								Thanh toán
@@ -116,7 +116,7 @@ const MainLayout = () => {
 						{role == ROLE.ADMIN ? (
 							<Menu.Item>
 								<Link to={'/partners'} className='flex items-center gap-2'>
-									<BaseIcon color='#60a5fa' size={24}>
+									<BaseIcon color='#f43f5e' size={24}>
 										<MdGroups />
 									</BaseIcon>
 									Đối tác
@@ -125,7 +125,7 @@ const MainLayout = () => {
 						) : null}
 						<Menu.Item>
 							<Link to={'/messages'} className='flex items-center gap-2'>
-								<BaseIcon color='#60a5fa' size={24}>
+								<BaseIcon color='#f43f5e' size={24}>
 									<BiMessageSquareDots />
 								</BaseIcon>
 								Tin Nhắn

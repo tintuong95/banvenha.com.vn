@@ -9,7 +9,7 @@ import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
 import {handleQuery, pagination} from '~util/pagination';
 import {findOptionWhere} from '~util/query';
-import {ADMIN_KEY, PRODUCT_KEY} from '~contants/relation';
+import {ACCOUNT_RELATION, PRODUCT_RELATION} from '~contants/relation';
 import {ROLE} from '~contants/role';
 import {Request as RequestEx} from 'express';
 @Injectable()
@@ -34,7 +34,7 @@ export class PaymentService {
 
 		const result = await this.paymentRepository.findAndCount({
 			where: newQuery,
-			relations: [ADMIN_KEY],
+			relations: [ACCOUNT_RELATION],
 			take,
 			skip,
 			// withDeleted: user.role === ROLE.ADMIN,

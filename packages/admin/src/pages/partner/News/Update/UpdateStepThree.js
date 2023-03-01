@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons';
 import {createNewsApi, updateNews} from '../../../../apis/news';
 import {NEWS_STATE, NOTIFICATION_TYPE} from '../../../../contants/table';
-import {history} from '../../../../routes';
+import {history} from '../../../../routes/history';
 const {confirm} = Modal;
 const CreateStepThree = ({
 	stepPage,

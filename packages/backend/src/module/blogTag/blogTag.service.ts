@@ -5,7 +5,7 @@ import {CreateBlogTagDto, UpdateBlogTagDto} from './dto/blogTag.dto';
 import {BlogTag} from './entity/blogTag.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
-import {NEWS_KEY} from '~contants/relation';
+import {BLOG_RELATION} from '~contants/relation';
 
 @Injectable()
 export class BlogTagService {
@@ -26,7 +26,7 @@ export class BlogTagService {
 		try {
 			const result = await this.blogTagRepository.findOne({
 				where: {id},
-				relations: [NEWS_KEY],
+				relations: [BLOG_RELATION],
 			});
 			if (!result)
 				throw new NotFoundException('BlogTag Id ' + id + ' Not Found !');

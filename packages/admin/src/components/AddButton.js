@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {history} from '../routes';
+import {history} from '../routes/history';
 
 export default function AddButton({to}) {
 	const onClick = () => {
@@ -11,7 +11,7 @@ export default function AddButton({to}) {
 			role={'button'}
 			onClick={onClick}
 			aria-hidden='true'
-			className='border hover:cursor-pointer border-sky-500 border-dashed rounded-md p-8 bg-white text-center w-100'>
+			className='border hover:cursor-pointer  text-rose-600  text-lg border-rose-500 border-dashed rounded-md p-8 bg-white text-center w-100'>
 			THÊM MỚI 
 		</div>
 	);

@@ -1,10 +1,10 @@
-import {Alert, Button, Form, Input} from 'antd';
+import {Alert, Button, Form, Input, Watermark} from 'antd';
 import React, {useEffect} from 'react';
 import {LoginOutlined} from '@ant-design/icons';
 import {useDispatch, useSelector} from 'react-redux';
 import {loginAction} from '../../stores/actions/auth';
 import {Controller, useForm} from 'react-hook-form';
-import {useNavigate} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {LockOutlined, MailOutlined} from '@ant-design/icons';
 import { validateRegex, validateRequired } from '../../utils/validate';
 import { regexEmail } from '../../utils/pattern';
@@ -20,8 +20,8 @@ export default function Login() {
 
 	const navigate = useNavigate();
 
-	const onFinish = handleSubmit(({email, password}) => {
-		dispatch(loginAction({email, password}));
+	const onFinish = handleSubmit(({username, password}) => {
+		dispatch(loginAction({username, password}));
 	});
 	console.log("hihi")
 	useEffect(() => {
@@ -40,7 +40,7 @@ export default function Login() {
 	return (
 		<>
 			<section id='screen_one' className=' bg-gray-50 dark:bg-gray-900'>
-				<div className='flex flex-col  items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0'>
+				<div className='z-10 transform scale-90 flex flex-col  items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0'>
 					<img className='w-20  mr-2 animate-bounce ' src={Logo} alt='logo' />
 					<div
 						href='#d'
@@ -61,28 +61,25 @@ export default function Login() {
 								onFinish={onFinish}>
 								<div>
 									<label
-										htmlFor='email'
+										htmlFor='username'
 										className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>
 										Email
 									</label>
 
 									<Controller
-										name='email'
+										name='username'
 										control={control}
 										render={({field}) => (
 											<Form.Item
-												name='email'
+												name='username'
 												hasFeedback
-												rules={[
-													validateRequired(MESSAGE_REQUIRE.MAIL),
-													validateRegex(MESSAGE_TYPE.MAIL, regexEmail),
-												]}>
+												rules={[validateRequired(MESSAGE_REQUIRE.MAIL)]}>
 												<Input
 													placeholder='Vui lòng nhập'
 													className='border-rose-400 '
 													{...field}
 													size='large'
-													prefix={<MailOutlined className='mr-3' />}
+													prefix={<MailOutlined className='mr-3 text-gray-300' />}
 												/>
 											</Form.Item>
 										)}
@@ -106,7 +103,7 @@ export default function Login() {
 												<Input
 													placeholder='Vui lòng nhập'
 													className='border-rose-400 '
-													prefix={<LockOutlined className='mr-3' />}
+													prefix={<LockOutlined className='mr-3 text-gray-300' />}
 													{...field}
 													size='large'
 												/>
@@ -155,25 +152,17 @@ export default function Login() {
 								</Button>
 								<p className='text-sm font-light text-gray-500 dark:text-gray-400 '>
 									Bạn muốn đăng ký ? &nbsp;
-									<a
-										href='#s'
+									<Link
+										to={'/signup'}
 										className='font-medium text-primary-600 hover:underline dark:text-primary-500'>
 										Đăng ký
-									</a>
+									</Link>
 								</p>
 							</Form>
 						</div>
 					</div>
 				</div>
 			</section>
-
-			{/* <div id="screen_two" className='w-screen  h-screen flex justify-center items-center '>
-				<div className='flex flex-col text-lg mb-10'>
-					<div>Hãy học như kẻ khờ dại</div>
-					<div>Và mơ về những thứ vĩ đại.</div>
-					<div className='text-sm text-end'>Ban Ki-moon</div>
-				</div>
-			</div> */}
 		</>
 	);
 }

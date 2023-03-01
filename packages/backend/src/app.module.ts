@@ -22,6 +22,7 @@ import {ProductGroupsModule} from '~module/productGroup/productGroup.module';
 import {ProductPhotoListsModule} from '~module/productPhotoList/productPhotoList.module';
 import {ProductTagsModule} from '~module/productTag/productTag.module';
 import {ProductTagRelationsModule} from '~module/productTagRelation/productTagRelation.module';
+import {AuthModule} from '~module/auth/auth.module';
 
 @Module({
 	imports: [
@@ -47,18 +48,20 @@ import {ProductTagRelationsModule} from '~module/productTagRelation/productTagRe
 		/**
 		 * import modules
 		 */
-		AccountModule,
+
+		AuthModule,
 		BlogModule,
-		BlogGroupModule,
-		BlogTagModule,
-		BlogTagRelationModule,
-		MessageModule,
 		OrderModule,
+		AccountModule,
+		BlogTagModule,
+		MessageModule,
 		PaymentModule,
 		ProductModule,
-		ProductGroupsModule,
-		ProductPhotoListsModule,
+		BlogGroupModule,
 		ProductTagsModule,
+		ProductGroupsModule,
+		BlogTagRelationModule,
+		ProductPhotoListsModule,
 		ProductTagRelationsModule,
 	],
 	controllers: [],

@@ -4,12 +4,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
-import {
-	ADMIN_KEY,
-	PARTNER_KEY,
-	RECEIVER_KEY,
-	SENDER_KEY,
-} from '~contants/relation';
+import {RECEIVER_RELATION, SENDER_RELATION} from '~contants/relation';
 import {UserDto} from '~shared/user.dto';
 import {Request} from 'express';
 import {handleQuery, pagination} from '~util/pagination';
@@ -37,7 +32,7 @@ export class ProductTagsService {
 	// 	if (isPartner) newQuery['receiver_id'] = user.id;
 	// 	const result = await this.productTagsRepository.findAndCount({
 	// 		where: newQuery,
-	// 		relations: [RECEIVER_KEY, SENDER_KEY],
+	// 		relations: [RECEIVER_RELATION, SENDER_RELATION],
 	// 		take,
 	// 		skip,
 	// 		withDeleted: user.role === ROLE.ADMIN,
@@ -48,7 +43,6 @@ export class ProductTagsService {
 	async getProductTagsDetails(id: string): Promise<ProductTags | any> {
 		const result = await this.productTagsRepository.findOne({
 			where: {id},
-			relations: [PARTNER_KEY, ADMIN_KEY],
 		});
 		if (!result)
 			throw new NotFoundException('ProductTags Id ' + id + ' Not Found !');

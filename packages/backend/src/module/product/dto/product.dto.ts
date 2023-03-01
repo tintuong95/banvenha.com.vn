@@ -61,7 +61,6 @@ export class CreateProductDto {
 	photoList: string;
 }
 
-
 // export class CreateProductAllFieldDto extends IntersectionType(
 // 	CreateProductDto,
 // 	CreateProductDetailsDto

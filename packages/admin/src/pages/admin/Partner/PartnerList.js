@@ -28,7 +28,7 @@ import {
 } from '@ant-design/icons';
 import {useEffect, useState} from 'react';
 import {useMitt} from 'react-mitt';
-import {getAccountListApi, removeAccountById} from '../../../apis/admin';
+import {getAccountListApi, removeAccountById} from '../../../apis/account';
 import {
 	NOTIFICATION_TYPE,
 	PARTNER_STATUS,
@@ -43,7 +43,7 @@ const PartnerList = () => {
 	const {emitter} = useMitt();
 	const [visible, setVisible] = useState(true);
 	const [visibleModal, setVisibleModal] = useState(false);
-	const [message,setMessage] = useState({
+	const [message, setMessage] = useState({
 		title: '',
 		content: '',
 	});
@@ -147,7 +147,12 @@ const PartnerList = () => {
 			render: (_, record) => (
 				<Space size='middle'>
 					<Tooltip placement='top' title={'Gửi tin nhắn'}>
-						<Button onClick={()=>{setVisibleModal(true)}} type='link' icon={<MessageOutlined />}></Button>
+						<Button
+							onClick={() => {
+								setVisibleModal(true);
+							}}
+							type='link'
+							icon={<MessageOutlined />}></Button>
 					</Tooltip>
 					<Tooltip placement='top' title={'Khóa sản phẩm'}>
 						<Button type='text' icon={<UnlockOutlined />}></Button>

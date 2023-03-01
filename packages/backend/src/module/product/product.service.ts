@@ -5,18 +5,7 @@ import {CreateProductDto, UpdateProductDto} from './dto/product.dto';
 import {Product} from './entity/product.entity';
 import * as _ from 'lodash';
 import {Repository} from 'typeorm';
-import {
-	ADMIN_KEY,
-	GROUP_PRODUCT_KEY,
-	PARTNER_KEY,
-	PRODUCT_DETAIL_KEY,
-	PRODUCT_FILE_KEY,
-	PRODUCT_IMAGES_KEY,
-} from '~contants/relation';
-
-import {Express} from 'express';
 import {plainToInstance} from 'class-transformer';
-
 import {handleQuery, pagination} from '~util/pagination';
 import {findOptionWhere} from '~util/query';
 import {Request} from 'express';
@@ -46,7 +35,6 @@ export class ProductService {
 
 		const result = await this.productRepository.findAndCount({
 			where: newQuery,
-			relations: [ADMIN_KEY, GROUP_PRODUCT_KEY],
 			take,
 			skip,
 			withDeleted: user.role === ROLE.ADMIN,
@@ -58,7 +46,6 @@ export class ProductService {
 	async getProductDetails(id: string): Promise<Product | any> {
 		const result = await this.productRepository.findOne({
 			where: {id},
-			relations: [ADMIN_KEY, PRODUCT_DETAIL_KEY, PRODUCT_IMAGES_KEY],
 		});
 		if (!result)
 			throw new NotFoundException('Product Id ' + id + ' Not Found !');
@@ -68,12 +55,6 @@ export class ProductService {
 	async getProductSlugDetails(slug: string): Promise<Product | any> {
 		const result = await this.productRepository.findOne({
 			where: {slug: slug},
-			relations: [
-				ADMIN_KEY,
-				PRODUCT_DETAIL_KEY,
-				PRODUCT_IMAGES_KEY,
-				GROUP_PRODUCT_KEY,
-			],
 		});
 		if (!result)
 			throw new NotFoundException('Product params ' + slug + ' Not Found !');

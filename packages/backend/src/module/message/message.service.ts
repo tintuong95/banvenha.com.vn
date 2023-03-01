@@ -5,12 +5,7 @@ import {CreateMessageDto, UpdateMessageDto} from './dto/message.dto';
 import {Message} from './entity/message.entity';
 import {Repository} from 'typeorm';
 import * as _ from 'lodash';
-import {
-	ADMIN_KEY,
-	PARTNER_KEY,
-	RECEIVER_KEY,
-	SENDER_KEY,
-} from '~contants/relation';
+import {RECEIVER_RELATION, SENDER_RELATION} from '~contants/relation';
 import {UserDto} from '~shared/user.dto';
 import {Request} from 'express';
 import {handleQuery, pagination} from '~util/pagination';
@@ -36,7 +31,7 @@ export class MessageService {
 		if (isPartner) newQuery['receiver_id'] = user.id;
 		const result = await this.messageRepository.findAndCount({
 			where: newQuery,
-			relations: [RECEIVER_KEY, SENDER_KEY],
+			relations: [RECEIVER_RELATION, SENDER_RELATION],
 			take,
 			skip,
 			withDeleted: user.role === ROLE.ADMIN,
@@ -47,7 +42,7 @@ export class MessageService {
 	async getMessageDetails(id: string): Promise<Message | any> {
 		const result = await this.messageRepository.findOne({
 			where: {id},
-			relations: [PARTNER_KEY, ADMIN_KEY],
+			relations: [SENDER_RELATION, RECEIVER_RELATION],
 		});
 		if (!result)
 			throw new NotFoundException('Message Id ' + id + ' Not Found !');

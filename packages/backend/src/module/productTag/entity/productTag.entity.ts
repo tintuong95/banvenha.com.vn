@@ -6,6 +6,7 @@ import {
 	BeforeInsert,
 	PrimaryColumn,
 	BeforeUpdate,
+	OneToMany,
 } from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
@@ -13,6 +14,11 @@ import {ApiProperty} from '@nestjs/swagger';
 import {Exclude} from 'class-transformer';
 import {generateId} from '~util/generate';
 import createSlug from '~util/createSlug';
+import {ProductTagRelation} from '~module/productTagRelation/entity/productTagRelation.entity';
+import {
+	PRODUCT_TAG_RELATION,
+	PRODUCT_TAG_RE_RELATION,
+} from '~contants/relation';
 
 @Entity({name: 'product_tags'})
 export class ProductTags extends BaseEntity {
@@ -52,4 +58,10 @@ export class ProductTags extends BaseEntity {
 	setId() {
 		this.id = generateId('BL');
 	}
+
+	@OneToMany(
+		() => ProductTagRelation,
+		(productTagRelation) => productTagRelation[PRODUCT_TAG_RELATION]
+	)
+	[PRODUCT_TAG_RE_RELATION]: ProductTagRelation;
 }

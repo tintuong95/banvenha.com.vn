@@ -1,6 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {history} from '../../routes';
-import {getProfileAction, loginAction} from '../actions/auth';
+import {history} from '../../routes/history';
+import {getProfileAction, loginAction, signupAction} from '../actions/auth';
+import {signupApi} from '../apis/auth';
 
 const initialState = {
 	isLogin: false, //bolean
@@ -61,6 +62,23 @@ export const authSlice = createSlice({
 		builder.addCase(getProfileAction.rejected, (state) => {
 			state.loading = false;
 			history.push('/login');
+		});
+
+		//state, action
+		builder.addCase(signupAction.fulfilled, (state, action) => {
+			const {self, accessToken} = action.payload.data;
+			localStorage.setItem('details', JSON.stringify(self));
+			localStorage.setItem('accessToken', accessToken);
+			localStorage.setItem('isLogin', JSON.stringify(true));
+			localStorage.setItem('role', JSON.stringify(self.role));
+			state.isLogin = true;
+			state.self = self;
+			state.role = self.role;
+			history.push('/');
+		});
+
+		builder.addCase(signupAction.rejected, (state) => {
+			state.loading = true;
 		});
 	},
 });

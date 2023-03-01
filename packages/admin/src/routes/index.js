@@ -1,31 +1,36 @@
-import {Router} from 'react-router-dom';
-import React, {useLayoutEffect} from 'react';
-import PropTypes from 'prop-types';
-import {createBrowserHistory} from 'history';
+import {ROLE} from '../contants/auth';
+import Login from '../pages/auth/Login';
+import Signup from '../pages/auth/Signup';
+import NotFound from '../pages/notfound';
+import {adminRoutes} from './admin';
+import {partnerRoutes} from './partner';
+import {Navigate, Outlet} from 'react-router-dom';
+import MainLayout from '../layouts/MainLayout';
 
-export const history = createBrowserHistory();
+export const handleRouter = (isLogin, role) => {
+	return [
+		{
+			path: '/',
+			element: !isLogin ? <Navigate to={'/login'} /> : <MainLayout />,
+			children: role === ROLE.ADMIN ? adminRoutes : partnerRoutes,
+		},
 
-export const CustomRouter = ({basename, children, history}) => {
-	const [state, setState] = React.useState({
-		action: history.action,
-		location: history.location,
-	});
+		{
+			path: '/login',
+			element: <Login />,
+		},
+		{
+			path: '/signup',
+			element: <Signup />,
+		},
 
-	useLayoutEffect(() => history.listen(setState), [history]);
-
-	return (
-		<Router
-			basename={basename}
-			location={state.location}
-			navigationType={state.action}
-			navigator={history}>
-			{children}
-		</Router>
-	);
-};
-
-CustomRouter.propTypes = {
-	basename: PropTypes.string,
-	children: PropTypes.node,
-	history: PropTypes.any,
+		{
+			path: '404',
+			element: <NotFound />,
+		},
+		{
+			path: '*',
+			element: <NotFound />,
+		},
+	];
 };

@@ -9,11 +9,11 @@ import './boostrap';
 import AppRouter from './App';
 import {Provider} from 'react-redux';
 import {store} from './stores';
-import {CustomRouter, history} from './routes';
 
 import {MittProvider} from 'react-mitt';
 import {ErrorBoundary} from './pages/error/ErrorBoundary';
 import {ConfigProvider} from 'antd';
+import { CustomRouter, history } from './routes/history';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -24,10 +24,10 @@ root.render(
 					<ConfigProvider
 						theme={{
 							token: {
-								// colorPrimary: '#f43f5e',
-								// colorPrimaryText: '#f43f5e',
-								// colorLink: '#f43f5e',
-								// colorLinkHover: '#e11d48',
+								colorPrimary: '#f43f5e',
+								colorPrimaryText: '#f43f5e',
+								colorLink: '#f43f5e',
+								colorLinkHover: '#e11d48',
 							},
 						}}>
 						<AppRouter />
