@@ -33,18 +33,18 @@ function PaymentDetails() {
 			<div className='my-3 flex flex-col gap-3'>
 				<div className='font-semibold'>THÔNG TIN ĐƠN HÀNG</div>
 				<div className='flex items-center gap-4'>
-					Mã đơn : <div className='font-semibold'>{detailsPayment?.code}</div>
+					Mã đơn : <div className='font-semibold'>{detailsPayment?.id}</div>
 				</div>
 				<div className='flex items-center gap-4'>
 					Ngày tạo :{' '}
 					<div className='font-semibold'>
-						{moment(detailsPayment?.updated_at).format('hh:mm DD/MM/YYYY')}
+						{moment(detailsPayment?.updatedAt).format('hh:mm DD/MM/YYYY')}
 					</div>
 				</div>
 				<div className='flex items-center gap-4'>
 					Số tiền :{' '}
 					<div className='font-semibold'>
-						{detailsPayment?.money.toLocaleString('vi-VN')} VND
+						{detailsPayment?.value.toLocaleString('vi-VN')} VND
 					</div>
 				</div>
 				<div className='flex items-center gap-4'>
@@ -62,15 +62,15 @@ function PaymentDetails() {
 				</div>
 				<div className='flex items-center gap-4'>
 					Tên ngân hàng :{' '}
-					<div className='font-semibold'>{detailsPayment?.bank_name}</div>
+					<div className='font-semibold'>{detailsPayment?.bankName}</div>
 				</div>
 				<div className='flex items-center gap-4'>
 					Số tài khoản :{' '}
-					<div className='font-semibold'>{detailsPayment?.bank_number}</div>
+					<div className='font-semibold'>{detailsPayment?.bankNumber}</div>
 				</div>
 				<div className='flex items-center gap-4'>
 					Mã giao dịch :{' '}
-					<div className='font-semibold'>{detailsPayment?.bank_transaction}</div>
+					<div className='font-semibold'>{detailsPayment?.bankTransaction}</div>
 				</div>
 			</div>
 			<Divider />

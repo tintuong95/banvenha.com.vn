@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {getProductDetails} from '../../../apis/product';
-import BaseStep from '../../../components/BaseStep';
+import BaseStep from '../../../components/step';
 import UpdateStepFirst from './Update/UpdateStepFirst';
-import UpdateStepFive from './Update/UpdateStepFive';
 import UpdateStepFour from './Update/UpdateStepFour';
 import UpdateStepThree from './Update/UpdateStepThree';
 import UpdateStepTwo from './Update/UpdateStepTwo';
@@ -86,17 +85,7 @@ export default function ProductUpdate() {
 					setDataProduct={setDataProduct}
 				/>
 			);
-		else if (stepPage == 5)
-			return (
-				<UpdateStepFive
-					onNextStep={onNextStep}
-					onPreviousStep={onPreviousStep}
-					stepPage={stepPage}
-					setStepPage={setStepPage}
-					dataProduct={dataProduct}
-					setDataProduct={setDataProduct}
-				/>
-			);
+	
 	};
 	useEffect(() => {
 		fetchProductDetails(id);

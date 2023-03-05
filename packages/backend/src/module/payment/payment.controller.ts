@@ -20,7 +20,7 @@ import {ROLE} from '~contants/role';
 import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
 
-@Controller('payments')
+@Controller('payment')
 @UseGuards(JwtAuthGuard)
 export class PaymentController {
 	constructor(private paymentService: PaymentService) {}

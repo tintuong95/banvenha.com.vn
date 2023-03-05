@@ -1,6 +1,15 @@
-FROM node:18-alpine
-WORKDIR /admin
+FROM node:17-alpine3.12
+
+EXPOSE 8000 9929 9230
+
+WORKDIR /build
+
+RUN npm install -g gatsby-cli
+
+COPY package*.json ./
+
 COPY . .
-RUN yarn install 
-CMD ["yarn", "start"]
-EXPOSE 3002
+
+RUN npm install
+
+CMD ["gatsby", "develop", "-H", "0.0.0.0" ]

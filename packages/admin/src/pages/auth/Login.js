@@ -100,7 +100,7 @@ export default function Login() {
 												name='password'
 												hasFeedback
 												rules={[validateRequired(MESSAGE_REQUIRE.PASSWORD)]}>
-												<Input
+												<Input.Password
 													placeholder='Vui lòng nhập'
 													className='border-rose-400 '
 													prefix={<LockOutlined className='mr-3 text-gray-300' />}

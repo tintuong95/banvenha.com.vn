@@ -24,11 +24,11 @@ export class MessageService {
 		user: UserDto
 	): Promise<any> {
 		const {skip, take, currentPage, perPage} = handleQuery(query);
-		const newQuery = findOptionWhere(query, ['name']);
+		const newQuery = findOptionWhere(query, ['title']);
 
 		const isPartner = user.role === ROLE.PARTNER;
 
-		if (isPartner) newQuery['receiver_id'] = user.id;
+		if (isPartner) newQuery['receiverId'] = user.id;
 		const result = await this.messageRepository.findAndCount({
 			where: newQuery,
 			relations: [RECEIVER_RELATION, SENDER_RELATION],

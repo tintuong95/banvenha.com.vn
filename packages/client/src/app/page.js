@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import TextAnimation from '../components/TextAnimation';
 import {getGroupProductList} from '../apis/product';
 import BaseSearch from '../components/BaseSearch';
+import Background from '../assets/images/4.png';
 
 export default async function Home() {
 	const productGroupPromise = getGroupProductList();
@@ -11,7 +12,7 @@ export default async function Home() {
 
 	const RenderProductGroupList = ({groups}) => {
 		return groups.map((item) => (
-			<BaseSection groupId={item.id} name={item.name} key={item.id} />
+			<BaseSection groupId={item.id} title={item.title} key={item.id} />
 		));
 	};
 

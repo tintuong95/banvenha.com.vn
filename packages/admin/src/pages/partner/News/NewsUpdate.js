@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
-import {getNewsDetailsApi, updateNews} from '../../../apis/news';
-import BaseStep from '../../../components/BaseStep';
+import {getBlogDetailsApi, updateBlog} from '../../../apis/news';
+import BaseStep from '../../../components/step';
 import UpdateStepFirst from './Update/UpdateStepFirst';
 import UpdateStepThree from './Update/UpdateStepThree';
 import UpdateStepTwo from './Update/UpdateStepTwo';
@@ -9,12 +9,12 @@ export default function NewsUpdate() {
 	const {id} = useParams();
 	const [stepPage, setStepPage] = useState(1);
 	const [dataNews, setDataNews] = useState({
-		name: null,
+		title: null,
 		description: null,
 		content: null,
-		group_id: null,
-		file: null,
-		state: null,
+		groupId: null,
+		photo: null,
+		published: null,
 	});
 
 	const onNextStep = () => {
@@ -27,7 +27,7 @@ export default function NewsUpdate() {
 	};
 
 	const fetchNewsDetails = (id) => {
-		getNewsDetailsApi(id)
+		getBlogDetailsApi(id)
 			.then((result) => {
 				setDataNews(result.data)
 				console.log(result);

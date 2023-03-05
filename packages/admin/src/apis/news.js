@@ -1,29 +1,29 @@
 import {axios} from '../config/axios';
 
-export const getNewsListApi = (params) => axios.get('/news/list', {params});
+export const getBlogListApi = (params) => axios.get('/blog/list', {params});
 
-export const getNewsGroupApi = () => axios.get('/newsGroup/list');
+export const getBlogGroupApi = () => axios.get('/blogGroup/list');
 
-export const removeNewsById = (id) => axios.post(`/news/${id}/remove`);
+export const removeBlogById = (id) => axios.post(`/blog/${id}/remove`);
 
-export const restoreNewsById = (id) => axios.post(`/news/${id}/restore`);
+export const restoreBlogById = (id) => axios.post(`/blog/${id}/restore`);
 
-export const updateNewsStatusByAdmin = (id, status) => {
-	return axios.post(`/news/${id}/status`, {status});
+export const updateBlogStatusByAdmin = (id, status) => {
+	return axios.post(`/blog/${id}/status`, {status});
 };
 
-export const updateNewstState = (id, state) =>
-	axios.post(`/news/${id}/update`, {
-		state,
+export const updateBlogtState = (id, published) =>
+	axios.post(`/blog/${id}/update`, {
+		published,
 	});
 
-export const createNewsApi = (data) => axios.post(`/news/create`, data);
+export const createBlogApi = (data) => axios.post(`/blog/create`, data);
 
 
-export const getNewsDetailsApi = (id) => axios.get(`/news/${id}/details`);
+export const getBlogDetailsApi = (id) => axios.get(`/blog/${id}/details`);
 
 
-export const updateNews = (id, data) => axios.post(`/news/${id}/update`, data);
+export const updateBlog = (id, data) => axios.post(`/blog/${id}/update`, data);
 
 
-export const countNewsApi = () => axios.get(`/news/count`);
+export const countBlogApi = () => axios.get(`/blog/count`);

@@ -29,7 +29,7 @@ export class CreateProductDto {
 	@Expose()
 	content: string;
 
-	@IsNumber()
+	@IsString()
 	@Expose()
 	groupId: string;
 
@@ -56,9 +56,14 @@ export class CreateProductDto {
 	@Expose()
 	sale: number;
 
+	@IsOptional()
 	@IsString()
 	@Expose()
-	photoList: string;
+	file: string;
+
+	// @IsString()
+	// @Expose()
+	// photoList: string;
 }
 
 // export class CreateProductAllFieldDto extends IntersectionType(

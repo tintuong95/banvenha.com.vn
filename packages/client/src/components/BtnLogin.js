@@ -19,9 +19,8 @@ function BtnLogin(props) {
 				<Link
 					href={'/login'}
 					type='text'
-					className='flex gap-2 items-center  py-1   border-2 border-white bg-white px-3 rounded '>
+					className='flex gap-2 items-center  py-1   border-2 border-gray-700 bg-gray-500 px-3 text-white  rounded-md shadow-md '>
 					ĐĂNG NHẬP
-					<BaseIcon width={20} icon={LoginIcon} name={'login icon'} />
 				</Link>
 			) : (
 				<Link href={{pathname: '/'}}>
@@ -29,7 +28,7 @@ function BtnLogin(props) {
 						<button
 							type='text'
 							className='flex gap-2 items-center  py-1   border-2 border-rose-500 shadow bg-rose-400 text-white px-3 rounded '>
-							<BaseIcon icon={UserIcon} name={'user icon'} />
+							{/* <BaseIcon icon={UserIcon} name={'user icon'} /> */}
 							{state.user.displayName}
 						</button>
 						<div className='z-10 dropdownHover hidden hover:block '>

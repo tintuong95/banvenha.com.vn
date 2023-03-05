@@ -13,7 +13,7 @@ import {
 	DatePicker,
 	QRCode,
 } from 'antd';
-import AddButton from '../../../components/AddButton';
+import ButtonAdd from '../../../components/button-add';
 import {
 	SearchOutlined,
 	DeleteOutlined,
@@ -31,21 +31,21 @@ import {
 } from '@ant-design/icons';
 import {useEffect, useState} from 'react';
 import {
-	NEWS_STATE,
-	NEWS_STATE_TEXT,
-	NEWS_STATUS,
-	NEWS_STATUS_TEXT,
+	BLOG_PUBLISHED,
+	BLOG_PUBLISHED_TEXT,
+	BLOG_STATUS,
+	BLOG_STATUS_TEXT,
+	BLOG_STATUS_UPDATE_TEXT,
 	NOTIFICATION_TYPE,
-	NEWS_STATUS_UPDATE_TEXT,
 } from '../../../contants/table';
 
-import BaseAvatar from '../../../components/BaseAvatar';
+import BaseAvatar from '../../../components/avatar';
 import {
-	getNewsGroupApi,
-	getNewsListApi,
-	removeNewsById,
-	restoreNewsById,
-	updateNewsStatusByAdmin,
+	getBlogGroupApi,
+	getBlogListApi,
+	removeBlogById,
+	restoreBlogById,
+	updateBlogStatusByAdmin,
 } from '../../../apis/news';
 import {useMitt} from 'react-mitt';
 
@@ -67,7 +67,7 @@ const NewsList = () => {
 
 	const fetchNewsList = (params) => {
 		emitter.emit('pendingOn');
-		getNewsListApi(params)
+		getBlogListApi(params)
 			.then((result) => {
 				setNewsList(result.data);
 				emitter.emit('pendingOff');
@@ -79,7 +79,7 @@ const NewsList = () => {
 	};
 
 	const fetchNewsGroupList = () => {
-		getNewsGroupApi()
+		getBlogGroupApi()
 			.then((result) => setNewsGroupList(result.data))
 			.catch((err) => {
 				console.log(err);
@@ -87,7 +87,7 @@ const NewsList = () => {
 	};
 
 	const fetchNewsRemove = (id) => {
-		removeNewsById(id)
+		removeBlogById(id)
 			.then((result) => {
 				console.log(result);
 				openNotification(NOTIFICATION_TYPE.success, 'Đã xóa thành công !');
@@ -100,7 +100,7 @@ const NewsList = () => {
 	};
 
 	const fetchNewsRestore = (id) => {
-		restoreNewsById(id)
+		restoreBlogById(id)
 			.then((result) => {
 				console.log(result);
 
@@ -114,7 +114,7 @@ const NewsList = () => {
 	};
 
 	const fetchNewsUpdateStatus = (id, status) => {
-		updateNewsStatusByAdmin(id, status)
+		updateBlogStatusByAdmin(id, status)
 			.then((result) => {
 				console.log(result);
 				fetchNewsList(params);
@@ -185,7 +185,7 @@ const NewsList = () => {
 
 	const newsGroupOptions = () =>
 		newsGroupList.map((item) => ({
-			label: item.name,
+			label: item.tilte,
 			value: item.id,
 		}));
 
@@ -200,23 +200,22 @@ const NewsList = () => {
 	const columns = [
 		{
 			title: 'Mã',
-			dataIndex: 'qrcode',
-			key: 'qrcode',
-			render: () => <QRCode size={60} value='https://ant.design/' />,
+			dataIndex: 'id',
+			key: 'id',
 		},
 
 		{
 			title: 'Tên',
-			dataIndex: 'name',
-			key: 'name',
+			dataIndex: 'title',
+			key: 'title',
 			render: (_, record) => {
 				return (
 					<div className='flex flex-col'>
-						<span className='font-semibold'>{record.name}</span>
+						<span className='font-semibold w-64'>{record.title}</span>
 						<div className='text-sm'>
 							{/* <span className='text-slate-500'>{record.id}</span> - */}
 							<a href='#d' className='text-slate-500'>
-								{record.admin.name}
+								{record.account.fullName}
 							</a>
 						</div>
 					</div>
@@ -225,48 +224,54 @@ const NewsList = () => {
 		},
 		{
 			title: 'Hình',
-			dataIndex: 'image',
-			key: 'image',
+			dataIndex: 'photo',
+			key: 'photo',
 			render: (text) => <BaseAvatar src={text} />,
 		},
 		{
 			title: 'Nhóm',
-			dataIndex: 'news_group.name',
-			key: 'news_group.name',
-			render: (_, record) => record.news_group.name,
+			dataIndex: 'blog_group.name',
+			key: 'blog_group.name',
+			render: (_, record) => record.blog_group.title,
 		},
-		{
-			title: 'Tổng quan',
-			dataIndex: 'views',
-			key: 'views',
-			render: (_, record) => {
-				return (
-					<div className='flex gap-3'>
-						<div className='flex gap-1 items-center'>
-							<EyeOutlined style={{color: 'gray'}} />
-							{record.views}
-						</div>
-						<div className='flex gap-1 items-center'>
-							<LikeOutlined style={{color: 'blue'}} />
-							{record.views}
-						</div>
-					</div>
-				);
-			},
-		},
+		// {
+		// 	title: 'Tổng quan',
+		// 	dataIndex: 'views',
+		// 	key: 'views',
+		// 	render: (_, record) => {
+		// 		return (
+		// 			<div className='flex gap-3'>
+		// 				<div className='flex gap-1 items-center'>
+		// 					<EyeOutlined style={{color: 'gray'}} />
+		// 					{record.views}
+		// 				</div>
+		// 				<div className='flex gap-1 items-center'>
+		// 					<LikeOutlined style={{color: 'blue'}} />
+		// 					{record.views}
+		// 				</div>
+		// 			</div>
+		// 		);
+		// 	},
+		// },
 
 		{
 			title: 'Tình trạng',
-			key: 'state',
-			dataIndex: 'state',
+			key: 'published',
+			dataIndex: 'published',
 			render: (text) => (
 				<Switch
 					checkedChildren='NORMAL'
 					unCheckedChildren='DRAFT'
-					defaultChecked={text === NEWS_STATE.NORMAL}
+					defaultChecked={text === BLOG_PUBLISHED.NORMAL}
 					disabled={true}
 				/>
 			),
+		},
+		{
+			title: '#',
+			dataIndex: 'id',
+			key: 'id',
+			render: () => <QRCode size={60} value='https://ant.design/' />,
 		},
 		{
 			title: 'Trạng thái',
@@ -283,39 +288,39 @@ const NewsList = () => {
 							Deleted
 						</Button>
 					);
-				else if (text == NEWS_STATUS.PROCESS)
+				else if (text == BLOG_STATUS.PROCESS)
 					return (
 						<Button
 							size='small'
 							className='border-sky-500 bg-sky-400 text-white'
 							icon={<ClockCircleOutlined spin={180} style={{color: 'white'}} />}>
-							{NEWS_STATUS_TEXT[NEWS_STATUS.PROCESS]}
+							{BLOG_STATUS_TEXT[BLOG_STATUS.PROCESS]}
 						</Button>
 					);
-				else if (text == NEWS_STATUS.ACTIVED)
+				else if (text == BLOG_STATUS.ACTIVED)
 					return (
 						<Button
 							size='small'
 							className='border-green-500 bg-green-400 text-white'
 							icon={<DownCircleOutlined style={{color: 'white'}} />}>
-							{NEWS_STATUS_TEXT[NEWS_STATUS.ACTIVED]}
+							{BLOG_STATUS_TEXT[BLOG_STATUS.ACTIVED]}
 						</Button>
 					);
-				else if (text == NEWS_STATUS.BLOCKED)
+				else if (text == BLOG_STATUS.BLOCKED)
 					return (
 						<Button
 							size='small'
 							className='border-red-500 bg-red-400 text-white'
 							icon={<LockOutlined style={{color: 'white'}} />}>
-							{NEWS_STATUS_TEXT[NEWS_STATUS.BLOCKED]}
+							{BLOG_STATUS_TEXT[BLOG_STATUS.BLOCKED]}
 						</Button>
 					);
 			},
 		},
 		{
 			title: 'Thời gian',
-			key: 'updated_at',
-			dataIndex: 'updated_at',
+			key: 'updatedAt',
+			dataIndex: 'updatedAt',
 			render: (text) => moment(text).format('hh:mm DD/MM/YYYY '),
 		},
 		{
@@ -326,7 +331,7 @@ const NewsList = () => {
 					{/* <Tooltip placement='top' title={'Gửi tin nhắn'}>
 						<Button type='link' icon={<MessageOutlined />}></Button>
 					</Tooltip> */}
-					<Tooltip placement='top' title={NEWS_STATUS_UPDATE_TEXT[record.status]}>
+					<Tooltip placement='top' title={BLOG_STATUS_UPDATE_TEXT[record.status]}>
 						<Button
 							onClick={() => {
 								onUpdateStatusConfirm(record.id, 2);
@@ -341,7 +346,6 @@ const NewsList = () => {
 									onRestoreConfirm(record.id);
 								}}
 								type='link'
-								
 								icon={<RollbackOutlined />}></Button>
 						</Tooltip>
 					) : (
@@ -409,12 +413,12 @@ const NewsList = () => {
 					value={params.state}
 					options={[
 						{
-							value: NEWS_STATE.DRAFT,
-							label: NEWS_STATE_TEXT[NEWS_STATE.DRAFT],
+							value: BLOG_PUBLISHED.DRAFT,
+							label: BLOG_PUBLISHED_TEXT[BLOG_PUBLISHED.DRAFT],
 						},
 						{
-							value: NEWS_STATE.NORMAL,
-							label: NEWS_STATE_TEXT[NEWS_STATE.NORMAL],
+							value: BLOG_PUBLISHED.NORMAL,
+							label: BLOG_PUBLISHED_TEXT[BLOG_PUBLISHED.NORMAL],
 						},
 					]}
 				/>
@@ -431,16 +435,16 @@ const NewsList = () => {
 					value={params.status}
 					options={[
 						{
-							value: NEWS_STATUS.BLOCKED,
-							label: NEWS_STATUS_TEXT[NEWS_STATUS.BLOCKED],
+							value: BLOG_STATUS.BLOCKED,
+							label: BLOG_STATUS_TEXT[BLOG_STATUS.BLOCKED],
 						},
 						{
-							value: NEWS_STATUS.ACTIVED,
-							label: NEWS_STATUS_TEXT[NEWS_STATUS.ACTIVED],
+							value: BLOG_STATUS.ACTIVED,
+							label: BLOG_STATUS_TEXT[BLOG_STATUS.ACTIVED],
 						},
 						{
-							value: NEWS_STATUS.PROCESS,
-							label: NEWS_STATUS_TEXT[NEWS_STATUS.PROCESS],
+							value: BLOG_STATUS.PROCESS,
+							label: BLOG_STATUS_TEXT[BLOG_STATUS.PROCESS],
 						},
 					]}
 				/>
@@ -524,7 +528,7 @@ const NewsList = () => {
 					onChange={onChange}
 				/>
 			</div>
-			{/* <AddButton to={'/news/create'} /> */}
+			{/* <ButtonAdd to={'/news/create'} /> */}
 		</>
 	);
 };

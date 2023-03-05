@@ -20,10 +20,13 @@ export default async function BaseHeader() {
 
 	const options = (list) => {
 		return list?.map((item) => ({
-			name: item.name,
-			group_id: item.id,
+			title: item.title,
+			groupId: item.id,
 		}));
 	};
+
+	
+
 	return (
 		<>
 			<div className='w-max-1250 m-auto flex justify-end gap-3 my-2'>
@@ -61,44 +64,44 @@ export default async function BaseHeader() {
 							<BaseDropdown
 								nameBtn={'SẢN PHẨM'}
 								menu={options(productGroup)}
-								pathname={'/san-pham'}
+								pathname={'/product'}
 							/>
 							<BaseDropdown
 								nameBtn={'TIN TỨC'}
 								menu={options(newsGroup)}
-								pathname={'/tin-tuc'}
+								pathname={'/blog'}
 							/>
 							<BaseDropdown
 								nameBtn={'ĐỐI TÁC'}
 								menu={[
-									{name: 'Bản vẽ nhà cấp 4', pathname: '/san-pham/ban-ve-nha-cap-4'},
-									{name: 'Bản vẽ phố', pathname: '/san-pham/ban-ve-nha-cap-41'},
-									{name: 'Bản vẽ biệt thự', pathname: '/san-pham/ban-ve-nha-cap-42'},
-									{name: 'Bản vẽ nhà vườn', pathname: '/san-pham/ban-ve-nha-cap-43'},
-									{name: 'Bản vẽ nội thất', pathname: '/san-pham/ban-ve-nha-cap-44'},
-									{name: 'Bản vẽ nhà xưởng', pathname: '/san-pham/ban-ve-nha-cap-45'},
-									{name: 'Bản vẽ nhà xưởng', pathname: '/san-pham/ban-ve-nha-cap-64'},
-									{name: 'Bản vẽ điện nước', pathname: '/san-pham/ban-ve-nha-cap-47'},
-									{name: 'Bản vẽ nhà xưởng', pathname: '/san-pham/ban-ve-nha-cap-45'},
-									{name: 'Bản vẽ nhà xưởng', pathname: '/san-pham/ban-ve-nha-cap-64'},
-									{name: 'Bản vẽ điện nước', pathname: '/san-pham/ban-ve-nha-cap-47'},
+									{name: 'Bản vẽ nhà cấp 4', pathname: '/product/ban-ve-nha-cap-4'},
+									{name: 'Bản vẽ phố', pathname: '/product/ban-ve-nha-cap-41'},
+									{name: 'Bản vẽ biệt thự', pathname: '/product/ban-ve-nha-cap-42'},
+									{name: 'Bản vẽ nhà vườn', pathname: '/product/ban-ve-nha-cap-43'},
+									{name: 'Bản vẽ nội thất', pathname: '/product/ban-ve-nha-cap-44'},
+									{name: 'Bản vẽ nhà xưởng', pathname: '/product/ban-ve-nha-cap-45'},
+									{name: 'Bản vẽ nhà xưởng', pathname: '/product/ban-ve-nha-cap-64'},
+									{name: 'Bản vẽ điện nước', pathname: '/product/ban-ve-nha-cap-47'},
+									{name: 'Bản vẽ nhà xưởng', pathname: '/product/ban-ve-nha-cap-45'},
+									{name: 'Bản vẽ nhà xưởng', pathname: '/product/ban-ve-nha-cap-64'},
+									{name: 'Bản vẽ điện nước', pathname: '/product/ban-ve-nha-cap-47'},
 								]}
 								pathname={'/doi-tac'}
 							/>
 							<BaseDropdown
 								nameBtn={'THÔNG TIN'}
 								menu={[
-									{name: 'Bản vẽ nhà cấp 4', pathname: '/san-pham/ban-ve-nha-cap-4'},
-									{name: 'Bản vẽ phố', pathname: '/san-pham/ban-ve-nha-cap-41'},
-									{name: 'Bản vẽ biệt thự', pathname: '/san-pham/ban-ve-nha-cap-42'},
-									{name: 'Bản vẽ nhà vườn', pathname: '/san-pham/ban-ve-nha-cap-43'},
-									{name: 'Bản vẽ nội thất', pathname: '/san-pham/ban-ve-nha-cap-44'},
-									{name: 'Bản vẽ nhà xưởng', pathname: '/san-pham/ban-ve-nha-cap-45'},
-									{name: 'Bản vẽ nhà xưởng', pathname: '/san-pham/ban-ve-nha-cap-64'},
-									{name: 'Bản vẽ điện nước', pathname: '/san-pham/ban-ve-nha-cap-47'},
-									{name: 'Bản vẽ nhà xưởng', pathname: '/san-pham/ban-ve-nha-cap-45'},
-									{name: 'Bản vẽ nhà xưởng', pathname: '/san-pham/ban-ve-nha-cap-64'},
-									{name: 'Bản vẽ điện nước', pathname: '/san-pham/ban-ve-nha-cap-47'},
+									{name: 'Bản vẽ nhà cấp 4', pathname: '/product/ban-ve-nha-cap-4'},
+									{name: 'Bản vẽ phố', pathname: '/product/ban-ve-nha-cap-41'},
+									{name: 'Bản vẽ biệt thự', pathname: '/product/ban-ve-nha-cap-42'},
+									{name: 'Bản vẽ nhà vườn', pathname: '/product/ban-ve-nha-cap-43'},
+									{name: 'Bản vẽ nội thất', pathname: '/product/ban-ve-nha-cap-44'},
+									{name: 'Bản vẽ nhà xưởng', pathname: '/product/ban-ve-nha-cap-45'},
+									{name: 'Bản vẽ nhà xưởng', pathname: '/product/ban-ve-nha-cap-64'},
+									{name: 'Bản vẽ điện nước', pathname: '/product/ban-ve-nha-cap-47'},
+									{name: 'Bản vẽ nhà xưởng', pathname: '/product/ban-ve-nha-cap-45'},
+									{name: 'Bản vẽ nhà xưởng', pathname: '/product/ban-ve-nha-cap-64'},
+									{name: 'Bản vẽ điện nước', pathname: '/product/ban-ve-nha-cap-47'},
 								]}
 								pathname={'/thong-tin'}
 							/>

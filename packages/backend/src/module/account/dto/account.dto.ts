@@ -12,8 +12,8 @@ import {ACCOUNT_STATUS, ROLE_STATUS} from '../type/account.type';
 export class CreateAccountDto {
 	@IsString()
 	@Expose()
-	@MaxLength(50)
-	nickname: string;
+	@MaxLength(200)
+	fullName: string;
 
 	@IsString()
 	@Expose()
@@ -60,7 +60,7 @@ export class CreateAccountDto {
 
 	@IsNumber()
 	@Expose()
-	account_id: number;
+	point: number;
 
 	@IsOptional()
 	@IsEnum(ACCOUNT_STATUS)

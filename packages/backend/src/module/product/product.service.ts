@@ -12,12 +12,19 @@ import {Request} from 'express';
 import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
 import {ROLE} from '~contants/role';
+import {
+	ACCOUNT_RELATION,
+	PRODUCT_GROUP_RELATION,
+	PRODUCT_PHOTO_LIST_RELATION,
+} from '~contants/relation';
+import {ProductPhotoListService} from '~module/productPhotoList/productPhotoList.service';
 
 @Injectable()
 export class ProductService {
 	constructor(
 		@InjectRepository(Product)
-		private productRepository: Repository<Product>
+		private productRepository: Repository<Product>,
+		private productPhotoListService: ProductPhotoListService
 	) {}
 
 	async getAllProducts(
@@ -27,7 +34,7 @@ export class ProductService {
 	): Promise<any> {
 		const {skip, take, currentPage, perPage} = handleQuery(query);
 
-		const newQuery = findOptionWhere(query, ['name']);
+		const newQuery = findOptionWhere(query, ['title']);
 
 		const isPartner = user.role === ROLE.PARTNER;
 
@@ -38,6 +45,7 @@ export class ProductService {
 			take,
 			skip,
 			withDeleted: user.role === ROLE.ADMIN,
+			relations: [ACCOUNT_RELATION, PRODUCT_GROUP_RELATION],
 		});
 
 		return pagination(request, result, currentPage, perPage);
@@ -46,6 +54,7 @@ export class ProductService {
 	async getProductDetails(id: string): Promise<Product | any> {
 		const result = await this.productRepository.findOne({
 			where: {id},
+			relations: [PRODUCT_PHOTO_LIST_RELATION, ACCOUNT_RELATION],
 		});
 		if (!result)
 			throw new NotFoundException('Product Id ' + id + ' Not Found !');
@@ -55,6 +64,7 @@ export class ProductService {
 	async getProductSlugDetails(slug: string): Promise<Product | any> {
 		const result = await this.productRepository.findOne({
 			where: {slug: slug},
+			relations: [PRODUCT_PHOTO_LIST_RELATION, ACCOUNT_RELATION],
 		});
 		if (!result)
 			throw new NotFoundException('Product params ' + slug + ' Not Found !');
@@ -63,41 +73,26 @@ export class ProductService {
 
 	async createProduct(
 		createProductDto: CreateProductDto,
-		// image: Express.Multer.File,
-		// images: Express.Multer.File[],
-		// file: Express.Multer.File,
+		photo: Express.Multer.File,
+		photoList: Express.Multer.File[],
 		creatorId: string
 	): Promise<Product | any> {
 		const product = plainToInstance(CreateProductDto, createProductDto, {
 			excludeExtraneousValues: true,
 		});
-
 		product.creatorId = creatorId;
+		if (photo) {
+			product.photo = photo.filename;
+		}
 		const result = this.productRepository.create(product);
 		const newProduct = await this.productRepository.save(result);
 
-		// const productDetails = plainToInstance(
-		// 	CreateProductDetailsDto,
-		// 	productAllField,
-		// 	{
-		// 		excludeExtraneousValues: true,
-		// 	}
-		// );
+		const newPhotoList = photoList.map((item) => ({
+			productId: newProduct.id,
+			path: item.filename,
+		}));
 
-		// await this.productFileService.createProductFiles({
-		// 	...file,
-		// 	product_id: 1,
-		// });
-
-		// const newListImages = images.map((item) => ({
-		// 	product_id: newProduct.id,
-		// 	name: item.filename,
-		// 	param: item.filename,
-		// 	path: item.filename,
-		// }));
-		// const listImage = await this.productImageService.createProductImages(
-		// 	newListImages
-		// );
+		await this.productPhotoListService.createProductPhotoList(newPhotoList);
 
 		// const createFile = await this.productFileService.createProductFiles({
 		// 	product_id: newProduct.id,
@@ -110,9 +105,10 @@ export class ProductService {
 	async updateProduct(
 		id: string,
 		updateProductDto: UpdateProductDto,
-		// image: Express.Multer.File,
-		// images: Express.Multer.File[],
-		// file: Express.Multer.File,
+		files: {
+			photo?: Express.Multer.File;
+			photoList?: Express.Multer.File[];
+		},
 		creatorId: string
 	): Promise<Product> {
 		const result = await this.productRepository.findOne({where: {id}});
@@ -124,22 +120,16 @@ export class ProductService {
 		_(updateProductDto).forEach((val, key) => {
 			if (val) result[key] = val;
 		});
-		// if (image) {
-		// 	console.log('image.filename', image[0].filename);
-		// 	// fs.removeSync('../../../uploads/images' + result.image);
-		// 	result.image = image[0].filename;
-		// }
-		// if (images) {
-		// 	const newListImages = images.map((item) => ({
-		// 		product_id: result.id,
-		// 		name: item.filename,
-		// 		param: item.filename,
-		// 		path: item.filename,
-		// 	}));
-		// 	const listImage = await this.productImageService.createProductImages(
-		// 		newListImages
-		// 	);
-		// }
+		if (files?.photo) {
+			result.photo = files.photo[0].filename;
+		}
+		if (files?.photoList) {
+			const newPhotoList = files.photoList.map((item) => ({
+				productId: result.id,
+				path: item.filename,
+			}));
+			await this.productPhotoListService.createProductPhotoList(newPhotoList);
+		}
 		// if (file) {
 		// 	const createFile = await this.productFileService.createProductFiles({
 		// 		product_id: result.id,

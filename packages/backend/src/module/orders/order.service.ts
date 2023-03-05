@@ -27,7 +27,7 @@ export class OrderService {
 	): Promise<any> {
 		const {skip, take, currentPage, perPage} = handleQuery(query);
 
-		const newQuery = findOptionWhere(query, ['code', 'name']);
+		const newQuery = findOptionWhere(query, ['fullName']);
 
 		const isPartner = user.role === ROLE.PARTNER;
 

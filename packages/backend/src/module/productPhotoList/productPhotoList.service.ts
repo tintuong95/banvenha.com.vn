@@ -30,8 +30,8 @@ export class ProductPhotoListService {
 	}
 
 	async createProductPhotoList(
-		createProductPhotoListDto: CreateproductPhotoListDto
-	): Promise<ProductPhotoList> {
+		createProductPhotoListDto: CreateproductPhotoListDto[]
+	): Promise<any> {
 		const result = this.productGroupRepository.create(
 			createProductPhotoListDto
 		);

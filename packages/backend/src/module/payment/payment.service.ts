@@ -30,7 +30,7 @@ export class PaymentService {
 
 		const isPartner = user.role === ROLE.PARTNER;
 
-		if (isPartner) newQuery['admin_id'] = user.id;
+		if (isPartner) newQuery['accountId'] = user.id;
 
 		const result = await this.paymentRepository.findAndCount({
 			where: newQuery,

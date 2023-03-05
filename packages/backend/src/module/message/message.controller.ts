@@ -20,7 +20,7 @@ import {ROLE} from '~contants/role';
 import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
 
-@Controller('messages')
+@Controller('message')
 @UseGuards(JwtAuthGuard)
 export class MessageController {
 	constructor(private messageService: MessageService) {}

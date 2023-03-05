@@ -1,6 +1,13 @@
-FROM node:18-alpine
-WORKDIR /admin
+FROM node:12-alpine
+
+WORKDIR /usr/src/app/backend
+
+COPY package*.json ./
+
+RUN npm install
+
 COPY . .
-RUN yarn install 
-CMD ["yarn", "start"]
-EXPOSE 3002
+
+EXPOSE 3000
+
+CMD [ "npm", "start" ]

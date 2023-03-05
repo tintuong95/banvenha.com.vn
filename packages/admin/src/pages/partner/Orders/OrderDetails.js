@@ -32,18 +32,18 @@ function OrderDetails() {
 			<div className='my-3 flex flex-col gap-3'>
 				<div className='font-semibold'>THÔNG TIN ĐƠN HÀNG</div>
 				<div className='flex items-center gap-4'>
-					Mã đơn : <div className='font-semibold'>{detailsOrder?.code}</div>
+					Mã đơn : <div className='font-semibold'>{detailsOrder?.id}</div>
 				</div>
 				<div className='flex items-center gap-4'>
 					Ngày tạo :{' '}
 					<div className='font-semibold'>
-						{moment(detailsOrder?.updated_at).format('hh:mm DD/MM/YYYY')}
+						{moment(detailsOrder?.updatedAt).format('hh:mm DD/MM/YYYY')}
 					</div>
 				</div>
 				<div className='flex items-center gap-4'>
 					Số tiền :{' '}
 					<div className='font-semibold'>
-						{detailsOrder?.price.toLocaleString('vi-VN')} VND
+						{detailsOrder?.total.toLocaleString('vi-VN')} VND
 					</div>
 				</div>
 				<div className='flex items-center gap-4'>
@@ -57,7 +57,7 @@ function OrderDetails() {
 			<div className='my-3 flex flex-col gap-3'>
 				<div className='font-semibold'>THÔNG TIN KHÁCH HÀNG</div>
 				<div className='flex items-center gap-4'>
-					Họ tên : <div className='font-semibold'>{detailsOrder?.name}</div>
+					Họ tên : <div className='font-semibold'>{detailsOrder?.fullName}</div>
 				</div>
 				<div className='flex items-center gap-4'>
 					Email : <div className='font-semibold'>{detailsOrder?.email}</div>
@@ -67,17 +67,18 @@ function OrderDetails() {
 			<div className='my-3 flex flex-col gap-3'>
 				<div className='font-semibold'>THÔNG TIN TÁC GIẢ</div>
 				<div className='flex items-center gap-4'>
-					Họ tên : <div className='font-semibold'>{detailsOrder?.admin?.name}</div>
+					Họ tên :{' '}
+					<div className='font-semibold'>{detailsOrder?.account?.fullName}</div>
 				</div>
 				<div className='flex items-center gap-4'>
-					Phone : <div className='font-semibold'>{detailsOrder?.admin?.tel}</div>
+					Phone : <div className='font-semibold'>{detailsOrder?.account?.tel}</div>
 				</div>
 				<div className='flex items-center gap-4'>
-					Email : <div className='font-semibold'>{detailsOrder?.admin?.email}</div>
+					Email : <div className='font-semibold'>{detailsOrder?.account?.email}</div>
 				</div>
 				<div className='flex items-center gap-4'>
 					Địa chỉ :{' '}
-					<div className='font-semibold'>{detailsOrder?.admin?.address}</div>
+					<div className='font-semibold'>{detailsOrder?.account?.address}</div>
 				</div>
 			</div>
 			<Divider />

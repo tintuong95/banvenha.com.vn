@@ -19,10 +19,11 @@ import {OrderModule} from '~module/orders/order.module';
 import {PaymentModule} from '~module/payment/payment.module';
 import {ProductModule} from '~module/product/product.module';
 import {ProductGroupsModule} from '~module/productGroup/productGroup.module';
-import {ProductPhotoListsModule} from '~module/productPhotoList/productPhotoList.module';
 import {ProductTagsModule} from '~module/productTag/productTag.module';
 import {ProductTagRelationsModule} from '~module/productTagRelation/productTagRelation.module';
 import {AuthModule} from '~module/auth/auth.module';
+import {ProductPhotoListsModule} from '~module/productPhotoList/productPhotoList.module';
+import {UploadModule} from '~module/upload/upload.module';
 
 @Module({
 	imports: [
@@ -52,6 +53,7 @@ import {AuthModule} from '~module/auth/auth.module';
 		AuthModule,
 		BlogModule,
 		OrderModule,
+		UploadModule,
 		AccountModule,
 		BlogTagModule,
 		MessageModule,
@@ -61,7 +63,6 @@ import {AuthModule} from '~module/auth/auth.module';
 		ProductTagsModule,
 		ProductGroupsModule,
 		BlogTagRelationModule,
-		ProductPhotoListsModule,
 		ProductTagRelationsModule,
 	],
 	controllers: [],

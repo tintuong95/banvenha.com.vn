@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Result } from 'antd';
 import {FrownOutlined} from '@ant-design/icons';
-import { history } from '../../routes';
+import {  history} from '../../routes/history';
 
 export class ErrorBoundary extends React.Component {
 	constructor(props) {

@@ -61,19 +61,14 @@ const MessageList = () => {
 	const columns = [
 		{
 			title: '',
-			dataIndex: 'code',
-			key: 'code',
+			dataIndex: 'id',
+			key: 'id',
 			render: () => <Avatar shape='square' icon={<MailOutlined />} />,
 		},
 		{
-			title: 'Mã',
-			dataIndex: 'code',
-			key: 'code',
-		},
-		{
 			title: 'Tiêu đề',
-			dataIndex: 'name',
-			key: 'name',
+			dataIndex: 'title',
+			key: 'title',
 		},
 		{
 			title: 'Người nhắn',
@@ -97,8 +92,8 @@ const MessageList = () => {
 
 		{
 			title: 'Thời gian',
-			dataIndex: 'updated_at',
-			key: 'updated_at',
+			dataIndex: 'updatedAt',
+			key: 'updatedAt',
 			render: (text) => moment(text).format('hh:mm DD/MM/YYYY '),
 		},
 		{
@@ -146,7 +141,7 @@ const MessageList = () => {
 					) : (
 						<Button
 							onClick={() => onRemoveConfirm(record.id)}
-							type='primary'
+							type='link'
 							danger
 							icon={<DeleteOutlined />}></Button>
 					)}
@@ -251,7 +246,7 @@ const MessageList = () => {
 						width: 200,
 					}}
 					placeholder='Nhập mã '
-					value={params.code}
+					value={params.id}
 					onChange={(e) => {
 						setParams({...params, code: e.target.value});
 					}}
@@ -262,7 +257,7 @@ const MessageList = () => {
 						width: 200,
 					}}
 					placeholder='Nhập tiêu đề '
-					value={params.name}
+					value={params.title}
 					onChange={(e) => {
 						setParams({...params, name: e.target.value});
 					}}

@@ -70,15 +70,15 @@ export class BlogController {
 	@Roles(ROLE.PARTNER)
 	@Post(':id/update')
 	@UseInterceptors(
-		FileInterceptor('filePhoto', uploadFileConfig(1000, REGEX_IMAGE))
+		FileInterceptor('photo', uploadFileConfig(1000, REGEX_IMAGE))
 	)
 	async updateBlog(
 		@Body(ValidationPipe) updateBlogDto: UpdateBlogDto,
 		@Param('id') id: string,
 		@User() user: UserDto,
-		@UploadedFile() file: Express.Multer.File
+		@UploadedFile() photo: Express.Multer.File
 	): Promise<Blog> {
-		return await this.blogService.updateBlog(id, updateBlogDto, file, user.id);
+		return await this.blogService.updateBlog(id, updateBlogDto, photo, user.id);
 	}
 
 	@Roles(ROLE.ADMIN)

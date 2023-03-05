@@ -13,6 +13,14 @@ const nextConfig = {
 				protocol: 'http',
 				hostname: 'localhost',
 			},
+			{
+				protocol: 'https',
+				hostname: 'i.pinimg.com',
+			},
+			{
+				protocol: 'https',
+				hostname: 'media.bizwebmedia.net',
+			},
 		],
 	},
 	async rewrites() {

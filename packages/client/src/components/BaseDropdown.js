@@ -9,21 +9,22 @@ import {ArrowDownIcon, ArrowRightIcon} from '../contants/icon';
 function BaseDropdown({ pathname, menu,nameBtn}) {
 	const renderMenu = (menu) => {
 		return menu?.map((item, index) => (
-			<Link key={index} href={{pathname, query: {group_id: item.group_id}}}>
+			<Link key={index} href={{pathname, query: {groupId: item.groupId}}}>
 				<p className='flex gap-2 items-center px-4 py-2 hover:text-rose-500 dark:hover:text-white'>
 					<BaseIcon width={20} icon={ArrowRightIcon} name={'icon arrow'} />
-					{item.name}
+					{item.title}
 				</p>
 			</Link>
 		));
 	};
+	console.log('menu', menu);
 	return (
 		<div aria-hidden className='dropdown'>
 			<Link
 				className='text-white  py-2 flex item-center  border-b-2 border-gray-800 transform transition duration-500  '
 				href={{pathname}}>
 				{nameBtn}
-				<BaseIcon width={20} icon={ArrowDownIcon} name={'icon arrow down' } />
+				<BaseIcon width={20} icon={ArrowDownIcon} name={'icon arrow down'} />
 			</Link>
 			<div className='z-10 dropdownHover hidden hover:block  '>
 				<div className='h-6 opacity-100'></div>

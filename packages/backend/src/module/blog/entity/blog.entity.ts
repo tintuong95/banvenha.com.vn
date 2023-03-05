@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
-import {NEWS_STATE, NEWS_STATUS} from '../type/blog.type';
+import {BLOG_PUBLISHED, BLOG_STATUS} from '../type/blog.type';
 
 import {
 	ACCOUNT_RELATION,
@@ -59,9 +59,9 @@ export class Blog extends BaseEntity {
 	description: string;
 
 	@Column({
+		type: 'text',
 		nullable: false,
 	})
-	@ApiProperty()
 	content: string;
 
 	@Column({
@@ -73,18 +73,19 @@ export class Blog extends BaseEntity {
 
 	@Column({
 		type: 'enum',
-		enum: NEWS_STATUS,
-		default: NEWS_STATUS.PROCESS,
+		enum: BLOG_STATUS,
+		default: BLOG_STATUS.PROCESS,
 	})
 	@ApiProperty()
-	status: NEWS_STATUS;
+	status: BLOG_STATUS;
 
 	@Column({
-		nullable: false,
-		default: false,
+		type: 'enum',
+		enum: BLOG_PUBLISHED,
+		default: BLOG_PUBLISHED.DRAFT,
 	})
 	@ApiProperty()
-	published: boolean;
+	published: BLOG_PUBLISHED;
 
 	@Column({
 		nullable: false,

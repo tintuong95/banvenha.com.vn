@@ -56,20 +56,17 @@ const OrderList = () => {
 	};
 	const columns = [
 		{
-			title: 'QRCode',
-			dataIndex: 'qrcode',
-			key: 'qrcode',
-			render: () => <QRCode size={60} value='https://ant.design/' />,
+			title: '#',
+			dataIndex: 'id',
+			key: 'id',
 		},
 		{
 			title: 'Người mua',
-			dataIndex: 'name',
-			key: 'name',
 			render: (_, record) => {
 				return (
 					<div className='flex flex-col '>
-						<span className=''>{record.name}</span>
-						<span className='text-slate-400'>{record.email}</span>
+						<span className=''>{record?.fullName}</span>
+						<span className='text-slate-400'>{record?.email}</span>
 					</div>
 				);
 			},
@@ -77,9 +74,9 @@ const OrderList = () => {
 
 		{
 			title: 'Đối tác',
-			dataIndex: 'admin',
-			key: 'admin',
-			render: (text) => text.name,
+			dataIndex: 'account',
+			key: 'account',
+			render: (text) => text.fullName,
 		},
 		{
 			title: 'Sản phẩm',
@@ -87,17 +84,20 @@ const OrderList = () => {
 			key: 'products',
 			render: (text) => {
 				return (
-					<div className='flex flex-col '>
-						<span className='text-slate-400'>{text.name}</span>
-						<span className=''>{text.price}</span>
+					<div className='flex flex-col w-64'>
+						<span className=''>{text.title}</span>
+						<span className='text-slate-400'>
+							{text.price?.toLocaleString('vi-VN')}
+						</span>
 					</div>
 				);
 			},
 		},
 		{
 			title: 'Giá bán',
-			dataIndex: 'price',
-			key: 'price',
+			dataIndex: 'total',
+			key: 'total',
+			render: (text) => <div className='text-rose-500'>{text?.toLocaleString('vi-VN')} VND</div>,
 		},
 		{
 			title: 'Thanh toán',
@@ -127,8 +127,8 @@ const OrderList = () => {
 		},
 		{
 			title: 'Thời gian',
-			dataIndex: 'updated_at',
-			key: 'updated_at',
+			dataIndex: 'updatedAt',
+			key: 'updatedAt',
 			render: (text) => moment(text).format('hh:mm DD/MM/YYYY '),
 		},
 		{
@@ -140,18 +140,13 @@ const OrderList = () => {
 						<Button
 							onClick={() => onRestoreConfirm(record.id)}
 							type='link'
-						
-							icon={<RollbackOutlined />}>
-							
-						</Button>
+							icon={<RollbackOutlined />}></Button>
 					) : (
 						<Button
 							onClick={() => onRemoveConfirm(record.id)}
 							type='link'
 							danger
-							icon={<DeleteOutlined />}>
-							
-						</Button>
+							icon={<DeleteOutlined />}></Button>
 					)}
 				</Space>
 			),

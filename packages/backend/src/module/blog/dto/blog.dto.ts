@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import {IsFile} from '~shared/file.dto';
 import {Blog} from '../entity/blog.entity';
-import {NEWS_STATE, NEWS_STATUS} from '../type/blog.type';
+import {BLOG_PUBLISHED, BLOG_STATUS} from '../type/blog.type';
 
 export class CreateBlogDto {
 	@IsString()
@@ -30,13 +30,14 @@ export class CreateBlogDto {
 	photo: string;
 
 	@IsOptional()
-	@IsEnum(NEWS_STATUS)
+	@IsEnum(BLOG_STATUS)
 	@Expose()
-	status: NEWS_STATUS;
+	status: BLOG_STATUS;
 
-	@IsBoolean()
+	@IsOptional()
+	@IsEnum(BLOG_PUBLISHED)
 	@Expose()
-	published: boolean;
+	published: BLOG_PUBLISHED;
 
 	@IsString()
 	@Expose()

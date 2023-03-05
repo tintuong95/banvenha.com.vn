@@ -9,7 +9,7 @@ import {
 } from '../../../apis/order';
 import {useEffect, useState} from 'react';
 import {countProductApi, getViewsLikesApi} from '../../../apis/product';
-import {countNewsApi} from '../../../apis/news';
+import {countBlogApi} from '../../../apis/news';
 import {useMitt} from 'react-mitt';
 import {useSelector} from "react-redux"
 import { ORDER_STATUS } from '../../../contants/table';
@@ -41,19 +41,18 @@ const DashBoard = () => {
 
 	const columns = [
 		{
-			title: 'Mã',
-			dataIndex: 'code',
-			key: 'code',
-			render: (text) => <QRCode size={60} value={text} />,
+			title: '#',
+			dataIndex: 'id',
+			key: 'id',
 		},
 		{
 			title: 'Người mua',
-			dataIndex: 'name',
-			key: 'name',
+			dataIndex: 'fullName',
+			key: 'fullName',
 			render: (_, record) => {
 				return (
 					<div className='flex flex-col '>
-						<span className=''>{record.name}</span>
+						<span className=''>{record.fullName}</span>
 						<span className='text-slate-400'>{record.email}</span>
 					</div>
 				);
@@ -62,9 +61,9 @@ const DashBoard = () => {
 
 		{
 			title: 'Đối tác',
-			dataIndex: 'admin',
-			key: 'admin',
-			render: (text) => text.name,
+			dataIndex: 'account',
+			key: 'account',
+			render: (text) => text.fullName,
 		},
 		{
 			title: 'Sản phẩm',
@@ -73,21 +72,25 @@ const DashBoard = () => {
 			render: (text) => {
 				return (
 					<div className='flex flex-col '>
-						<span className='text-slate-400'>{text.name}</span>
-						<span className=''>{text.price}</span>
+						<span className='text-slate-400'>{text?.title}</span>
+						<span className=''>{text?.price}</span>
 					</div>
 				);
 			},
 		},
 		{
 			title: 'Giá bán',
-			dataIndex: 'price',
-			key: 'price',
+			dataIndex: 'total',
+			key: 'total',
 			render: (text) => (
-				<Tag className='text-sm' color='blue'>
-					{text.toLocaleString('vi-VN')} VND
-				</Tag>
+				<div className='text-rose-600 '>{text.toLocaleString('vi-VN')} VND</div>
 			),
+		},
+		{
+			title: 'QR',
+			dataIndex: 'id',
+			key: 'id',
+			render: (text) => <QRCode size={60} value={text} />,
 		},
 
 		{
@@ -118,8 +121,8 @@ const DashBoard = () => {
 		},
 		{
 			title: 'Thời gian',
-			dataIndex: 'updated_at',
-			key: 'updated_at',
+			dataIndex: 'updatedAt',
+			key: 'updatedAt',
 			render: (text) => moment(text).format('hh:mm DD/MM/YYYY '),
 		},
 		// {
@@ -195,7 +198,7 @@ const DashBoard = () => {
 	};
 
 	const fetchCountNews = () => {
-		countNewsApi()
+		countBlogApi()
 			.then((result) => {
 				const {count} = result.data;
 				setCountNews(count);
@@ -246,11 +249,11 @@ const DashBoard = () => {
 						<div>
 							<span>Chào bạn </span>
 							<span className='text-2xl font-bold text-blue-400'>
-								{self?.name} <Tag color='#87d068'>Level 1</Tag>
+								{self?.fullName} <Tag color='#87d068'>Level {self.level}</Tag>
 							</span>
 						</div>
 
-						<Progress percent={30} size='small' />
+						<Progress percent={self.processing} size='small' />
 					</div>
 					<span className='text-slate-400'>Ngày tạo : {moment(self.created_at).format("DD/MM/YYYY")}</span>
 				</div>

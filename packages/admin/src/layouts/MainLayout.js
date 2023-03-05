@@ -2,20 +2,20 @@ import {UserOutlined, Loading3QuartersOutlined} from '@ant-design/icons';
 import {Avatar, Badge, Breadcrumb, Divider, Layout, Menu, Spin} from 'antd';
 import {useEffect, useState} from 'react';
 import {Outlet, Link} from 'react-router-dom';
-import BaseDropdown from '../components/BaseDropDown';
+import BaseDropdown from '../components/dropdown';
 import {IoHomeOutline} from 'react-icons/io5';
 import {RiProductHuntLine} from 'react-icons/ri';
 import {BsNewspaper} from 'react-icons/bs';
 import {FaOpencart} from 'react-icons/fa';
 import {MdGroups, MdOutlinePayment} from 'react-icons/md';
 import {BiMessageSquareDots} from 'react-icons/bi';
-import BaseIcon from '../components/BaseIcon';
+import BaseIcon from '../components/icon';
 import {useSelector} from 'react-redux';
 import Loading from '../pages/auth/Loading';
 
 import {useMitt} from 'react-mitt';
 import {ROLE} from '../contants/auth';
-import BaseHeader from '../components/BaseHeader';
+import BaseHeader from '../components/header';
 
 const {Header, Content, Sider} = Layout;
 

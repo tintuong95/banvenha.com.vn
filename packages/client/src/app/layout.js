@@ -11,7 +11,7 @@ export default function RootLayout({children}) {
 	return (
 		<html lang='en'>
 			<head>{/* header */}</head>
-			<body className='bg-gray-50'>
+			<body className='bg-gray-100'>
 				<AppContextProvider>
 					<BaseHeader />
 					<main className='m-auto '>{children}</main>

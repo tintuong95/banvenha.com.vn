@@ -1,18 +1,18 @@
 
 import React, {useState} from 'react';
-import BaseStep from '../../../components/BaseStep';
+import BaseStep from '../../../components/step';
 import CreateStepFirst from './Create/CreateStepFirst';
 import CreateStepThree from './Create/CreateStepThree';
 import CreateStepTwo from './Create/CreateStepTwo';
 export default function NewsCreate() {
 	const [stepPage, setStepPage] = useState(1);
 	const [dataNews, setDataNews] = useState({
-		name: null,
+		title: null,
 		description: null,
 		content: null,
-		group_id: null,
-		file: null,
-		state: null,
+		groupId: null,
+		photo: null,
+		published: null,
 	});
 
 	const onNextStep = () => {

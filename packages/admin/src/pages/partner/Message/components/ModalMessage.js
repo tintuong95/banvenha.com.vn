@@ -6,14 +6,14 @@ import {UserOutlined, FieldTimeOutlined} from '@ant-design/icons';
 function ModalMessage({visibleModal, setVisibleModal, dataModal}) {
 	return (
 		<Modal
-		width={600}
+			width={600}
 			title={
 				<div>
-					<div>Tiêu đề : {dataModal?.name}</div>
+					<div>Tiêu đề : {dataModal?.title}</div>
 					<div className='text-sm font-light flex items-center gap-2'>
 						<UserOutlined />
-						Người gửi : {dataModal?.name} - Thời gian : <FieldTimeOutlined />
-						{moment(dataModal?.updated_at).format('hh:mm DD/MM/YYYY')}
+						Người gửi : {dataModal?.title} - Thời gian : <FieldTimeOutlined />
+						{moment(dataModal?.updatedAt).format('hh:mm DD/MM/YYYY')}
 					</div>
 				</div>
 			}

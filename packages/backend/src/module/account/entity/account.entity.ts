@@ -5,6 +5,7 @@ import {
 	OneToMany,
 	PrimaryColumn,
 	BeforeInsert,
+	AfterLoad,
 } from 'typeorm';
 import {BaseEntity} from '~shared/base.entity';
 import {ApiProperty} from '@nestjs/swagger';
@@ -27,6 +28,7 @@ import {Message} from '~module/message/entity/message.entity';
 import {generateId} from '~util/generate';
 import {Blog} from '~module/blog/entity/blog.entity';
 import {Product} from '~module/product/entity/product.entity';
+import {setLevel} from '~util/level';
 
 @Entity({name: 'accounts'})
 export class Account extends BaseEntity {
@@ -93,9 +95,23 @@ export class Account extends BaseEntity {
 	@ApiProperty()
 	role: ROLE_STATUS;
 
+	level: number;
+
+	processing: number;
+
 	@BeforeInsert()
 	setId() {
 		this.id = generateId('BL');
+	}
+
+	@AfterLoad()
+	setLevel() {
+		this.level = setLevel(this.point)?.level;
+	}
+
+	@AfterLoad()
+	setProcessing() {
+		this.processing = setLevel(this.point)?.processing;
 	}
 
 	@OneToOne(() => Account, (account) => account[ACCOUNT_RELATION])

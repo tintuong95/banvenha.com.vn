@@ -8,9 +8,10 @@ import {
 	SmileOutlined,
 	ExclamationCircleFilled,
 } from '@ant-design/icons';
-import {createNewsApi} from '../../../../apis/news';
-import {NEWS_STATE, NOTIFICATION_TYPE} from '../../../../contants/table';
+import {createBlogApi} from '../../../../apis/news';
+import {BLOG_PUBLISHED, NOTIFICATION_TYPE} from '../../../../contants/table';
 import { history } from '../../../../routes/history';
+import { openNotification } from '../../../../utils/notification';
 const {confirm}=Modal
 const CreateStepThree = ({
 	stepPage,
@@ -20,29 +21,20 @@ const CreateStepThree = ({
 	dataNews,
 	setDataNews,
 }) => {
-	const openNotification = (type, message, description) => {
-		return notification[type]({
-			type,
-			message,
-			description,
-			onClick: () => {
-				console.log('Notification Clicked!');
-			},
-		});
-	};
-	const onSubmit = (state) => {
+	
+	const onSubmit = (published) => {
 		const data = new FormData();
-		console.log(dataNews);
-		data.append('name', dataNews.name);
+		console.log(published);
+		data.append('title', dataNews.title);
 		data.append('description', dataNews.description);
 		data.append('content', dataNews.content);
-		data.append('group_id', dataNews.group_id);
-		data.append('state', state);
-		data.append('image', dataNews.image[0].originFileObj);
+		data.append('groupId', dataNews.groupId);
+		data.append('published', published);
+		data.append('filePhoto', dataNews.photo[0].originFileObj);
 
-		createNewsApi(data)
+		createBlogApi(data)
 			.then((result) => {
-				history.push("/news")
+				history.push('/news');
 				openNotification[(NOTIFICATION_TYPE.success, 'Tạo mới thành công !')];
 			})
 			.catch((err) => {
@@ -51,13 +43,13 @@ const CreateStepThree = ({
 			});
 	};
 	
-	const onRemoveConfirm = (state) => {
+	const onRemoveConfirm = (published) => {
 		confirm({
 			title: 'Xác nhận tạo bài viết !',
 			icon: <ExclamationCircleFilled />,
 			content: 'Được duyệt trong vòng 24h !',
 			onOk() {
-				onSubmit(state);
+				onSubmit(published);
 			},
 			onCancel() {
 				console.log('Cancel');
@@ -75,7 +67,7 @@ const CreateStepThree = ({
 				extra={[
 					<Button
 						onClick={() => {
-							onRemoveConfirm(NEWS_STATE.DRAFT);
+							onRemoveConfirm(BLOG_PUBLISHED.DRAFT);
 						}}
 						type='primary'
 						className='bg-slate-400'
@@ -85,7 +77,7 @@ const CreateStepThree = ({
 					</Button>,
 					<Button
 						onClick={() => {
-							onRemoveConfirm(NEWS_STATE.NORMAL);
+							onRemoveConfirm(BLOG_PUBLISHED.NORMAL);
 						}}
 						type='primary'
 						key='buy'>

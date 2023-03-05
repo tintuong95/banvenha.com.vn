@@ -72,7 +72,7 @@ export class BlogService {
 	async updateBlog(
 		id: string,
 		updateBlogDto: UpdateBlogDto,
-		file: Express.Multer.File,
+		photo: Express.Multer.File,
 		creatorId: string
 	): Promise<Blog> {
 		const result = await this.blogRepository.findOne({where: {id}});
@@ -84,9 +84,9 @@ export class BlogService {
 		_(updateBlogDto).forEach((val, key) => {
 			if (val) result[key] = val;
 		});
-		if (file) {
+		if (photo) {
 			// fs.removeSync('../../../uploads/images' + result.image);
-			result.photo = file.filename;
+			result.photo = photo.filename;
 		}
 		return this.blogRepository.save(result);
 	}

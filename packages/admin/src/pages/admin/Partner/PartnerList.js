@@ -36,12 +36,14 @@ import {
 } from '../../../contants/table';
 import {restorePaymentById} from '../../../apis/payment';
 import ModalMessage from '../Message/components/ModalMessage';
+import { useNavigate } from 'react-router-dom';
 
 const {confirm} = Modal;
 
 const PartnerList = () => {
 	const {emitter} = useMitt();
 	const [visible, setVisible] = useState(true);
+	const navigate =useNavigate()
 	const [visibleModal, setVisibleModal] = useState(false);
 	const [message, setMessage] = useState({
 		title: '',
@@ -74,8 +76,8 @@ const PartnerList = () => {
 		},
 		{
 			title: 'Tên',
-			dataIndex: 'name',
-			key: 'name',
+			dataIndex: 'fullName',
+			key: 'fullName',
 		},
 		{
 			title: 'Phone',
@@ -86,6 +88,7 @@ const PartnerList = () => {
 			title: 'Ngày sinh',
 			key: 'birthday',
 			dataIndex: 'birthday',
+			render: (text) => moment(text).format(' DD/MM/YYYY '),
 		},
 		{
 			title: 'Nơi sống',
@@ -375,6 +378,11 @@ const PartnerList = () => {
 				pagination={false}
 				columns={columns}
 				dataSource={partnerList?.data}
+				onRow={(record, rowIndex) => ({
+					onClick: (event) => {
+						navigate(`/partner/${record.id}/details`);
+					}, // click row
+				})}
 			/>
 			<div className='my-5'>
 				<Pagination

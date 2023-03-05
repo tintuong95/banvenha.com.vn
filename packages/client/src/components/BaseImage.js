@@ -3,22 +3,22 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
-import { ImageDefault } from '../contants/image';
+import {ImageDefault} from '../contants/image';
 
-
-function BaseImage({image, name}) {
+function BaseImage({image, name,className}) {
 	const [error, setError] = useState(false);
 
 	return (
 		<Image
 			width={300}
 			height={200}
-			className=''
+			className={className}
 			src={!error ? 'http://localhost:5000/images/' + image : ImageDefault}
 			alt={name}
 			onErrorCapture={() => {
 				setError(true);
 			}}
+			style={{width: 300, height: 150, objectFit: 'cover'}}
 		/>
 	);
 }
@@ -26,6 +26,7 @@ function BaseImage({image, name}) {
 BaseImage.propTypes = {
 	image: PropTypes.string,
 	name: PropTypes.string,
+	className: PropTypes.string,
 };
 
 export default BaseImage;

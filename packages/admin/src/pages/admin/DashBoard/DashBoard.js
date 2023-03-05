@@ -8,7 +8,7 @@ import {useMitt} from 'react-mitt';
 import {useSelector} from 'react-redux';
 import { getOrderListApi, getRevenueMonthApi, getRevenueTotalApi } from '../../../apis/order';
 import { countProductApi, getViewsLikesApi } from '../../../apis/product';
-import { countNewsApi } from '../../../apis/news';
+import { countBlogApi } from '../../../apis/news';
 import { ORDER_STATUS } from '../../../contants/table';
 
 // import BaseIcon from '../../../components/BaseIcon';
@@ -39,20 +39,19 @@ const DashBoard = () => {
 
 		const columns = [
 			{
-				title: 'QRcode',
-				dataIndex: 'qrcode',
-				key: 'qrcode',
-				render: () => <QRCode size={60} value='https://ant.design/' />,
+				title: '#',
+				dataIndex: 'id',
+				key: 'id',
 			},
 
 			{
 				title: 'Người mua',
-				dataIndex: 'name',
-				key: 'name',
+				dataIndex: 'fullName',
+				key: 'fullName',
 				render: (_, record) => {
 					return (
 						<div className='flex flex-col '>
-							<span className=''>{record.name}</span>
+							<span className=''>{record.fullName}</span>
 							<span className='text-slate-400'>{record.email}</span>
 						</div>
 					);
@@ -61,9 +60,9 @@ const DashBoard = () => {
 
 			{
 				title: 'Đối tác',
-				dataIndex: 'admin',
-				key: 'admin',
-				render: (text) => text.name,
+				dataIndex: 'account',
+				key: 'account',
+				render: (text) => text.fullName,
 			},
 			{
 				title: 'Sản phẩm',
@@ -71,24 +70,29 @@ const DashBoard = () => {
 				key: 'products',
 				render: (text) => {
 					return (
-						<div className='flex flex-col '>
-							<span className='text-slate-400'>{text.name}</span>
-							<span className=''>{text.price}</span>
+						<div className='flex flex-col w-64'>
+							<span className=''>{text?.title}</span>
+							<span className='text-slate-400'>{text?.price.toLocaleString("vi-VN")} </span>
 						</div>
 					);
 				},
 			},
 			{
 				title: 'Giá bán',
-				dataIndex: 'price',
-				key: 'price',
+				dataIndex: 'total',
+				key: 'total',
 				render: (text) => (
-					<Tag className='text-sm' color='blue'>
-						{text.toLocaleString('vi-VN')} VND
-					</Tag>
+					<div className='text-rose-500' >
+						{text?.toLocaleString('vi-VN')} VND
+					</div>
 				),
 			},
-
+			{
+				title: 'QR',
+				dataIndex: 'id',
+				key: 'id',
+				render: () => <QRCode size={60} value='https://ant.design/' />,
+			},
 			{
 				title: 'Thanh toán',
 				dataIndex: 'status',
@@ -193,7 +197,7 @@ const DashBoard = () => {
 	};
 
 	const fetchCountNews = () => {
-		countNewsApi()
+		countBlogApi()
 			.then((result) => {
 				const {count} = result.data;
 				setCountNews(count);

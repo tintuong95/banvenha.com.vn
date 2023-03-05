@@ -1,25 +1,28 @@
+version: "3"
+
 services:
-  app:
-    image: node:18-alpine
-    command: sh -c "yarn install && start:dev"
+  backend:
+    image: docker-nestjs-backend
+    build: ./backend
+    command: npm run start:dev
+    volumes:
+      - ./backend:/usr/src/app/backend
+      - /usr/src/app/backend/node_modules
     ports:
-      - 3000:3000
-    working_dir: /app
-    volumes:
-      - ./:/app
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_USER: root
-      MYSQL_PASSWORD: secret
-      MYSQL_DB: todos
+      - 3002:3000
 
-  mysql:
-    image: mysql:8.0
+  client:
+    image: docker-gatsby-client
+    build: ./client
     volumes:
-      - todo-mysql-data:/var/lib/mysql
+      - ./client:/usr/src/app/client
+      - /usr/src/app/client/node_modules
+    ports:
+      - "8000:8000"
+      - "9929:9929"
+      - "9230:9230"
     environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: todos
-
-volumes:
-  todo-mysql-data:
+      - NODE_ENV=development
+      - GATSBY_WEBPACK_PUBLICPATH=/
+    depends_on:
+      - backend

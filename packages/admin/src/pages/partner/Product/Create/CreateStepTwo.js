@@ -1,16 +1,14 @@
-import {Button, Divider, Form, Input} from 'antd';
-import Dragger from 'antd/es/upload/Dragger';
-import React from 'react';
+import {Alert, Button, Form} from 'antd';
+import React, {useState} from 'react';
+import {CKEditor} from '@ckeditor/ckeditor5-react';
+import PropTypes from 'prop-types';
 import {
 	InboxOutlined,
 	ArrowLeftOutlined,
 	ArrowRightOutlined,
-	InfoCircleOutlined,
 } from '@ant-design/icons';
-import PropTypes from 'prop-types';
-import {validateRequired} from '../../../../utils/validate';
-import {MESSAGE_REQUIRE_INPUT} from '../../../../contants/message';
 
+import Editor from 'ckeditor5-custom-build/build/ckeditor';
 export default function CreateStepTwo({
 	stepPage,
 	setStepPage,
@@ -19,135 +17,84 @@ export default function CreateStepTwo({
 	dataProduct,
 	setDataProduct,
 }) {
-	const onEventTarget = (evt) => {
-		const {value, name} = evt.target;
-		setDataProduct({...dataProduct, [name]: value});
+	const [content, setContent] = useState(null);
+	const [warning, setWarning] = useState(false);
+	const onFinish = () => {
+		if (!content) return setWarning(true);
+		onNextStep();
 	};
-	const onChange = ({file}) => {
-		setDataProduct({...dataProduct, file});
+
+	const onClose = () => {
+		setWarning(false);
 	};
 	return (
-		<Form
-			labelCol={{
-				span: 6,
-			}}
-			wrapperCol={{
-				span: 18,
-			}}
-			labelAlign='left'
-			onFinish={onNextStep}
-			layout='horizontal'>
-			<Form.Item
-				name='width'
-				label='Chiều rộng'
-				rules={[validateRequired(MESSAGE_REQUIRE_INPUT)]}
-				tooltip={{
-					title: 'Tooltip with customize icon',
-					icon: <InfoCircleOutlined />,
-				}}>
-				<Input
-					onChange={onEventTarget}
-					value={dataProduct.width}
-					name='width'
-					placeholder='Chiều rộng'
+		<>
+			<h1 className='mb-7'>Step 2 : TẠO MỚI SẢN PHẨM</h1>
+			<Form
+				labelCol={{
+					span: 6,
+				}}
+				wrapperCol={{
+					span: 14,
+				}}
+				labelAlign='left'
+				onFinish={onNextStep}
+				layout='horizontal'>
+				{warning ? (
+					<Alert
+						message='Phần nội dung bài viết không được để trống !'
+						type='warning'
+						closable
+						onClose={onClose}
+						className='mb-4'
+					/>
+				) : (
+					''
+				)}
+				<CKEditor
+					editor={Editor}
+					data='<p>Hello from CKEditor 5!</p>'
+					onReady={(editor) => {
+						// You can store the "editor" and use when it is needed.
+						console.log('Editor is ready to use!', editor);
+					}}
+					onChange={(event, editor) => {
+						const data = editor.getData();
+						setContent(data);
+						setDataProduct({...dataProduct, content: data});
+						console.log({event, editor, data});
+					}}
+					onBlur={(event, editor) => {
+						console.log('Blur.', editor);
+					}}
+					onFocus={(event, editor) => {
+						console.log('Focus.', editor);
+					}}
+					config={{
+						ckfinder: {
+							uploadUrl: 'http://localhost:5000/v1/api/upload/single',
+							withCredentials: true,
+						},
+					}}
 				/>
-			</Form.Item>
-			<Divider />
-			<Form.Item
-				name='long'
-				label='Chiều daì'
-				rules={[validateRequired(MESSAGE_REQUIRE_INPUT)]}
-				tooltip={{
-					title: 'Tooltip with customize icon',
-					icon: <InfoCircleOutlined />,
-				}}>
-				<Input
-					onChange={onEventTarget}
-					value={dataProduct.long}
-					name='long'
-					placeholder='Chiều rộng'
-				/>
-			</Form.Item>
-			<Divider />
-			<Form.Item
-				name='area'
-				label='Diện tích'
-				rules={[validateRequired(MESSAGE_REQUIRE_INPUT)]}
-				tooltip={{
-					title: 'Tooltip with customize icon',
-					icon: <InfoCircleOutlined />,
-				}}>
-				<Input
-					onChange={onEventTarget}
-					value={dataProduct.area}
-					name='area'
-					placeholder='Diện tích'
-				/>
-			</Form.Item>
-			<Divider />
-			<Form.Item
-				name='floor'
-				label='Số tầng'
-				rules={[validateRequired(MESSAGE_REQUIRE_INPUT)]}
-				tooltip={{
-					title: 'Tooltip with customize icon',
-					icon: <InfoCircleOutlined />,
-				}}>
-				<Input
-					onChange={onEventTarget}
-					value={dataProduct.floor}
-					name='floor'
-					placeholder='Số tầng'
-				/>
-			</Form.Item>
-			<Divider />
-			<Form.Item
-				name='bedroom'
-				label='Số phòng ngủ'
-				rules={[validateRequired(MESSAGE_REQUIRE_INPUT)]}
-				tooltip={{
-					title: 'Tooltip with customize icon',
-					icon: <InfoCircleOutlined />,
-				}}>
-				<Input
-					onChange={onEventTarget}
-					value={dataProduct.bedroom}
-					name='bedroom'
-					placeholder='Số phòng ngủ'
-				/>
-			</Form.Item>
-			<Divider />
-			<Form.Item label='File '>
-				<Dragger
-					beforeUpload={() => false}
-					multiple={true}
-					name='file'
-					onChange={onChange}>
-					<p className='ant-upload-drag-icon'>
-						<InboxOutlined />
-					</p>
-					<p className='ant-upload-text'>
-						Click or drag file to this area to upload
-					</p>
-				</Dragger>
-			</Form.Item>
-			<Divider />
-			<div className='m-auto flex justify-end mt-5 gap-5'>
-				<Button
-					className='w-1/2'
-					icon={<ArrowLeftOutlined />}
-					disabled={stepPage === 1}
-					onClick={setStepPage}>
-					Previous
-				</Button>
-				<Button className='w-1/2' htmlType='submit' disabled={stepPage === 3}>
-					Next
-					<ArrowRightOutlined />
-				</Button>
-			</div>
-		</Form>
+				<div className='m-auto flex justify-end mt-5 gap-5'>
+					<Button
+						className='w-1/2'
+						icon={<ArrowLeftOutlined />}
+						disabled={stepPage === 1}
+						onClick={setStepPage}>
+						Previous
+					</Button>
+					<Button className='w-1/2' onClick={onFinish} disabled={stepPage === 4}>
+						Next
+						<ArrowRightOutlined />
+					</Button>
+				</div>
+			</Form>
+		</>
 	);
 }
+
 CreateStepTwo.propTypes = {
 	stepPage: PropTypes.number,
 	setStepPage: PropTypes.func,

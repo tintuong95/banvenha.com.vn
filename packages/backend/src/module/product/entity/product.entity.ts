@@ -58,6 +58,7 @@ export class Product extends BaseEntity {
 	description: string;
 
 	@Column({
+		type: 'text',
 		nullable: false,
 	})
 	@ApiProperty()
@@ -76,6 +77,13 @@ export class Product extends BaseEntity {
 	@ApiProperty()
 	@Exclude()
 	groupId: string;
+
+	@Column({
+		length: 500,
+		nullable: false,
+	})
+	@ApiProperty()
+	file: string;
 
 	@Column({
 		type: 'enum',

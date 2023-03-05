@@ -8,9 +8,10 @@ import {
 	SmileOutlined,
 	ExclamationCircleFilled,
 } from '@ant-design/icons';
-import {createNewsApi, updateNews} from '../../../../apis/news';
-import {NEWS_STATE, NOTIFICATION_TYPE} from '../../../../contants/table';
+import {createBlogApi, updateBlog} from '../../../../apis/news';
+import {BLOG_PUBLISHED, NOTIFICATION_TYPE} from '../../../../contants/table';
 import {history} from '../../../../routes/history';
+import { openNotification } from '../../../../utils/notification';
 const {confirm} = Modal;
 const CreateStepThree = ({
 	stepPage,
@@ -20,22 +21,11 @@ const CreateStepThree = ({
 	dataNews,
 	setDataNews,
 }) => {
-	const openNotification = (type, message, description) => {
-		return notification[type]({
-			type,
-			message,
-			description,
-			onClick: () => {
-				console.log('Notification Clicked!');
-			},
-		});
-	};
-
-	const fetchUpdateApi = (state) => {
 	
-		updateNews(dataNews.id, {['state']: state})
+
+	const fetchUpdateApi = (published) => {
+		updateBlog(dataNews.id, {['published']: published})
 			.then((result) => {
-				
 				openNotification(NOTIFICATION_TYPE.success, 'Cập nhật thành công !');
 				console.log(result);
 			})
@@ -44,13 +34,13 @@ const CreateStepThree = ({
 				console.log(err);
 			});
 	};
-	const onSubmitConfirm = (state) => {
+	const onSubmitConfirm = (published) => {
 		confirm({
 			title: 'Xác nhận cập nhật bài viết !',
 			icon: <ExclamationCircleFilled />,
 			content: 'Thay đổi trạng thái bài viết của bạn ! Tuyệt vời ...',
 			onOk() {
-				fetchUpdateApi(state);
+				fetchUpdateApi(published);
 			},
 			onCancel() {
 				console.log('Cancel');
@@ -66,11 +56,11 @@ const CreateStepThree = ({
 				title='Xác nhận bước cuối cùng nha !'
 				subTitle='Bài viết của bạn sẽ được xét duyệt tối đa trong vòng 24h. Chúc bạn và gia đình một ngày vui vẻ ...'
 				extra={[
-					<Badge key={1} dot={dataNews.state === NEWS_STATE.DRAFT}>
+					<Badge key={1} dot={dataNews.state === BLOG_PUBLISHED.DRAFT}>
 						<Button
 							onClick={() => {
-								if (dataNews.state === NEWS_STATE.DRAFT) return
-									onSubmitConfirm(NEWS_STATE.DRAFT);
+								if (dataNews.state === BLOG_PUBLISHED.DRAFT) return;
+								onSubmitConfirm(BLOG_PUBLISHED.DRAFT);
 							}}
 							type='primary'
 							className='bg-slate-400'
@@ -79,11 +69,11 @@ const CreateStepThree = ({
 							BẢN NHÁP
 						</Button>
 					</Badge>,
-					<Badge key={2} dot={dataNews.state !== NEWS_STATE.DRAFT}>
+					<Badge key={2} dot={dataNews.state !== BLOG_PUBLISHED.DRAFT}>
 						<Button
 							onClick={() => {
-								if (dataNews.state === NEWS_STATE.NORMAL) return;
-								onSubmitConfirm(NEWS_STATE.NORMAL);
+								if (dataNews.state === BLOG_PUBLISHED.NORMAL) return;
+								onSubmitConfirm(BLOG_PUBLISHED.NORMAL);
 							}}
 							type='primary'
 							key='buy'>

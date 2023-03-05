@@ -12,12 +12,15 @@
 .w-max-1250 {
 	max-width: 1250px;
 }
-
+.w-max-1150{
+	max-width: 1150px;
+}
 
 .bg-tranform {
-	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-	background-size: 400% 400%;
-	animation: gradient 100s ease infinite;
+	background: linear-gradient(-45deg, #23a5d59c, #23d5aba7),url("https://i.imgur.com/r03DXON.png");
+
+
+	animation: gradient 70s ease infinite;
 }
 
 @keyframes gradient {
@@ -58,4 +61,12 @@
 
 .dropdown:hover > .dropdownHover{
 	display: block !important;
+}
+.line-2 {
+ display: -webkit-box !important;
+
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 48px;
 }

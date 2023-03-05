@@ -21,7 +21,7 @@ import {ROLE} from '~contants/role';
 import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
 
-@Controller('orders')
+@Controller('order')
 @UseGuards(JwtAuthGuard)
 export class OrderController {
 	constructor(private orderService: OrderService) {}

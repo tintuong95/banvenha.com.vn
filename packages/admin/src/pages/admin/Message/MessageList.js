@@ -55,14 +55,14 @@ const MessageList = () => {
 	const columns = [
 		{
 			title: '',
-			dataIndex: 'code',
-			key: 'code',
+			dataIndex: 'id',
+			key: 'id',
 			render: () => <Avatar shape='square' icon={<MailOutlined />} />,
 		},
 		{
 			title: 'Tiêu đề',
-			dataIndex: 'name',
-			key: 'name',
+			dataIndex: 'title',
+			key: 'title',
 		},
 		{
 			title: 'Người nhắn',
@@ -71,7 +71,7 @@ const MessageList = () => {
 			render: (_, record) => {
 				return (
 					<div className='flex flex-col '>
-						<span className=''>{record.sender.name}</span>
+						<span className=''>{record.sender.fullName}</span>
 						<span className='text-slate-400'>{record.sender.email}</span>
 					</div>
 				);
@@ -86,8 +86,8 @@ const MessageList = () => {
 
 		{
 			title: 'Thời gian',
-			dataIndex: 'updated_at',
-			key: 'updated_at',
+			dataIndex: 'updatedAt',
+			key: 'updatedAt',
 			render: (text) => moment(text).format('hh:mm DD/MM/YYYY '),
 		},
 		{

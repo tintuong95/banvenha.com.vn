@@ -13,6 +13,7 @@ import {
 	UploadedFiles,
 	Query,
 	Request,
+	UploadedFile,
 } from '@nestjs/common';
 import {ProductService} from './product.service';
 import {CreateProductDto, UpdateProductDto} from './dto/product.dto';
@@ -24,9 +25,9 @@ import {FileFieldsInterceptor} from '@nestjs/platform-express';
 import {uploadFileConfig} from '~config/multer.config';
 import {User} from '~shared/user.decorator';
 import {UserDto} from '~shared/user.dto';
-import {REGEX_IMAGE_RAR} from '~util/regex';
+import {REGEX_IMAGE, REGEX_IMAGE_RAR} from '~util/regex';
 
-@Controller('products')
+@Controller('product')
 @UseGuards(JwtAuthGuard)
 export class ProductController {
 	constructor(private productService: ProductService) {}
@@ -51,50 +52,52 @@ export class ProductController {
 
 	@Roles(ROLE.PARTNER)
 	@Post('create')
-	// @UseInterceptors(
-	// 	FileFieldsInterceptor(
-	// 		[
-	// 			{name: 'file', maxCount: 2},
-	// 			{name: 'image', maxCount: 2},
-	// 			{name: 'images', maxCount: 5},
-	// 		],
-	// 		uploadFileConfig(1048576, REGEX_IMAGE_RAR)
-	// 	)
-	// )
+	@UseInterceptors(
+		FileFieldsInterceptor(
+			[
+				{name: 'photo', maxCount: 1},
+				{name: 'photoList', maxCount: 10},
+			],
+			uploadFileConfig(1048576, REGEX_IMAGE_RAR)
+		)
+	)
 	@HttpCode(HttpStatus.CREATED)
 	async createProduct(
-		// @UploadedFile() file: Express.Multer.File,
-		// @UploadedFiles()
-		// files: {
-		// 	image?: Express.Multer.File;
-		// 	images?: Express.Multer.File[];
-		// 	file?: Express.Multer.File;
-		// },
+		@UploadedFiles()
+		files: {
+			photo?: Express.Multer.File;
+			photoList?: Express.Multer.File[];
+		},
 		@Body() createProductDto: CreateProductDto,
 		@User() user: UserDto
 	): Promise<Product | any> {
-		return await this.productService.createProduct(createProductDto, user.id);
+		const {photo, photoList} = files;
+		console.log('createProductDto', createProductDto);
+		return await this.productService.createProduct(
+			createProductDto,
+			photo,
+			photoList,
+			user.id
+		);
 	}
 
 	@Post(':id/update')
-	// @UseInterceptors(
-	// 	FileFieldsInterceptor(
-	// 		[
-	// 			{name: 'file', maxCount: 2},
-	// 			{name: 'image', maxCount: 2},
-	// 			{name: 'images', maxCount: 5},
-	// 		],
-	// 		uploadFileConfig(1048576, REGEX_IMAGE_RAR)
-	// 	)
-	// )
+	@UseInterceptors(
+		FileFieldsInterceptor(
+			[
+				{name: 'photo', maxCount: 1},
+				{name: 'photoList', maxCount: 10},
+			],
+			uploadFileConfig(1048576, REGEX_IMAGE)
+		)
+	)
 	@Roles(ROLE.PARTNER)
 	async updateProduct(
-		// @UploadedFiles()
-		// files: {
-		// 	image?: Express.Multer.File;
-		// 	images?: Express.Multer.File[];
-		// 	file?: Express.Multer.File;
-		// },
+		@UploadedFiles()
+		files: {
+			photo?: Express.Multer.File;
+			photoList?: Express.Multer.File[];
+		},
 		@Body(ValidationPipe)
 		updateProductDto: any,
 		@Param('id') id: string,
@@ -103,6 +106,7 @@ export class ProductController {
 		return await this.productService.updateProduct(
 			id,
 			updateProductDto,
+			files,
 			user.id
 		);
 	}

@@ -5,42 +5,59 @@ import BaseIcon from './BaseIcon';
 import {AuthorIcon, HeartPlusIcon, VerifiedIcon} from '../contants/icon';
 import PropTypes from 'prop-types';
 import BaseImage from './BaseImage';
+import Link from 'next/link';
 
 export default function BaseCard({data}) {
-	const router = useRouter();
-	function onRouterLink() {
-		router.push('/san-pham/' + param);
-	}
-	function onAction(e) {
-		e.stopPropagation();
-	}
+	// const router = useRouter();
+		const {title, slug, price, account, photo,likes,sale} = data;
+	// function onRouterLink() {
+	// 	router.push('/product/' + slug);
+	// }
+	// function onAction(e) {
+	// 	e.stopPropagation();
+	// }
 
 	// function onBuyProduct(e) {
 	// 	e.stopPropagation();
-	// 	router.push('/thanh-toan');
+	// 	router.push('/payment');
 	// }
-	const { name, param, price ,admin, image} = data;
+	const totalPrice =(price,sale)=>{
+
+		return Math.round(+price -+ price * sale/100);
+	}
+
 	return (
-		<div
-			onClick={onRouterLink}
+		<Link
+			href={'/product/' + slug}
+			// onClick={onRouterLink}
 			aria-hidden='true'
-			className='flex flex-col border cursor-pointer   shadow-lg bg-white rounded-xl overflow-hidden transform transition duration-500 hover:scale-105'>
+			className='flex flex-col border cursor-pointer   shadow-lg bg-white rounded-md overflow-hidden transform transition duration-500 hover:scale-105'>
 			<div className='relative'>
-				<BaseImage image={image} name={name} />
+				<BaseImage image={photo} name={title} />
 				<BaseIcon
 					className={'absolute top-3 left-3'}
 					width={20}
 					icon={VerifiedIcon}
 					name={'blue icon'}
 				/>
-				<div className='absolute top-3 right-3 bg-rose-500 px-1 rounded  text-sm text-white'>
-					-10%
-				</div>
+				{sale !== 0 && (
+					<div className='absolute top-3 right-3 bg-rose-500 px-1 rounded  text-sm text-white'>
+						{sale}%
+					</div>
+				)}
 			</div>
-			<div className='font-semibold  text-gray-600 px-4 pt-3 flex '>{name}</div>
-			<div className=' mx-2 text-sm text-gray-400 px-4 flex justify-end items-center gap-2'>
-				<BaseIcon width={20} name={'author icon'} icon={AuthorIcon} />
-				{admin.name}
+			<div className='font-semibold  text-gray-600 px-4 pt-3  line-2 mb-2'>
+				{title}
+			</div>
+			<div className=' mx-2 text-sm hover:text-rose-500 text-gray-400 px-4 flex justify-end items-center gap-2'>
+				<BaseIcon
+					name={'author icon'}
+					icon={
+						'https://i.pinimg.com/736x/fb/6c/cb/fb6ccbd88bd0ac4e2585dc3fc716c221--places-to-visit.jpg'
+					}
+					className={'rounded-full h-6 w-6  object-cover shadow-md'}
+				/>
+				<Link href={'author/' + data.account.id}>{account.fullName}</Link>
 			</div>
 
 			{/* <div className='flex '>
@@ -53,10 +70,11 @@ export default function BaseCard({data}) {
 					{likes}
 				</div>
 			</div> */}
-			<div className='mt-2 w-full grid grid-cols-5 px-4 py-2 gap-2'>
+			<div className=' w-full grid grid-cols-5 px-4 py-2 gap-2'>
 				<div className='col-span-1 flex gap-2 '>
-					<button className='flex items-center gap-2 text-sm' onClick={onAction}>
-						<BaseIcon width={20} icon={HeartPlusIcon} name={'heart plus icon'} /> 1000
+					<button className='flex items-center gap-2 text-sm'>
+						<BaseIcon width={20} icon={HeartPlusIcon} name={'heart plus icon'} />
+						{likes}
 					</button>
 				</div>
 
@@ -64,11 +82,15 @@ export default function BaseCard({data}) {
 					// onClick={onBuyProduct}
 					aria-hidden='true'
 					className='col-span-4 font-semibold text-end p-1   text-rose-800 rounded '>
-					<small className='line-through text-gray-400 text-xs mr-1 font-light'>100.000</small>
-					{price.toLocaleString('vi-VN')} VND
+					{sale !== 0 && (
+						<small className='line-through text-gray-400 text-xs mr-1 font-light'>
+							{price.toLocaleString('vi-VN')}
+						</small>
+					)}
+					{totalPrice(price, sale).toLocaleString('vi-VN')} VND
 				</div>
 			</div>
-		</div>
+		</Link>
 	);
 }
 BaseCard.propTypes = {

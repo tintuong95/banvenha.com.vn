@@ -49,9 +49,10 @@ const PaymentList = () => {
 	});
 	const columns = [
 		{
-			title: 'Mã',
-			dataIndex: 'code',
-			key: 'code',
+			title: '#',
+			dataIndex: 'id',
+			key: 'id',
+			render: (text) => text,
 		},
 
 		// {
@@ -61,37 +62,29 @@ const PaymentList = () => {
 		// },
 		{
 			title: 'Tài khoản',
-			dataIndex: 'bank_name',
-			key: 'bank_name',
+			dataIndex: 'bankName',
+			key: 'bankName',
 			render: (_, record) => {
 				return (
 					<div className='flex flex-col '>
-						<span className='text-slate-400'>{record.bank_name}</span>
-						<span className=''>{record.bank_number}</span>
+						<span className='text-slate-400'>{record.bankName}</span>
+						<span className=''>{record.bankNumber}</span>
 					</div>
 				);
 			},
 		},
 		{
 			title: 'Mã giao dịch',
-			dataIndex: 'bank_transaction',
-			key: 'bank_transaction',
+			dataIndex: 'bankTransaction',
+			key: 'bankTransaction',
 		},
 		{
 			title: 'Số tiền',
-			dataIndex: 'money',
-			key: 'money',
+			dataIndex: 'value',
+			key: 'value',
 			render: (text) => (
-				<Tag className='text-sm' color='blue'>
-					{text.toLocaleString('vi-VN')} VND
-				</Tag>
+				<div className='text-rose-600 '>{text.toLocaleString('vi-VN')} VND</div>
 			),
-		},
-		{
-			title: 'QRCode',
-			dataIndex: 'qrcode',
-			key: 'qrcode',
-			render: () => <QRCode size={60} value='https://ant.design/' />,
 		},
 		{
 			title: 'Thanh toán',
@@ -121,8 +114,8 @@ const PaymentList = () => {
 		},
 		{
 			title: 'Thời gian',
-			dataIndex: 'updated_at',
-			key: 'updated_at',
+			dataIndex: 'updatedAt',
+			key: 'updatedAt',
 			render: (text) => moment(text).format('hh:mm DD/MM/YYYY '),
 		},
 		// {

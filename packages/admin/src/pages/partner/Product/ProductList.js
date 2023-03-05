@@ -14,7 +14,7 @@ import {
 	DatePicker,
 	QRCode,
 } from 'antd';
-import AddButton from '../../../components/AddButton';
+import ButtonAdd from '../../../components/button-add';
 import {
 	SearchOutlined,
 	DeleteOutlined,
@@ -41,14 +41,15 @@ import {
 } from '../../../apis/product';
 import {
 	NOTIFICATION_TYPE,
-	PRODUCT_STATE,
-	PRODUCT_STATE_TEXT,
+	PRODUCT_PUBLISHED,
+	PRODUCT_PUBLISHED_TEXT,
 	PRODUCT_STATUS,
 	PRODUCT_STATUS_TEXT,
 	PRODUCT_STATUS_UPDATE_TEXT,
 } from '../../../contants/table';
-import BaseAvatar from '../../../components/BaseAvatar';
+import BaseAvatar from '../../../components/avatar';
 import {useNavigate} from 'react-router-dom';
+import { openNotification } from '../../../utils/notification';
 
 const {confirm} = Modal;
 const ProductList = () => {
@@ -60,32 +61,31 @@ const ProductList = () => {
 	const [params, setParams] = useState({
 		currentPage: 1,
 		perPage: 10,
-		name: null,
+		title: null,
 		status: null,
-		state: null,
-		group_id: null,
+		published: null,
+		groupId: null,
 	});
 
 	const columns = [
 		{
-			title: 'Mã',
-			dataIndex: 'qrcode',
-			key: 'qrcode',
-			render: () => <QRCode size={60} value='https://ant.design/' />,
+			title: '#',
+			dataIndex: 'id',
+			key: 'id',
 		},
 
 		{
 			title: 'Tên',
-			dataIndex: 'name',
-			key: 'name',
+			dataIndex: 'title',
+			key: 'title',
 			render: (_, record) => {
 				return (
-					<div className='flex flex-col'>
-						<span className='font-semibold'>{record.name}</span>
+					<div className='flex flex-col w-64'>
+						<span className='font-semibold'>{record.title}</span>
 						<div className='text-sm'>
 							{/* <span className='text-slate-500'>{record.code}</span> - */}
 							<a href='#d' className='text-slate-500'>
-								{record.admin.name}
+								{record.account.fullName}
 							</a>
 						</div>
 					</div>
@@ -93,57 +93,69 @@ const ProductList = () => {
 			},
 		},
 		{
+			title: 'Giá bán',
+			dataIndex: 'price',
+			key: 'price',
+			render: (text) => <div className='text-rose-600 '>{text.toLocaleString("vi-VN")} VND</div>,
+		},
+		{
 			title: 'Hình',
-			dataIndex: 'image',
-			key: 'image',
+			dataIndex: 'photo',
+			key: 'photo',
 			render: (text) => <BaseAvatar src={text} />,
 		},
 		{
 			title: 'Nhóm',
-			dataIndex: 'news_group.name',
-			key: 'news_group.name',
-			render: (_, record) => record.group_product.name,
+			dataIndex: 'product_group.title',
+			key: 'product_group.title',
+			render: (_, record) => record.product_group.title,
 		},
-		{
-			title: 'Tổng quan',
-			dataIndex: 'views',
-			key: 'views',
-			render: (_, record) => {
-				return (
-					<div className='flex gap-3'>
-						<div className='flex gap-1 items-center'>
-							<EyeOutlined style={{color: 'gray'}} />
-							{record.views}
-						</div>
-						<div className='flex gap-1 items-center'>
-							<LikeOutlined style={{color: 'blue'}} />
-							{record.likes}
-						</div>
-						<div className='flex gap-1 items-center'>
-							<ShoppingCartOutlined style={{color: 'green'}} />
-							{record.views}
-						</div>
-					</div>
-				);
-			},
-		},
+		// {
+		// 	title: 'Tổng quan',
+		// 	dataIndex: 'views',
+		// 	key: 'views',
+		// 	render: (_, record) => {
+		// 		return (
+		// 			<div className='flex gap-3'>
+		// 				<div className='flex gap-1 items-center'>
+		// 					<EyeOutlined style={{color: 'gray'}} />
+		// 					{record.views}
+		// 				</div>
+		// 				<div className='flex gap-1 items-center'>
+		// 					<LikeOutlined style={{color: 'blue'}} />
+		// 					{record.likes}
+		// 				</div>
+		// 				<div className='flex gap-1 items-center'>
+		// 					<ShoppingCartOutlined style={{color: 'green'}} />
+		// 					{record.views}
+		// 				</div>
+		// 			</div>
+		// 		);
+		// 	},
+		// },
 
 		{
 			title: 'Tình trạng',
-			key: 'state',
-			dataIndex: 'state',
+			key: 'published',
+			dataIndex: 'published',
 			render: (text, record) => (
 				<Switch
 					checkedChildren='NORMAL'
 					unCheckedChildren='DRAFT'
-					defaultChecked={text === PRODUCT_STATE.NORMAL}
+					defaultChecked={text === PRODUCT_PUBLISHED.NORMAL}
 					onChange={(e) => {
-						const state = e ? PRODUCT_STATE.NORMAL : PRODUCT_STATE.DRAFT;
-						onUpdateStateConfirm(record.id, state);
+						const published = e ? PRODUCT_PUBLISHED.NORMAL : PRODUCT_PUBLISHED.DRAFT;
+						onUpdateStateConfirm(record.id, published);
 					}}
 					disabled={false}
 				/>
 			),
+		},
+		{
+			title: 'Mã',
+			dataIndex: 'id',
+			key: 'id',
+			render: (text) => <QRCode size={60} value={text} />,
 		},
 		{
 			title: 'Trạng thái',
@@ -184,8 +196,8 @@ const ProductList = () => {
 		},
 		{
 			title: 'Thời gian',
-			key: 'updated_at',
-			dataIndex: 'updated_at',
+			key: 'updatedAt',
+			dataIndex: 'updatedAt',
 			render: (text) => moment(text).format('hh:mm DD-MM-YYYY '),
 		},
 		{
@@ -210,6 +222,7 @@ const ProductList = () => {
 					<Tooltip placement='top' title={'Xóa sản phẩm'}>
 						<Button
 							onClick={() => {
+						
 								onRemoveConfirm(record.id);
 							}}
 							type='link'
@@ -279,16 +292,7 @@ const ProductList = () => {
 			});
 	};
 
-	const openNotification = (type, message, description) => {
-		notification[type]({
-			type,
-			message,
-			description,
-			onClick: () => {
-				console.log('Notification Clicked!');
-			},
-		});
-	};
+
 
 	const onChange = (pageNumber) => {
 		setParams({...params, currentPage: pageNumber});
@@ -324,7 +328,7 @@ const ProductList = () => {
 
 	const productGroupOptions = () =>
 		productGroupList.map((item) => ({
-			label: item.name,
+			label: item.title,
 			value: item.id,
 		}));
 
@@ -373,12 +377,12 @@ const ProductList = () => {
 					value={params.state}
 					options={[
 						{
-							value: PRODUCT_STATE.DRAFT,
-							label: PRODUCT_STATE_TEXT[PRODUCT_STATE.DRAFT],
+							value: PRODUCT_PUBLISHED.DRAFT,
+							label: PRODUCT_PUBLISHED_TEXT[PRODUCT_PUBLISHED.DRAFT],
 						},
 						{
-							value: PRODUCT_STATE.NORMAL,
-							label: PRODUCT_STATE_TEXT[PRODUCT_STATE.NORMAL],
+							value: PRODUCT_PUBLISHED.NORMAL,
+							label: PRODUCT_PUBLISHED_TEXT[PRODUCT_PUBLISHED.NORMAL],
 						},
 					]}
 				/>
@@ -445,12 +449,12 @@ const ProductList = () => {
 					onClick={() => {
 						setParams({
 							...params,
-							group_id: null,
-							name: null,
-							state: null,
+							groupId: null,
+							title: null,
+							published: null,
 							status: null,
-							start:null,
-							end:null
+							start: null,
+							end: null,
 						});
 					}}
 					type='link'
@@ -485,7 +489,7 @@ const ProductList = () => {
 					onChange={onChange}
 				/>
 			</div>
-			<AddButton to={'/product/create'} />
+			<ButtonAdd to={'/product/create'} name={'Thêm mới sản phẩm'} />
 		</>
 	);
 };

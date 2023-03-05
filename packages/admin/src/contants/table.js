@@ -1,26 +1,26 @@
-export const NEWS_STATUS = {
+export const BLOG_STATUS = {
 	PROCESS: 0,
 	ACTIVED: 1,
 	BLOCKED: 2,
 };
 
-export const NEWS_STATUS_TEXT = {
+export const BLOG_STATUS_TEXT = {
 	0: 'Process',
 	1: 'Actived',
 	2: 'Blocked',
 };
 
-export const NEWS_STATE = {
+export const BLOG_PUBLISHED = {
 	NORMAL: 0,
 	DRAFT: 1,
 };
 
-export const NEWS_STATE_TEXT = {
+export const BLOG_PUBLISHED_TEXT = {
 	0: 'NORMAL',
 	1: 'DRAFT',
 };
 
-export const NEWS_STATUS_UPDATE_TEXT = {
+export const BLOG_STATUS_UPDATE_TEXT = {
 	0: 'Duyệt bài đăng',
 	1: 'Khóa bài đăng',
 	2: 'Mở khóa bài đăng',
@@ -45,12 +45,12 @@ export const PRODUCT_STATUS_TEXT = {
 	2: 'Blocked',
 };
 
-export const PRODUCT_STATE = {
+export const PRODUCT_PUBLISHED = {
 	NORMAL: 0,
 	DRAFT: 1,
 };
 
-export const PRODUCT_STATE_TEXT = {
+export const PRODUCT_PUBLISHED_TEXT = {
 	0: 'NORMAL',
 	1: 'DRAFT',
 };

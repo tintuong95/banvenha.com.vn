@@ -21,7 +21,7 @@ import {
 } from './dto/productGroup.dto';
 import {ProductGroupService} from './productGroup.service';
 
-@Controller('product_groups')
+@Controller('productGroup')
 @UseGuards(JwtAuthGuard)
 export class ProductGroupController {
 	constructor(private productGroupService: ProductGroupService) {}

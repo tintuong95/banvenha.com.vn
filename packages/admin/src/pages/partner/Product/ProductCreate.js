@@ -1,22 +1,22 @@
 import {Button} from 'antd';
 import React, {useState} from 'react';
-import BaseStep from '../../../components/BaseStep';
+import BaseStep from '../../../components/step';
 import CreateStepFirst from './Create/CreateStepFirst';
-import CreateStepFive from './Create/CreateStepFive';
 import CreateStepFour from './Create/CreateStepFour';
 import CreateStepThree from './Create/CreateStepThree';
 import CreateStepTwo from './Create/CreateStepTwo';
 
-
 export default function ProductCreate() {
 	const [stepPage, setStepPage] = useState(1);
 	const [dataProduct, setDataProduct] = useState({
-		name: null,
+		title: null,
 		description: null,
 		content: null,
-		group_id: null,
-		file: null,
-		state: null,
+		groupId: null,
+		price:null,
+		sale:null,
+		photo: null,
+		photoList: null,
 	});
 	const onNextStep = () => {
 		const step = stepPage < 5 ? stepPage + 1 : stepPage;
@@ -63,17 +63,6 @@ export default function ProductCreate() {
 		else if (stepPage == 4)
 			return (
 				<CreateStepFour
-					onNextStep={onNextStep}
-					onPreviousStep={onPreviousStep}
-					stepPage={stepPage}
-					setStepPage={setStepPage}
-					dataProduct={dataProduct}
-					setDataProduct={setDataProduct}
-				/>
-			);
-		else if (stepPage == 5)
-			return (
-				<CreateStepFive
 					onNextStep={onNextStep}
 					onPreviousStep={onPreviousStep}
 					stepPage={stepPage}

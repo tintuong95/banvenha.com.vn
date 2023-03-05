@@ -16,7 +16,7 @@ export const dbConfig = (
 	// 	migrationsDir: 'src/database/migration',
 	// },
 	synchronize: false,
-	migrationsRun: false,
+	migrationsRun: true,
 	dropSchema: false,
 });
 

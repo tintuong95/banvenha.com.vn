@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Account} from './entity/account.entity';
@@ -10,6 +10,7 @@ import {UserDto} from '~shared/user.dto';
 import {handleQuery, pagination} from '~util/pagination';
 import {findOptionWhere} from '~util/query';
 import {ROLE} from '~contants/role';
+import {UpdateAccountDto} from './dto/account.dto';
 
 @Injectable()
 export class AccountService {
@@ -38,12 +39,37 @@ export class AccountService {
 	async getAccountDetails(id: string): Promise<Account | any> {
 		const result = await this.accountRepository.findOne({
 			where: {id},
-			relations: [ACCOUNT_RELATION],
 		});
 		if (!result)
 			throw new NotFoundException('Account Id ' + id + ' Not Found !');
 
 		return result;
+	}
+
+	async updateAccount(
+		id: string,
+		user: UserDto,
+		updateAccountDto: UpdateAccountDto
+	): Promise<Account> {
+		const result = await this.accountRepository.findOne({where: {id}});
+		if (!result)
+			throw new NotFoundException('Account Id ' + id + ' Not Found !');
+
+		if (user.role !== ROLE.ADMIN) {
+			delete updateAccountDto.role;
+			delete updateAccountDto.status;
+			delete updateAccountDto.point;
+		}
+
+		if (user.id === result.id || user.role === ROLE.ADMIN) {
+			_(updateAccountDto).forEach((val, key) => {
+				if (val) result[key] = val;
+			});
+		} else {
+			throw new UnauthorizedException();
+		}
+
+		return this.accountRepository.save(result);
 	}
 
 	async removeAccount(id: string): Promise<string | any> {

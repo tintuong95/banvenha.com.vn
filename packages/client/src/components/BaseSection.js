@@ -3,9 +3,9 @@ import BaseCard from './BaseCard';
 import PropTypes from 'prop-types';
 import {getProductList} from '../apis/product';
 
-export default async function BaseSection({groupId,name}) {
+export default async function BaseSection({groupId, title}) {
 	const params = {};
-	params.group_id = 5;
+	params.groupId = 'BL0000001';
 	params.perPage = 8;
 	params.currentPage = 1;
 
@@ -13,15 +13,16 @@ export default async function BaseSection({groupId,name}) {
 	const [productList] = await Promise.all([productListPromise]);
 
 	const ListProduct = ({list}) => {
+	
 		return list.data.map((item) => <BaseCard data={item} key={item.id} />);
 	};
 	return (
 		<>
 			<div className='mt-10 flex gap-2 justify-between mb-5'>
 				<div className='text-slate-600 font-semibold text-2xl flex items-center'>
-					{name.toUpperCase()}
+					{title?.toUpperCase()}
 					<div className='ml-2 border px-2 inline font-light border-sky-200 bg-sky-100 rounded text-sm'>
-						{productList.meta.total} sản phẩm
+						{productList.meta?.total} sản phẩm
 					</div>
 				</div>
 				<div>
@@ -31,7 +32,7 @@ export default async function BaseSection({groupId,name}) {
 				</div>
 			</div>
 
-			<section className='grid grid-cols-4 gap-10 pb-10'>
+			<section className='grid grid-cols-4 gap-5 pb-5'>
 				<ListProduct list={productList} />
 			</section>
 		</>
@@ -40,5 +41,5 @@ export default async function BaseSection({groupId,name}) {
 
 BaseSection.propTypes = {
 	groupId: PropTypes.number.isRequired,
-	name: PropTypes.string.isRequired,
+	title: PropTypes.string.isRequired,
 };

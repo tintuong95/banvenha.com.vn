@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import {Carousel} from 'react-responsive-carousel';
@@ -6,30 +6,27 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import BaseViewer from './BaseViewer';
 import Image from 'next/image';
 
-const images = [
-	{src: 'https://picsum.photos/750/550', alt: 'd'},
-	{src: 'https://picsum.photos/750/550', alt: 'd'},
 
-	{src: 'https://picsum.photos/750/550', alt: 'd'},
 
-	{src: 'https://picsum.photos/750/550', alt: 'd'},
-
-	{src: 'https://picsum.photos/750/550', alt: 'd'},
-];
-
-function BaseCarousel(props) {
+function BaseCarousel({images}) {
 	const [visible, setVisible] = useState(false);
 	const [indexActive, setIndexActive] = useState(0);
 
 	const renderListImage = (images) => {
 		return images?.map((item, index) => (
-			<div key={index} >
-				<Image  className='' width={750} height={350} src={item.src} alt={item.alt} />
+			<div key={index}>
+				<Image
+					className=''
+					width={750}
+					height={350}
+					src={item.src}
+					alt={item.alt}
+				/>
 				<button
 					aria-hidden
 					className='legend '
 					onClick={() => {
-						setIndexActive(index)
+						setIndexActive(index);
 						setVisible(true);
 					}}>
 					ZOOM
@@ -51,6 +48,8 @@ function BaseCarousel(props) {
 	);
 }
 
-BaseCarousel.propTypes = {};
+BaseCarousel.propTypes = {
+	images: PropTypes.array,
+};
 
 export default BaseCarousel;

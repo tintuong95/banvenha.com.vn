@@ -1,5 +1,5 @@
 import { Avatar, Button, Input, Pagination, Select, Space, Table, Tag } from 'antd';
-import AddButton from '../../../components/AddButton';
+import ButtonAdd from '../../../components/button-add';
 import { SearchOutlined, UserOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 const columns = [
     {
@@ -167,7 +167,7 @@ const PartnerList = () => {
                     onChange={onChange}
                 />
             </div>
-            <AddButton />
+            <ButtonAdd />
         </>
     );
 };
